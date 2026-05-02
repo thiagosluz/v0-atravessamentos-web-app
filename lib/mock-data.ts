@@ -211,10 +211,13 @@ export const blogPosts: BlogPost[] = [
 // Helpers
 // ============================================================================
 
+const months = [
+  "janeiro", "fevereiro", "março", "abril", "maio", "junho",
+  "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"
+]
+
 export function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString("pt-BR", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  })
+  const [year, month, day] = iso.split("-")
+  const monthName = months[parseInt(month, 10) - 1]
+  return `${parseInt(day, 10)} de ${monthName} de ${year}`
 }
