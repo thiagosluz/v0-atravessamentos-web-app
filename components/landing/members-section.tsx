@@ -3,6 +3,7 @@
 import { motion } from "motion/react"
 import { type Member } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
+import Link from "next/link"
 
 const tagColors: Record<string, string> = {
   Educadoras: "bg-primary/15 text-primary border-primary/30",
@@ -74,43 +75,45 @@ export function MembersSection({ initialMembers }: MembersSectionProps) {
                   transition={{ duration: 0.6, delay: index * 0.06 }}
                   className="group"
                 >
-                  <div
-                    className={cn(
-                      "relative aspect-[4/5] overflow-hidden bg-muted transition-all duration-500",
-                      cardShapes[index % cardShapes.length],
-                    )}
-                  >
-                    <img
-                      src={member.avatar || "/placeholder.svg"}
-                      alt={member.name}
-                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-foreground/85 via-foreground/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                    <div className="absolute inset-x-3 bottom-3 translate-y-2 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
-                      <p className="text-xs leading-snug text-background line-clamp-3">
-                        {member.bio}
-                      </p>
+                  <Link href={`/membros/${member.id}`} className="block">
+                    <div
+                      className={cn(
+                        "relative aspect-[4/5] overflow-hidden bg-muted transition-all duration-500",
+                        cardShapes[index % cardShapes.length],
+                      )}
+                    >
+                      <img
+                        src={member.avatar || "/placeholder.svg"}
+                        alt={member.name}
+                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-foreground/85 via-foreground/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                      <div className="absolute inset-x-3 bottom-3 translate-y-2 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
+                        <p className="text-xs leading-snug text-background line-clamp-3">
+                          {member.bio}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                  <div className="mt-3 px-1">
-                    <h3 className="font-display text-lg font-bold leading-tight tracking-tight">
-                      {member.name}
-                    </h3>
-                    <p className="mt-0.5 text-sm text-foreground/65">{member.role}</p>
-                    <div className="mt-2 flex flex-wrap gap-1.5">
-                      {member.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className={cn(
-                            "rounded-full border px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide",
-                            tagColors[tag] || "border-foreground/20 text-foreground/70",
-                          )}
-                        >
-                          {tag}
-                        </span>
-                      ))}
+                    <div className="mt-3 px-1">
+                      <h3 className="font-display text-lg font-bold leading-tight tracking-tight">
+                        {member.name}
+                      </h3>
+                      <p className="mt-0.5 text-sm text-foreground/65">{member.role}</p>
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        {member.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className={cn(
+                              "rounded-full border px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide",
+                              tagColors[tag] || "border-foreground/20 text-foreground/70",
+                            )}
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  </Link>
                 </motion.div>
               ))}
             </div>

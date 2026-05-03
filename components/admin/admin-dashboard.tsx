@@ -41,7 +41,7 @@ import { deleteProject } from "@/lib/actions/projects-admin"
 import { deleteMember } from "@/lib/actions/members-admin"
 import { deleteBlogPost } from "@/lib/actions/blog-admin"
 import { NewProjectDialog } from "@/components/admin/new-project-dialog"
-import { NewMemberDialog } from "@/components/admin/new-member-dialog"
+import { MemberFormDialog } from "@/components/admin/member-form-dialog"
 import { NewBlogPostDialog } from "@/components/admin/new-blog-post-dialog"
 
 const navigation = [
@@ -85,8 +85,12 @@ export function AdminDashboard({ initialProjects, initialMembers, initialBlogPos
   function handleNewProject(project: Project) {
     setLocalProjects((prev) => [project, ...prev])
   }
-  function handleNewMember(member: Member) {
-    setLocalMembers((prev) => [member, ...prev])
+  function handleMemberSuccess(member: Member, isEdit: boolean) {
+    if (isEdit) {
+      setLocalMembers((prev) => prev.map((m) => m.id === member.id ? member : m))
+    } else {
+      setLocalMembers((prev) => [member, ...prev])
+    }
   }
   function handleNewBlogPost(post: BlogPost) {
     setLocalBlogPosts((prev) => [post, ...prev])
@@ -379,7 +383,7 @@ export function AdminDashboard({ initialProjects, initialMembers, initialBlogPos
                           Gerencie quem faz parte do Atravessamentos.
                         </p>
                       </div>
-                      <NewMemberDialog onSuccess={handleNewMember} />
+                      <MemberFormDialog onSuccess={handleMemberSuccess} />
                     </div>
                     <div className="overflow-x-auto">
                       <Table>
@@ -431,6 +435,7 @@ export function AdminDashboard({ initialProjects, initialMembers, initialBlogPos
                                       </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end" className="w-44">
+                                      <MemberFormDialog initialData={member} onSuccess={handleMemberSuccess} />
                                       <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => handleDelete("member", member.id)}>
                                         <Trash2 className="mr-2 h-4 w-4" />
                                         Excluir

@@ -21,8 +21,12 @@ export interface Member {
   name: string
   role: string
   tags: string[]
-  avatar: string
+  avatar: string | null
   bio: string
+  instagram?: string | null
+  linkedin?: string | null
+  email?: string | null
+  phone?: string | null
 }
 
 export interface BlogPost {

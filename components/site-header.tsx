@@ -16,10 +16,11 @@ const navItems = [
 ]
 
 interface SiteHeaderProps {
-  onOpenAdmin: () => void
+  onOpenAdmin?: () => void
 }
 
 export function SiteHeader({ onOpenAdmin }: SiteHeaderProps) {
+  const handleOpenAdmin = onOpenAdmin || (() => { window.location.href = "/admin" })
   const [open, setOpen] = React.useState(false)
   const [scrolled, setScrolled] = React.useState(false)
 
@@ -69,7 +70,7 @@ export function SiteHeader({ onOpenAdmin }: SiteHeaderProps) {
         {/* Actions */}
         <div className="flex items-center gap-2">
           <Button
-            onClick={onOpenAdmin}
+            onClick={handleOpenAdmin}
             variant="outline"
             size="sm"
             className="hidden border-foreground/20 bg-transparent font-medium md:inline-flex"
@@ -112,7 +113,7 @@ export function SiteHeader({ onOpenAdmin }: SiteHeaderProps) {
             <Button
               onClick={() => {
                 setOpen(false)
-                onOpenAdmin()
+                handleOpenAdmin()
               }}
               variant="outline"
               className="mt-2 border-foreground/20 bg-transparent"
