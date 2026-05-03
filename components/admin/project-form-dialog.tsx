@@ -2,23 +2,29 @@
 
 import * as React from "react"
 import { motion, AnimatePresence } from "motion/react"
-import { X, Plus, Loader2 } from "lucide-react"
+import { X, Plus, Loader2, Pencil } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { createProject } from "@/lib/actions/projects-admin"
+import { createProject, updateProject } from "@/lib/actions/projects-admin"
 import { cn } from "@/lib/utils"
+import { useToast } from "@/hooks/use-toast"
 
 const CATEGORIES = ["Audiovisual", "Educação", "Evento", "Pesquisa", "Editorial"] as const
 const STATUSES = ["Publicado", "Rascunho", "Em revisão"] as const
 
-interface NewProjectDialogProps {
-  onSuccess: (project: any) => void
+interface ProjectFormDialogProps {
+  initialData?: any
+  onSuccess: (project: any, isEdit: boolean) => void
 }
 
-export function NewProjectDialog({ onSuccess }: NewProjectDialogProps) {
+export function ProjectFormDialog({ initialData, onSuccess }: ProjectFormDialogProps) {
   const [open, setOpen] = React.useState(false)
   const [pending, setPending] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
+  const [status, setStatus] = React.useState<string>(initialData?.status || "Rascunho")
+  const { toast } = useToast()
+
+  const isEdit = !!initialData
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -26,7 +32,16 @@ export function NewProjectDialog({ onSuccess }: NewProjectDialogProps) {
     setError(null)
 
     const formData = new FormData(e.currentTarget)
-    const result = await createProject(formData)
+    // Add the status to formData manually since we're using state for visual feedback
+    formData.set("status", status)
+    
+    let result
+
+    if (isEdit) {
+      result = await updateProject(initialData.id, formData)
+    } else {
+      result = await createProject(formData)
+    }
 
     if (result?.error) {
       setError(result.error)
@@ -36,30 +51,49 @@ export function NewProjectDialog({ onSuccess }: NewProjectDialogProps) {
 
     // Build a temporary project object for optimistic UI update
     const optimistic = {
-      id: `temp-${Date.now()}`,
+      id: isEdit ? initialData.id : `temp-${Date.now()}`,
       title: formData.get("title") as string,
       category: formData.get("category") as string,
       description: formData.get("description") as string,
       year: parseInt(formData.get("year") as string),
-      status: formData.get("status") as string,
-      coverImage: null,
+      status: status,
+      coverImage: initialData?.coverImage || null,
       updatedAt: new Date().toISOString(),
     }
 
-    onSuccess(optimistic)
+    onSuccess(optimistic, isEdit)
+    
+    toast({
+      title: isEdit ? "Projeto atualizado" : "Projeto criado",
+      description: isEdit 
+        ? `O projeto "${optimistic.title}" foi atualizado com sucesso.`
+        : `O projeto "${optimistic.title}" foi adicionado à galeria.`,
+    })
+
     setOpen(false)
     setPending(false)
   }
 
   return (
     <>
-      <Button
-        onClick={() => setOpen(true)}
-        className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
-      >
-        <Plus className="mr-1.5 h-4 w-4" />
-        Novo projeto
-      </Button>
+      {isEdit ? (
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 text-foreground/70 hover:text-foreground"
+          onClick={() => setOpen(true)}
+        >
+          <Pencil className="h-4 w-4" />
+        </Button>
+      ) : (
+        <Button
+          onClick={() => setOpen(true)}
+          className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
+        >
+          <Plus className="mr-1.5 h-4 w-4" />
+          Novo projeto
+        </Button>
+      )}
 
       <AnimatePresence>
         {open && (
@@ -70,7 +104,7 @@ export function NewProjectDialog({ onSuccess }: NewProjectDialogProps) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => !pending && setOpen(false)}
-              className="fixed inset-0 z-50 bg-foreground/60 backdrop-blur-sm"
+              className="fixed inset-0 z-[100] bg-foreground/60 backdrop-blur-sm"
             />
 
             {/* Dialog */}
@@ -79,15 +113,15 @@ export function NewProjectDialog({ onSuccess }: NewProjectDialogProps) {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.96, y: 8 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed left-1/2 top-1/2 z-50 w-full max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-border bg-card p-6 shadow-2xl"
+              className="fixed left-1/2 top-1/2 z-[101] w-full max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-border bg-card p-6 shadow-2xl text-left whitespace-normal"
             >
               <div className="mb-6 flex items-start justify-between">
                 <div>
                   <h2 className="font-display text-xl font-bold tracking-tight">
-                    Novo projeto
+                    {isEdit ? "Editar projeto" : "Novo projeto"}
                   </h2>
                   <p className="mt-1 text-sm text-foreground/55">
-                    Preencha as informações básicas para criar o projeto.
+                    {isEdit ? "Atualize as informações do projeto." : "Preencha as informações básicas para criar o projeto."}
                   </p>
                 </div>
                 <button
@@ -110,6 +144,7 @@ export function NewProjectDialog({ onSuccess }: NewProjectDialogProps) {
                     id="proj-title"
                     name="title"
                     required
+                    defaultValue={initialData?.title}
                     placeholder="Ex: América Invertida"
                     disabled={pending}
                     className="h-10"
@@ -126,6 +161,7 @@ export function NewProjectDialog({ onSuccess }: NewProjectDialogProps) {
                       id="proj-category"
                       name="category"
                       required
+                      defaultValue={initialData?.category || ""}
                       disabled={pending}
                       className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                     >
@@ -146,7 +182,7 @@ export function NewProjectDialog({ onSuccess }: NewProjectDialogProps) {
                       required
                       min={2000}
                       max={2099}
-                      defaultValue={new Date().getFullYear()}
+                      defaultValue={initialData?.year || new Date().getFullYear()}
                       disabled={pending}
                       className="h-10"
                     />
@@ -160,23 +196,20 @@ export function NewProjectDialog({ onSuccess }: NewProjectDialogProps) {
                   </label>
                   <div className="flex flex-wrap gap-2">
                     {STATUSES.map((s) => (
-                      <label key={s} className="cursor-pointer">
-                        <input
-                          type="radio"
-                          name="status"
-                          value={s}
-                          defaultChecked={s === "Rascunho"}
-                          className="sr-only"
-                          disabled={pending}
-                        />
-                        <span className={cn(
+                      <button
+                        key={s}
+                        type="button"
+                        onClick={() => setStatus(s)}
+                        disabled={pending}
+                        className={cn(
                           "inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium transition-colors",
-                          "border-border bg-background hover:bg-muted",
-                          "[&:has(input:checked)]:border-primary [&:has(input:checked)]:bg-primary/10 [&:has(input:checked)]:text-primary"
-                        )}>
-                          {s}
-                        </span>
-                      </label>
+                          status === s 
+                            ? "border-primary bg-primary/10 text-primary" 
+                            : "border-border bg-background hover:bg-muted text-foreground/70"
+                        )}
+                      >
+                        {s}
+                      </button>
                     ))}
                   </div>
                 </div>
@@ -189,6 +222,7 @@ export function NewProjectDialog({ onSuccess }: NewProjectDialogProps) {
                   <textarea
                     id="proj-desc"
                     name="description"
+                    defaultValue={initialData?.description}
                     placeholder="Um breve texto sobre o projeto…"
                     rows={3}
                     disabled={pending}
@@ -218,7 +252,7 @@ export function NewProjectDialog({ onSuccess }: NewProjectDialogProps) {
                     {pending ? (
                       <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Salvando…</>
                     ) : (
-                      "Criar projeto"
+                      isEdit ? "Salvar alterações" : "Criar projeto"
                     )}
                   </Button>
                 </div>

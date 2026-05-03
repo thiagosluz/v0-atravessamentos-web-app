@@ -51,6 +51,53 @@ export async function createBlogPost(formData: FormData) {
   return { success: true }
 }
 
+export async function updateBlogPost(id: string, formData: FormData) {
+  const supabase = createAdminClient()
+
+  const title = formData.get("title") as string
+  const category = formData.get("category") as BlogPost["category"]
+  const excerpt = formData.get("excerpt") as string
+  const content = formData.get("content") as string
+  const author = formData.get("author") as string
+  const readTime = formData.get("readTime") as string
+  const status = formData.get("status") as "Publicado" | "Rascunho"
+
+  if (!title || !category || !author || !status) {
+    return { error: "Preencha todos os campos obrigatórios." }
+  }
+
+  const slug = title
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "")
+
+  const { error } = await supabase
+    .from("blog_posts")
+    .update({
+      title,
+      category,
+      excerpt,
+      content,
+      author,
+      read_time: readTime,
+      slug,
+      status,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", id)
+
+  if (error) {
+    console.error("Erro ao atualizar post:", error)
+    return { error: "Não foi possível atualizar o post." }
+  }
+
+  revalidatePath("/")
+  revalidatePath("/admin")
+  return { success: true }
+}
+
 export async function deleteBlogPost(id: string) {
   const supabase = createAdminClient()
 

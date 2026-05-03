@@ -36,6 +36,41 @@ export async function createProject(formData: FormData) {
   return { success: true }
 }
 
+export async function updateProject(id: string, formData: FormData) {
+  const supabase = createAdminClient()
+
+  const title = formData.get("title") as string
+  const category = formData.get("category") as ProjectCategory
+  const description = formData.get("description") as string
+  const year = parseInt(formData.get("year") as string)
+  const status = formData.get("status") as ProjectStatus
+
+  if (!title || !category || !year || !status) {
+    return { error: "Preencha todos os campos obrigatórios." }
+  }
+
+  const { error } = await supabase
+    .from("projects")
+    .update({
+      title,
+      category,
+      description,
+      year,
+      status,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", id)
+
+  if (error) {
+    console.error("Erro ao atualizar projeto:", error)
+    return { error: "Não foi possível atualizar o projeto. Tente novamente." }
+  }
+
+  revalidatePath("/")
+  revalidatePath("/admin")
+  return { success: true }
+}
+
 export async function deleteProject(id: string) {
   const supabase = createAdminClient()
 

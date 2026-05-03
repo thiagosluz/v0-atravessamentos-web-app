@@ -51,9 +51,9 @@ import { signOut } from "@/lib/actions/auth"
 import { deleteProject } from "@/lib/actions/projects-admin"
 import { deleteMember } from "@/lib/actions/members-admin"
 import { deleteBlogPost } from "@/lib/actions/blog-admin"
-import { NewProjectDialog } from "@/components/admin/new-project-dialog"
+import { ProjectFormDialog } from "@/components/admin/project-form-dialog"
 import { MemberFormDialog } from "@/components/admin/member-form-dialog"
-import { NewBlogPostDialog } from "@/components/admin/new-blog-post-dialog"
+import { BlogFormDialog } from "@/components/admin/blog-form-dialog"
 
 const navigation = [
   { id: "overview", label: "Visão Geral", icon: LayoutDashboard },
@@ -95,8 +95,12 @@ export function AdminDashboard({ initialProjects, initialMembers, initialBlogPos
     b.title.toLowerCase().includes(query.toLowerCase()),
   )
 
-  function handleNewProject(project: Project) {
-    setLocalProjects((prev) => [project, ...prev])
+  function handleProjectSuccess(project: Project, isEdit: boolean) {
+    if (isEdit) {
+      setLocalProjects((prev) => prev.map((p) => p.id === project.id ? project : p))
+    } else {
+      setLocalProjects((prev) => [project, ...prev])
+    }
   }
   function handleMemberSuccess(member: Member, isEdit: boolean) {
     if (isEdit) {
@@ -105,8 +109,12 @@ export function AdminDashboard({ initialProjects, initialMembers, initialBlogPos
       setLocalMembers((prev) => [member, ...prev])
     }
   }
-  function handleNewBlogPost(post: BlogPost) {
-    setLocalBlogPosts((prev) => [post, ...prev])
+  function handleBlogPostSuccess(post: BlogPost, isEdit: boolean) {
+    if (isEdit) {
+      setLocalBlogPosts((prev) => prev.map((b) => b.id === post.id ? post : b))
+    } else {
+      setLocalBlogPosts((prev) => [post, ...prev])
+    }
   }
 
   function handleDelete(type: "project" | "member" | "blog", id: string) {
@@ -320,7 +328,7 @@ export function AdminDashboard({ initialProjects, initialMembers, initialBlogPos
                           Gerencie publicações, rascunhos e revisões do coletivo.
                         </p>
                       </div>
-                      <NewProjectDialog onSuccess={handleNewProject} />
+                      <ProjectFormDialog onSuccess={handleProjectSuccess} />
                     </div>
 
                     <div className="overflow-x-auto">
@@ -383,19 +391,17 @@ export function AdminDashboard({ initialProjects, initialMembers, initialBlogPos
                                   </span>
                                 </TableCell>
                                 <TableCell className="text-right">
-                                  <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                      <Button variant="ghost" size="icon" className="h-8 w-8">
-                                        <MoreHorizontal className="h-4 w-4" />
-                                      </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end" className="w-44">
-                                      <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => handleDelete("project", project.id)}>
-                                        <Trash2 className="mr-2 h-4 w-4" />
-                                        Excluir
-                                      </DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                  </DropdownMenu>
+                                  <div className="flex items-center justify-end gap-2">
+                                    <ProjectFormDialog initialData={project} onSuccess={handleProjectSuccess} />
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
+                                      onClick={() => handleDelete("project", project.id)}
+                                    >
+                                      <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                  </div>
                                 </TableCell>
                               </TableRow>
                             ))
@@ -494,7 +500,7 @@ export function AdminDashboard({ initialProjects, initialMembers, initialBlogPos
                           Gerencie os posts do blog e artigos.
                         </p>
                       </div>
-                      <NewBlogPostDialog onSuccess={handleNewBlogPost} />
+                      <BlogFormDialog onSuccess={handleBlogPostSuccess} />
                     </div>
                     <div className="overflow-x-auto">
                       <Table>
@@ -541,19 +547,17 @@ export function AdminDashboard({ initialProjects, initialMembers, initialBlogPos
                                   <span className="text-sm text-foreground/65">{new Date(post.date).toLocaleDateString("pt-BR")}</span>
                                 </TableCell>
                                 <TableCell className="text-right">
-                                  <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                      <Button variant="ghost" size="icon" className="h-8 w-8">
-                                        <MoreHorizontal className="h-4 w-4" />
-                                      </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end" className="w-44">
-                                      <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => handleDelete("blog", post.id)}>
-                                        <Trash2 className="mr-2 h-4 w-4" />
-                                        Excluir
-                                      </DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                  </DropdownMenu>
+                                  <div className="flex items-center justify-end gap-2">
+                                    <BlogFormDialog initialData={post} onSuccess={handleBlogPostSuccess} />
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
+                                      onClick={() => handleDelete("blog", post.id)}
+                                    >
+                                      <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                  </div>
                                 </TableCell>
                               </TableRow>
                             ))
