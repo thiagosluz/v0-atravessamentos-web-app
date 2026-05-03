@@ -20,6 +20,28 @@ const cardShapes = [
   "rounded-3xl",
 ]
 
+const overlayPatterns = [
+  // Pattern 0: Musgo + Mostarda
+  <div key="0" className="pointer-events-none absolute inset-0 z-10 overflow-hidden">
+    <div className="absolute -left-1/4 -top-1/4 h-[120%] w-[120%] rounded-full bg-[var(--musgo)] opacity-30 mix-blend-multiply dark:mix-blend-overlay transition-transform duration-700 group-hover:scale-110" />
+    <div className="absolute -bottom-1/4 -right-1/4 h-[100%] w-[100%] rounded-full bg-[var(--mostarda)] opacity-30 mix-blend-multiply dark:mix-blend-overlay transition-transform duration-700 group-hover:scale-110" />
+  </div>,
+  // Pattern 1: Terracota grande
+  <div key="1" className="pointer-events-none absolute inset-0 z-10 overflow-hidden">
+    <div className="absolute -left-1/3 bottom-0 h-[150%] w-[150%] rounded-[40%_60%_70%_30%] bg-[var(--terracota)] opacity-30 mix-blend-multiply dark:mix-blend-overlay transition-transform duration-700 group-hover:scale-110" />
+  </div>,
+  // Pattern 2: Mostarda + Terracota orgânico
+  <div key="2" className="pointer-events-none absolute inset-0 z-10 overflow-hidden">
+    <div className="absolute -right-1/3 -top-1/4 h-[130%] w-[130%] rounded-full bg-[var(--mostarda)] opacity-30 mix-blend-multiply dark:mix-blend-overlay transition-transform duration-700 group-hover:scale-110" />
+    <div className="absolute -bottom-1/4 -left-1/4 h-[100%] w-[100%] rounded-[30%_70%_50%_50%] bg-[var(--terracota)] opacity-30 mix-blend-multiply dark:mix-blend-overlay transition-transform duration-700 group-hover:scale-110" />
+  </div>,
+  // Pattern 3: Base Musgo + Terracota
+  <div key="3" className="pointer-events-none absolute inset-0 z-10 overflow-hidden">
+    <div className="absolute inset-0 bg-[var(--musgo)] opacity-30 mix-blend-multiply dark:mix-blend-overlay transition-transform duration-700 group-hover:scale-105" />
+    <div className="absolute -bottom-1/2 -right-1/2 h-[150%] w-[150%] rounded-[60%_40%_50%_50%] bg-[var(--terracota)] opacity-30 mix-blend-multiply dark:mix-blend-overlay transition-transform duration-700 group-hover:scale-110" />
+  </div>,
+]
+
 interface MembersSectionProps {
   initialMembers: Member[]
 }
@@ -87,8 +109,12 @@ export function MembersSection({ initialMembers }: MembersSectionProps) {
                         alt={member.name}
                         className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-foreground/85 via-foreground/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                      <div className="absolute inset-x-3 bottom-3 translate-y-2 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
+
+                      {/* CSS Overlay Patterns */}
+                      {overlayPatterns[index % overlayPatterns.length]}
+
+                      <div className="absolute inset-0 z-20 bg-gradient-to-t from-foreground/85 via-foreground/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                      <div className="absolute inset-x-3 bottom-3 z-30 translate-y-2 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
                         <p className="text-xs leading-snug text-background line-clamp-3">
                           {member.bio}
                         </p>

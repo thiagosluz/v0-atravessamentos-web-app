@@ -20,6 +20,17 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+import { useToast } from "@/hooks/use-toast"
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -65,8 +76,10 @@ interface AdminDashboardProps {
 }
 
 export function AdminDashboard({ initialProjects, initialMembers, initialBlogPosts }: AdminDashboardProps) {
-  const [active, setActive] = React.useState("overview")
+  const [active, setActive] = React.useState("dashboard")
   const [query, setQuery] = React.useState("")
+  const [deleteConfirm, setDeleteConfirm] = React.useState<{type: "project" | "member" | "blog", id: string} | null>(null)
+  const { toast } = useToast()
   
   const [localProjects, setLocalProjects] = React.useState<Project[]>(initialProjects)
   const [localMembers, setLocalMembers] = React.useState<Member[]>(initialMembers)
@@ -96,18 +109,39 @@ export function AdminDashboard({ initialProjects, initialMembers, initialBlogPos
     setLocalBlogPosts((prev) => [post, ...prev])
   }
 
-  async function handleDelete(type: "project" | "member" | "blog", id: string) {
-    if (!confirm(`Tem certeza que deseja excluir este ${type === "member" ? "membro" : "item"}?`)) return
+  function handleDelete(type: "project" | "member" | "blog", id: string) {
+    setDeleteConfirm({ type, id })
+  }
+
+  async function confirmDelete() {
+    if (!deleteConfirm) return
+    const { type, id } = deleteConfirm
+    setDeleteConfirm(null)
     
+    let result: { success?: boolean, error?: string } = {}
+
     if (type === "project") {
       setLocalProjects((prev) => prev.filter((p) => p.id !== id))
-      await deleteProject(id)
+      result = await deleteProject(id)
     } else if (type === "member") {
       setLocalMembers((prev) => prev.filter((m) => m.id !== id))
-      await deleteMember(id)
+      result = await deleteMember(id)
     } else if (type === "blog") {
       setLocalBlogPosts((prev) => prev.filter((b) => b.id !== id))
-      await deleteBlogPost(id)
+      result = await deleteBlogPost(id)
+    }
+
+    if (result.error) {
+      toast({
+        title: "Erro ao excluir",
+        description: result.error,
+        variant: "destructive",
+      })
+    } else {
+      toast({
+        title: "Excluído com sucesso",
+        description: "O item foi removido permanentemente do sistema.",
+      })
     }
   }
 
@@ -428,20 +462,17 @@ export function AdminDashboard({ initialProjects, initialMembers, initialBlogPos
                                   </div>
                                 </TableCell>
                                 <TableCell className="text-right">
-                                  <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                      <Button variant="ghost" size="icon" className="h-8 w-8">
-                                        <MoreHorizontal className="h-4 w-4" />
-                                      </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end" className="w-44">
-                                      <MemberFormDialog initialData={member} onSuccess={handleMemberSuccess} />
-                                      <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => handleDelete("member", member.id)}>
-                                        <Trash2 className="mr-2 h-4 w-4" />
-                                        Excluir
-                                      </DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                  </DropdownMenu>
+                                  <div className="flex items-center justify-end gap-2">
+                                    <MemberFormDialog initialData={member} onSuccess={handleMemberSuccess} />
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
+                                      onClick={() => handleDelete("member", member.id)}
+                                    >
+                                      <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                  </div>
                                 </TableCell>
                               </TableRow>
                             ))
@@ -549,6 +580,23 @@ export function AdminDashboard({ initialProjects, initialMembers, initialBlogPos
           </div>
         </main>
       </div>
+
+      <AlertDialog open={!!deleteConfirm} onOpenChange={(open) => !open && setDeleteConfirm(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Tem certeza absoluta?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta ação não pode ser desfeita. Isso excluirá permanentemente este item e todos os dados associados a ele dos nossos servidores.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Excluir
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </motion.div>
   )
 }

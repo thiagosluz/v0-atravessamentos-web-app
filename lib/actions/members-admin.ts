@@ -102,7 +102,18 @@ export async function updateMember(id: string, formData: FormData) {
 export async function deleteMember(id: string) {
   const supabase = createAdminClient()
 
-  // Opcional: apagar imagem do storage se houver, mas pular isso se for complexo
+  // Buscar o membro para obter a URL do avatar
+  const { data: member } = await supabase.from("members").select("avatar").eq("id", id).single()
+
+  // Se o membro tiver um avatar que vem do nosso storage, precisamos excluí-lo
+  if (member?.avatar && member.avatar.includes("supabase.co") && member.avatar.includes("/avatars/")) {
+    const avatarUrl = member.avatar
+    const fileName = avatarUrl.split("/").pop()
+    if (fileName) {
+      await supabase.storage.from("avatars").remove([fileName])
+    }
+  }
+
   const { error } = await supabase.from("members").delete().eq("id", id)
 
   if (error) {

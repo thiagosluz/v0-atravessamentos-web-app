@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { createMember, updateMember } from "@/lib/actions/members-admin"
 import { type Member } from "@/lib/mock-data"
+import { useToast } from "@/hooks/use-toast"
 
 interface MemberFormDialogProps {
   initialData?: Member
@@ -16,6 +17,7 @@ interface MemberFormDialogProps {
 export function MemberFormDialog({ initialData, onSuccess }: MemberFormDialogProps) {
   const [open, setOpen] = React.useState(false)
   const [pending, setPending] = React.useState(false)
+  const { toast } = useToast()
   const [error, setError] = React.useState<string | null>(null)
   const [preview, setPreview] = React.useState<string | null>(initialData?.avatar || null)
 
@@ -65,6 +67,12 @@ export function MemberFormDialog({ initialData, onSuccess }: MemberFormDialogPro
     }
 
     onSuccess(optimistic, isEdit)
+    toast({
+      title: isEdit ? "Membro atualizado" : "Membro adicionado",
+      description: isEdit 
+        ? `${optimistic.name} foi atualizado com sucesso.` 
+        : `${optimistic.name} agora faz parte do coletivo.`,
+    })
     setOpen(false)
     setPending(false)
   }
@@ -72,13 +80,14 @@ export function MemberFormDialog({ initialData, onSuccess }: MemberFormDialogPro
   return (
     <>
       {isEdit ? (
-        <DropdownMenuItem onSelect={(e) => {
-          e.preventDefault()
-          setOpen(true)
-        }}>
-          <Pencil className="mr-2 h-4 w-4" />
-          Editar
-        </DropdownMenuItem>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 text-foreground/70 hover:text-foreground"
+          onClick={() => setOpen(true)}
+        >
+          <Pencil className="h-4 w-4" />
+        </Button>
       ) : (
         <Button
           onClick={() => setOpen(true)}
@@ -105,7 +114,7 @@ export function MemberFormDialog({ initialData, onSuccess }: MemberFormDialogPro
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.96, y: 8 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed left-1/2 top-1/2 z-[101] w-full max-w-2xl -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-border bg-card p-6 shadow-2xl overflow-y-auto max-h-[90vh]"
+              className="fixed left-1/2 top-1/2 z-[101] w-full max-w-2xl -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-border bg-card p-6 shadow-2xl overflow-y-auto max-h-[90vh] text-left whitespace-normal"
             >
               <div className="mb-6 flex items-start justify-between">
                 <div>
@@ -225,5 +234,3 @@ export function MemberFormDialog({ initialData, onSuccess }: MemberFormDialogPro
   )
 }
 
-// Para usar a DropdownMenuItem no Edit, precisamos importar
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
