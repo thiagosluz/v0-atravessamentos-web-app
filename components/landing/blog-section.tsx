@@ -2,8 +2,9 @@
 
 import { motion } from "motion/react"
 import { ArrowUpRight, Clock } from "lucide-react"
-import { blogPosts, formatDate } from "@/lib/mock-data"
+import { type BlogPost, formatDate } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
+import Link from "next/link"
 
 const categoryStyles: Record<string, string> = {
   Reflexão: "bg-primary/15 text-primary",
@@ -12,8 +13,12 @@ const categoryStyles: Record<string, string> = {
   Notícia: "bg-[var(--ouro)]/30 text-foreground",
 }
 
-export function BlogSection() {
-  const [featured, ...rest] = blogPosts
+interface BlogSectionProps {
+  initialPosts: (BlogPost & { slug?: string })[]
+}
+
+export function BlogSection({ initialPosts }: BlogSectionProps) {
+  const [featured, ...rest] = initialPosts
 
   return (
     <section
@@ -58,7 +63,7 @@ export function BlogSection() {
             transition={{ duration: 0.6 }}
             className="group md:col-span-7"
           >
-            <a href="#" className="block overflow-hidden rounded-3xl bg-background">
+            <Link href={`/diario/${(featured as any).slug ?? featured.id}`} className="block overflow-hidden rounded-3xl bg-background">
               <div className="relative aspect-[16/10] overflow-hidden">
                 <img
                   src={featured.coverImage || "/placeholder.svg"}
@@ -93,7 +98,7 @@ export function BlogSection() {
                   <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </div>
               </div>
-            </a>
+            </Link>
           </motion.article>
 
           {/* Sidebar list */}
@@ -107,8 +112,8 @@ export function BlogSection() {
                 transition={{ duration: 0.5, delay: index * 0.08 }}
                 className="group"
               >
-                <a
-                  href="#"
+                <Link
+                  href={`/diario/${(post as any).slug ?? post.id}`}
                   className="flex gap-4 overflow-hidden rounded-2xl bg-background p-4 transition-colors hover:bg-background/70"
                 >
                   <div className="relative aspect-square h-24 w-24 shrink-0 overflow-hidden rounded-xl">
@@ -134,7 +139,7 @@ export function BlogSection() {
                       {formatDate(post.date)} · {post.readTime}
                     </p>
                   </div>
-                </a>
+                </Link>
               </motion.article>
             ))}
           </div>

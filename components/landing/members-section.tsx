@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "motion/react"
-import { members } from "@/lib/mock-data"
+import { type Member } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
 
 const tagColors: Record<string, string> = {
@@ -19,7 +19,11 @@ const cardShapes = [
   "rounded-3xl",
 ]
 
-export function MembersSection() {
+interface MembersSectionProps {
+  initialMembers: Member[]
+}
+
+export function MembersSection({ initialMembers }: MembersSectionProps) {
   return (
     <section id="coletivo" className="relative scroll-mt-24 py-20 md:py-32">
       <div className="mx-auto max-w-7xl px-4 md:px-8">
@@ -61,7 +65,7 @@ export function MembersSection() {
 
           <div className="md:col-span-8">
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:gap-6">
-              {members.map((member, index) => (
+              {initialMembers.map((member, index) => (
                 <motion.div
                   key={member.id}
                   initial={{ opacity: 0, y: 30 }}

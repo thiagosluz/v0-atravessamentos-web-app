@@ -1,6 +1,7 @@
 "use client"
 
 import { motion } from "motion/react"
+import Link from "next/link"
 import { ArrowUpRight } from "lucide-react"
 import {
   Carousel,
@@ -103,42 +104,44 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
       transition={{ duration: 0.6, delay: index * 0.08 }}
       className="group relative h-full overflow-hidden rounded-3xl bg-background/5 border border-background/10 transition-all hover:border-background/30"
     >
-      <div className="relative aspect-[4/5] overflow-hidden">
-        <img
-          src={project.coverImage || "/placeholder.svg"}
-          alt={project.title}
-          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 via-foreground/20 to-transparent" />
+      <Link href={`/projetos/${project.id}`} className="block">
+        <div className="relative aspect-[4/5] overflow-hidden">
+          <img
+            src={project.coverImage || "/placeholder.svg"}
+            alt={project.title}
+            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 via-foreground/20 to-transparent" />
 
-        <div className="absolute top-4 left-4">
-          <span
-            className={cn(
-              "inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide",
-              categoryStyles[project.category],
-            )}
-          >
-            {project.category}
-          </span>
-        </div>
+          <div className="absolute top-4 left-4">
+            <span
+              className={cn(
+                "inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide",
+                categoryStyles[project.category],
+              )}
+            >
+              {project.category}
+            </span>
+          </div>
 
-        <div className="absolute top-4 right-4 text-xs font-mono text-background/70">
-          {project.year}
-        </div>
+          <div className="absolute top-4 right-4 text-xs font-mono text-background/70">
+            {project.year}
+          </div>
 
-        <div className="absolute bottom-0 left-0 right-0 p-6 text-background">
-          <h3 className="font-display text-2xl font-bold leading-tight tracking-tight md:text-3xl text-balance">
-            {project.title}
-          </h3>
-          <p className="mt-2 text-sm text-background/80 line-clamp-2 text-pretty">
-            {project.description}
-          </p>
-          <div className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold opacity-0 transition-opacity group-hover:opacity-100">
-            Ver projeto
-            <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          <div className="absolute bottom-0 left-0 right-0 p-6 text-background">
+            <h3 className="font-display text-2xl font-bold leading-tight tracking-tight md:text-3xl text-balance">
+              {project.title}
+            </h3>
+            <p className="mt-2 text-sm text-background/80 line-clamp-2 text-pretty">
+              {project.description}
+            </p>
+            <div className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold opacity-0 transition-opacity group-hover:opacity-100">
+              Ver projeto
+              <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </div>
           </div>
         </div>
-      </div>
+      </Link>
     </motion.article>
   )
 }

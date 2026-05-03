@@ -11,13 +11,11 @@ import {
   LogOut,
   MoreHorizontal,
   Pencil,
-  Plus,
   Search,
   Settings,
   Trash2,
   TrendingUp,
   Users,
-  X,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -36,8 +34,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { type Project, type ProjectStatus } from "@/lib/mock-data"
+import { type Project, type ProjectStatus, type Member, type BlogPost } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
+import { signOut } from "@/lib/actions/auth"
+import { deleteProject } from "@/lib/actions/projects-admin"
+import { deleteMember } from "@/lib/actions/members-admin"
+import { deleteBlogPost } from "@/lib/actions/blog-admin"
+import { NewProjectDialog } from "@/components/admin/new-project-dialog"
+import { NewMemberDialog } from "@/components/admin/new-member-dialog"
+import { NewBlogPostDialog } from "@/components/admin/new-blog-post-dialog"
 
 const navigation = [
   { id: "overview", label: "Visão Geral", icon: LayoutDashboard },
@@ -54,18 +59,53 @@ const statusStyles: Record<ProjectStatus, string> = {
 }
 
 interface AdminDashboardProps {
-  onClose: () => void
   initialProjects: Project[]
+  initialMembers: Member[]
+  initialBlogPosts: BlogPost[]
 }
 
-export function AdminDashboard({ onClose, initialProjects }: AdminDashboardProps) {
+export function AdminDashboard({ initialProjects, initialMembers, initialBlogPosts }: AdminDashboardProps) {
   const [active, setActive] = React.useState("overview")
   const [query, setQuery] = React.useState("")
+  
   const [localProjects, setLocalProjects] = React.useState<Project[]>(initialProjects)
+  const [localMembers, setLocalMembers] = React.useState<Member[]>(initialMembers)
+  const [localBlogPosts, setLocalBlogPosts] = React.useState<BlogPost[]>(initialBlogPosts)
 
   const filteredProjects = localProjects.filter((p) =>
     p.title.toLowerCase().includes(query.toLowerCase()),
   )
+  const filteredMembers = localMembers.filter((m) =>
+    m.name.toLowerCase().includes(query.toLowerCase()),
+  )
+  const filteredBlogPosts = localBlogPosts.filter((b) =>
+    b.title.toLowerCase().includes(query.toLowerCase()),
+  )
+
+  function handleNewProject(project: Project) {
+    setLocalProjects((prev) => [project, ...prev])
+  }
+  function handleNewMember(member: Member) {
+    setLocalMembers((prev) => [member, ...prev])
+  }
+  function handleNewBlogPost(post: BlogPost) {
+    setLocalBlogPosts((prev) => [post, ...prev])
+  }
+
+  async function handleDelete(type: "project" | "member" | "blog", id: string) {
+    if (!confirm(`Tem certeza que deseja excluir este ${type === "member" ? "membro" : "item"}?`)) return
+    
+    if (type === "project") {
+      setLocalProjects((prev) => prev.filter((p) => p.id !== id))
+      await deleteProject(id)
+    } else if (type === "member") {
+      setLocalMembers((prev) => prev.filter((m) => m.id !== id))
+      await deleteMember(id)
+    } else if (type === "blog") {
+      setLocalBlogPosts((prev) => prev.filter((b) => b.id !== id))
+      await deleteBlogPost(id)
+    }
+  }
 
   return (
     <motion.div
@@ -153,7 +193,7 @@ export function AdminDashboard({ onClose, initialProjects }: AdminDashboardProps
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={onClose}
+                onClick={() => signOut()}
                 className="h-8 w-8 text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-sidebar-foreground"
                 aria-label="Sair do painel"
               >
@@ -171,9 +211,6 @@ export function AdminDashboard({ onClose, initialProjects }: AdminDashboardProps
               <h1 className="font-display text-xl font-bold tracking-tight md:text-2xl">
                 {navigation.find((n) => n.id === active)?.label}
               </h1>
-              <span className="hidden rounded-full border border-border bg-background px-2.5 py-0.5 text-xs font-medium text-foreground/70 md:inline-flex">
-                Demo
-              </span>
             </div>
             <div className="flex items-center gap-2">
               <div className="relative hidden sm:block">
@@ -186,13 +223,13 @@ export function AdminDashboard({ onClose, initialProjects }: AdminDashboardProps
                 />
               </div>
               <Button
-                variant="outline"
+                variant="ghost"
                 size="sm"
-                onClick={onClose}
-                className="rounded-full bg-transparent"
+                onClick={() => signOut()}
+                className="rounded-full"
               >
-                <X className="mr-1.5 h-4 w-4" />
-                Sair do painel
+                <LogOut className="mr-1.5 h-4 w-4" />
+                Sair
               </Button>
             </div>
           </header>
@@ -234,115 +271,268 @@ export function AdminDashboard({ onClose, initialProjects }: AdminDashboardProps
 
               {/* Data Table */}
               <div className="rounded-2xl border border-border bg-card">
-                <div className="flex flex-col gap-4 border-b border-border p-4 md:flex-row md:items-center md:justify-between md:p-6">
-                  <div>
-                    <h2 className="font-display text-lg font-bold tracking-tight md:text-xl">
-                      Projetos recentes
-                    </h2>
-                    <p className="mt-1 text-sm text-foreground/65">
-                      Gerencie publicações, rascunhos e revisões do coletivo.
-                    </p>
-                  </div>
-                  <Button className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90">
-                    <Plus className="mr-1.5 h-4 w-4" />
-                    Novo projeto
-                  </Button>
-                </div>
+                {active === "projects" && (
+                  <>
+                    <div className="flex flex-col gap-4 border-b border-border p-4 md:flex-row md:items-center md:justify-between md:p-6">
+                      <div>
+                        <h2 className="font-display text-lg font-bold tracking-tight md:text-xl">
+                          Projetos recentes
+                        </h2>
+                        <p className="mt-1 text-sm text-foreground/65">
+                          Gerencie publicações, rascunhos e revisões do coletivo.
+                        </p>
+                      </div>
+                      <NewProjectDialog onSuccess={handleNewProject} />
+                    </div>
 
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow className="border-border hover:bg-transparent">
-                        <TableHead className="w-[120px]">Status</TableHead>
-                        <TableHead>Título</TableHead>
-                        <TableHead className="hidden md:table-cell">Categoria</TableHead>
-                        <TableHead className="hidden md:table-cell">Atualizado</TableHead>
-                        <TableHead className="w-[60px] text-right">Ações</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {filteredProjects.length === 0 ? (
-                        <TableRow>
-                          <TableCell colSpan={5} className="py-12 text-center text-foreground/60">
-                            Nenhum projeto encontrado para “{query}”.
-                          </TableCell>
-                        </TableRow>
-                      ) : (
-                        filteredProjects.map((project) => (
-                          <TableRow key={project.id} className="border-border">
-                            <TableCell>
-                              <span
-                                className={cn(
-                                  "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium",
-                                  statusStyles[project.status],
-                                )}
-                              >
-                                <span className="h-1.5 w-1.5 rounded-full bg-current" />
-                                {project.status}
-                              </span>
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex items-center gap-3">
-                                <div className="hidden h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-muted sm:block">
-                                  <img
-                                    src={project.coverImage || "/placeholder.svg"}
-                                    alt=""
-                                    className="h-full w-full object-cover"
-                                  />
-                                </div>
-                                <div className="min-w-0">
-                                  <p className="truncate font-medium">{project.title}</p>
-                                  <p className="truncate text-xs text-foreground/60 md:hidden">
-                                    {project.category} · {project.year}
-                                  </p>
-                                </div>
-                              </div>
-                            </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                              <span className="text-sm text-foreground/75">
-                                {project.category}
-                              </span>
-                            </TableCell>
-                            <TableCell className="hidden md:table-cell">
-                              <span className="text-sm text-foreground/65">
-                                {new Date(project.updatedAt).toLocaleDateString("pt-BR")}
-                              </span>
-                            </TableCell>
-                            <TableCell className="text-right">
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="h-8 w-8"
-                                    aria-label={`Ações para ${project.title}`}
-                                  >
-                                    <MoreHorizontal className="h-4 w-4" />
-                                  </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end" className="w-44">
-                                  <DropdownMenuItem>
-                                    <Pencil className="mr-2 h-4 w-4" />
-                                    Editar
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem>
-                                    <ArrowUpRight className="mr-2 h-4 w-4" />
-                                    Ver no site
-                                  </DropdownMenuItem>
-                                  <DropdownMenuSeparator />
-                                  <DropdownMenuItem className="text-destructive focus:text-destructive">
-                                    <Trash2 className="mr-2 h-4 w-4" />
-                                    Excluir
-                                  </DropdownMenuItem>
-                                </DropdownMenuContent>
-                              </DropdownMenu>
-                            </TableCell>
+                    <div className="overflow-x-auto">
+                      <Table>
+                        <TableHeader>
+                          <TableRow className="border-border hover:bg-transparent">
+                            <TableHead className="w-[120px]">Status</TableHead>
+                            <TableHead>Título</TableHead>
+                            <TableHead className="hidden md:table-cell">Categoria</TableHead>
+                            <TableHead className="hidden md:table-cell">Atualizado</TableHead>
+                            <TableHead className="w-[60px] text-right">Ações</TableHead>
                           </TableRow>
-                        ))
-                      )}
-                    </TableBody>
-                  </Table>
-                </div>
+                        </TableHeader>
+                        <TableBody>
+                          {filteredProjects.length === 0 ? (
+                            <TableRow>
+                              <TableCell colSpan={5} className="py-12 text-center text-foreground/60">
+                                Nenhum projeto encontrado para “{query}”.
+                              </TableCell>
+                            </TableRow>
+                          ) : (
+                            filteredProjects.map((project) => (
+                              <TableRow key={project.id} className="border-border">
+                                <TableCell>
+                                  <span
+                                    className={cn(
+                                      "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium",
+                                      statusStyles[project.status],
+                                    )}
+                                  >
+                                    <span className="h-1.5 w-1.5 rounded-full bg-current" />
+                                    {project.status}
+                                  </span>
+                                </TableCell>
+                                <TableCell>
+                                  <div className="flex items-center gap-3">
+                                    <div className="hidden h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-muted sm:block">
+                                      <img
+                                        src={project.coverImage || "/placeholder.svg"}
+                                        alt=""
+                                        className="h-full w-full object-cover"
+                                      />
+                                    </div>
+                                    <div className="min-w-0">
+                                      <p className="truncate font-medium">{project.title}</p>
+                                      <p className="truncate text-xs text-foreground/60 md:hidden">
+                                        {project.category} · {project.year}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </TableCell>
+                                <TableCell className="hidden md:table-cell">
+                                  <span className="text-sm text-foreground/75">
+                                    {project.category}
+                                  </span>
+                                </TableCell>
+                                <TableCell className="hidden md:table-cell">
+                                  <span className="text-sm text-foreground/65">
+                                    {new Date(project.updatedAt).toLocaleDateString("pt-BR")}
+                                  </span>
+                                </TableCell>
+                                <TableCell className="text-right">
+                                  <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                                        <MoreHorizontal className="h-4 w-4" />
+                                      </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end" className="w-44">
+                                      <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => handleDelete("project", project.id)}>
+                                        <Trash2 className="mr-2 h-4 w-4" />
+                                        Excluir
+                                      </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                  </DropdownMenu>
+                                </TableCell>
+                              </TableRow>
+                            ))
+                          )}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </>
+                )}
+
+                {active === "members" && (
+                  <>
+                    <div className="flex flex-col gap-4 border-b border-border p-4 md:flex-row md:items-center md:justify-between md:p-6">
+                      <div>
+                        <h2 className="font-display text-lg font-bold tracking-tight md:text-xl">
+                          Membros do Coletivo
+                        </h2>
+                        <p className="mt-1 text-sm text-foreground/65">
+                          Gerencie quem faz parte do Atravessamentos.
+                        </p>
+                      </div>
+                      <NewMemberDialog onSuccess={handleNewMember} />
+                    </div>
+                    <div className="overflow-x-auto">
+                      <Table>
+                        <TableHeader>
+                          <TableRow className="border-border hover:bg-transparent">
+                            <TableHead>Membro</TableHead>
+                            <TableHead className="hidden md:table-cell">Papel</TableHead>
+                            <TableHead className="hidden md:table-cell">Tags</TableHead>
+                            <TableHead className="w-[60px] text-right">Ações</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {filteredMembers.length === 0 ? (
+                            <TableRow>
+                              <TableCell colSpan={4} className="py-12 text-center text-foreground/60">
+                                Nenhum membro encontrado.
+                              </TableCell>
+                            </TableRow>
+                          ) : (
+                            filteredMembers.map((member) => (
+                              <TableRow key={member.id} className="border-border">
+                                <TableCell>
+                                  <div className="flex items-center gap-3">
+                                    <div className="hidden h-10 w-10 shrink-0 overflow-hidden rounded-full bg-muted sm:block">
+                                      <img src={member.avatar || "/placeholder.svg"} alt="" className="h-full w-full object-cover" />
+                                    </div>
+                                    <div className="min-w-0">
+                                      <p className="truncate font-medium">{member.name}</p>
+                                    </div>
+                                  </div>
+                                </TableCell>
+                                <TableCell className="hidden md:table-cell">
+                                  <span className="text-sm text-foreground/75">{member.role}</span>
+                                </TableCell>
+                                <TableCell className="hidden md:table-cell">
+                                  <div className="flex flex-wrap gap-1">
+                                    {member.tags.map((tag) => (
+                                      <span key={tag} className="rounded-full border border-border px-2 py-0.5 text-[10px] text-foreground/60">
+                                        {tag}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </TableCell>
+                                <TableCell className="text-right">
+                                  <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                                        <MoreHorizontal className="h-4 w-4" />
+                                      </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end" className="w-44">
+                                      <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => handleDelete("member", member.id)}>
+                                        <Trash2 className="mr-2 h-4 w-4" />
+                                        Excluir
+                                      </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                  </DropdownMenu>
+                                </TableCell>
+                              </TableRow>
+                            ))
+                          )}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </>
+                )}
+
+                {active === "blog" && (
+                  <>
+                    <div className="flex flex-col gap-4 border-b border-border p-4 md:flex-row md:items-center md:justify-between md:p-6">
+                      <div>
+                        <h2 className="font-display text-lg font-bold tracking-tight md:text-xl">
+                          Diário de Travessia
+                        </h2>
+                        <p className="mt-1 text-sm text-foreground/65">
+                          Gerencie os posts do blog e artigos.
+                        </p>
+                      </div>
+                      <NewBlogPostDialog onSuccess={handleNewBlogPost} />
+                    </div>
+                    <div className="overflow-x-auto">
+                      <Table>
+                        <TableHeader>
+                          <TableRow className="border-border hover:bg-transparent">
+                            <TableHead className="w-[120px]">Status</TableHead>
+                            <TableHead>Título</TableHead>
+                            <TableHead className="hidden md:table-cell">Categoria</TableHead>
+                            <TableHead className="hidden md:table-cell">Data</TableHead>
+                            <TableHead className="w-[60px] text-right">Ações</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {filteredBlogPosts.length === 0 ? (
+                            <TableRow>
+                              <TableCell colSpan={5} className="py-12 text-center text-foreground/60">
+                                Nenhum post encontrado.
+                              </TableCell>
+                            </TableRow>
+                          ) : (
+                            filteredBlogPosts.map((post) => (
+                              <TableRow key={post.id} className="border-border">
+                                <TableCell>
+                                  <span
+                                    className={cn(
+                                      "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium",
+                                      post.status === "Publicado" ? "bg-[var(--musgo)]/15 text-[var(--musgo)] border-[var(--musgo)]/30" : "bg-foreground/10 text-foreground/70 border-foreground/20"
+                                    )}
+                                  >
+                                    <span className="h-1.5 w-1.5 rounded-full bg-current" />
+                                    {post.status || "Publicado"}
+                                  </span>
+                                </TableCell>
+                                <TableCell>
+                                  <div className="min-w-0">
+                                    <p className="truncate font-medium">{post.title}</p>
+                                    <p className="truncate text-xs text-foreground/50">Por {post.author}</p>
+                                  </div>
+                                </TableCell>
+                                <TableCell className="hidden md:table-cell">
+                                  <span className="text-sm text-foreground/75">{post.category}</span>
+                                </TableCell>
+                                <TableCell className="hidden md:table-cell">
+                                  <span className="text-sm text-foreground/65">{new Date(post.date).toLocaleDateString("pt-BR")}</span>
+                                </TableCell>
+                                <TableCell className="text-right">
+                                  <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                                        <MoreHorizontal className="h-4 w-4" />
+                                      </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end" className="w-44">
+                                      <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => handleDelete("blog", post.id)}>
+                                        <Trash2 className="mr-2 h-4 w-4" />
+                                        Excluir
+                                      </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                  </DropdownMenu>
+                                </TableCell>
+                              </TableRow>
+                            ))
+                          )}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </>
+                )}
+
+                {active !== "projects" && active !== "members" && active !== "blog" && (
+                  <div className="p-12 text-center text-foreground/60">
+                    Esta seção estará disponível em breve.
+                  </div>
+                )}
               </div>
 
               {/* Mobile menu hint */}

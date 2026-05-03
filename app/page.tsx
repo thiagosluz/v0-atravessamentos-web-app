@@ -7,10 +7,16 @@ import { BlogSection } from "@/components/landing/blog-section"
 import { SiteFooter } from "@/components/site-footer"
 import { AdminWrapper } from "@/components/admin/admin-wrapper"
 import { getProjects } from "@/lib/actions/projects"
+import { getMembers } from "@/lib/actions/members"
+import { getBlogPosts } from "@/lib/actions/blog-posts"
 
 export default async function HomePage() {
-  // Busca os projetos diretamente do Supabase no servidor
-  const projects = await getProjects()
+  // Busca todos os dados em paralelo no servidor
+  const [projects, members, blogPosts] = await Promise.all([
+    getProjects(),
+    getMembers(),
+    getBlogPosts(),
+  ])
 
   return (
     <>
@@ -19,8 +25,8 @@ export default async function HomePage() {
         <HeroSection />
         <AboutSection />
         <ProjectsSection initialProjects={projects} />
-        <MembersSection />
-        <BlogSection />
+        <MembersSection initialMembers={members} />
+        <BlogSection initialPosts={blogPosts} />
       </main>
       <SiteFooter />
     </>
