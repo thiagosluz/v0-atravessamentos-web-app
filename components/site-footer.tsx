@@ -1,5 +1,6 @@
 "use client"
 
+import * as React from "react"
 import { Instagram, Mail, MapPin, Youtube } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -26,6 +27,12 @@ const footerLinks = [
 ]
 
 export function SiteFooter() {
+  const [year, setYear] = React.useState<number>(2025)
+
+  React.useEffect(() => {
+    setYear(new Date().getFullYear())
+  }, [])
+
   return (
     <footer
       id="contato"
@@ -68,6 +75,7 @@ export function SiteFooter() {
               <Button
                 type="submit"
                 size="lg"
+                suppressHydrationWarning
                 className="h-12 rounded-full bg-primary px-7 font-semibold text-primary-foreground hover:bg-primary/90"
               >
                 Assinar
@@ -138,7 +146,7 @@ export function SiteFooter() {
 
         {/* Bottom: legal */}
         <div className="flex flex-col items-start justify-between gap-4 border-t border-background/15 pt-8 text-xs text-background/55 md:flex-row md:items-center">
-          <p>© {new Date().getFullYear()} Coletivo Atravessamentos. Feito com afeto e disputa.</p>
+          <p>© {year} Coletivo Atravessamentos. Feito com afeto e disputa.</p>
           <div className="flex flex-wrap gap-x-5 gap-y-1">
             <a href="#" className="hover:text-background">
               Política de privacidade

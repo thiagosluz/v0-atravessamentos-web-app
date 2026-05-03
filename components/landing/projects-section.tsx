@@ -9,7 +9,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
-import { projects } from "@/lib/mock-data"
+import { type Project } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
 
 const categoryStyles: Record<string, string> = {
@@ -20,7 +20,11 @@ const categoryStyles: Record<string, string> = {
   Editorial: "bg-secondary text-secondary-foreground border border-foreground/20",
 }
 
-export function ProjectsSection() {
+interface ProjectsSectionProps {
+  initialProjects: Project[]
+}
+
+export function ProjectsSection({ initialProjects }: ProjectsSectionProps) {
   return (
     <section
       id="projetos"
@@ -65,13 +69,10 @@ export function ProjectsSection() {
             className="w-full"
           >
             <CarouselContent className="-ml-4">
-              {projects
+              {initialProjects
                 .filter((p) => p.status === "Publicado")
                 .map((project, index) => (
-                  <CarouselItem
-                    key={project.id}
-                    className="pl-4 md:basis-1/2 lg:basis-1/3"
-                  >
+                  <CarouselItem key={project.id} className="pl-4 md:basis-1/2 lg:basis-1/3">
                     <ProjectCard project={project} index={index} />
                   </CarouselItem>
                 ))}
@@ -93,13 +94,7 @@ export function ProjectsSection() {
   )
 }
 
-function ProjectCard({
-  project,
-  index,
-}: {
-  project: (typeof projects)[number]
-  index: number
-}) {
+function ProjectCard({ project, index }: { project: Project; index: number }) {
   return (
     <motion.article
       initial={{ opacity: 0, y: 30 }}

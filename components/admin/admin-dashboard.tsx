@@ -36,12 +36,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { projects, type ProjectStatus } from "@/lib/mock-data"
+import { type Project, type ProjectStatus } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
 
 const navigation = [
   { id: "overview", label: "Visão Geral", icon: LayoutDashboard },
-  { id: "projects", label: "Projetos", icon: FolderKanban, badge: projects.length },
+  { id: "projects", label: "Projetos", icon: FolderKanban },
   { id: "members", label: "Membros", icon: Users },
   { id: "blog", label: "Blog", icon: BookOpen },
   { id: "settings", label: "Configurações", icon: Settings },
@@ -55,13 +55,15 @@ const statusStyles: Record<ProjectStatus, string> = {
 
 interface AdminDashboardProps {
   onClose: () => void
+  initialProjects: Project[]
 }
 
-export function AdminDashboard({ onClose }: AdminDashboardProps) {
+export function AdminDashboard({ onClose, initialProjects }: AdminDashboardProps) {
   const [active, setActive] = React.useState("overview")
   const [query, setQuery] = React.useState("")
+  const [localProjects, setLocalProjects] = React.useState<Project[]>(initialProjects)
 
-  const filteredProjects = projects.filter((p) =>
+  const filteredProjects = localProjects.filter((p) =>
     p.title.toLowerCase().includes(query.toLowerCase()),
   )
 
@@ -118,7 +120,7 @@ export function AdminDashboard({ onClose }: AdminDashboardProps) {
                     <Icon className="h-4 w-4" />
                     {item.label}
                   </span>
-                  {item.badge && (
+                  {item.id === "projects" && (
                     <span
                       className={cn(
                         "rounded-full px-2 py-0.5 text-[10px] font-semibold",
@@ -127,7 +129,7 @@ export function AdminDashboard({ onClose }: AdminDashboardProps) {
                           : "bg-sidebar-accent text-sidebar-foreground/80",
                       )}
                     >
-                      {item.badge}
+                      {localProjects.length}
                     </span>
                   )}
                 </button>
