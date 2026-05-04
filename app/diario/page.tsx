@@ -82,7 +82,7 @@ export default async function DiarioPage({ searchParams }: DiarioPageProps) {
 
           {/* Feed linear tipográfico */}
           {posts.length > 0 ? (
-            <DiaryFeed posts={posts} />
+            <DiaryFeed posts={posts} categories={categories} />
           ) : (
             <div className="py-24 text-center">
               <p className="text-foreground/40 text-lg">

@@ -6,19 +6,21 @@ import { type BlogPost, formatDate } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 
-const categoryStyles: Record<string, string> = {
-  Reflexão: "bg-primary/15 text-primary",
-  Evento: "bg-accent/20 text-accent",
-  Manifesto: "bg-foreground text-background",
-  Notícia: "bg-[var(--ouro)]/30 text-foreground",
-}
+import { type Category } from "@/lib/actions/categories"
 
 interface BlogSectionProps {
   initialPosts: (BlogPost & { slug?: string })[]
+  categories: Category[]
 }
 
-export function BlogSection({ initialPosts }: BlogSectionProps) {
+export function BlogSection({ initialPosts, categories }: BlogSectionProps) {
   const [featured, ...rest] = initialPosts
+
+  const getCategoryColor = (catName: string) => {
+    const cat = categories.find(c => c.name === catName)
+    const color = cat?.color || "primary"
+    return `bg-${color}-500/10 text-${color}-600 dark:text-${color}-400 border border-${color}-500/20`
+  }
 
   return (
     <section
@@ -76,7 +78,7 @@ export function BlogSection({ initialPosts }: BlogSectionProps) {
                   <span
                     className={cn(
                       "rounded-full px-2.5 py-1 font-semibold uppercase tracking-wide",
-                      categoryStyles[featured.category],
+                      getCategoryColor(featured.category)
                     )}
                   >
                     {featured.category}
@@ -127,7 +129,7 @@ export function BlogSection({ initialPosts }: BlogSectionProps) {
                     <span
                       className={cn(
                         "inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide",
-                        categoryStyles[post.category],
+                        getCategoryColor(post.category)
                       )}
                     >
                       {post.category}

@@ -6,13 +6,6 @@ import { Search, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { type Category } from "@/lib/actions/categories"
 
-const categoryStyles: Record<string, string> = {
-  Reflexão: "data-[active=true]:bg-primary/15 data-[active=true]:text-primary data-[active=true]:border-primary/30",
-  Evento: "data-[active=true]:bg-accent/20 data-[active=true]:text-accent data-[active=true]:border-accent/30",
-  Manifesto: "data-[active=true]:bg-foreground data-[active=true]:text-background data-[active=true]:border-foreground",
-  Notícia: "data-[active=true]:bg-[var(--ouro)]/30 data-[active=true]:text-foreground data-[active=true]:border-[var(--ouro)]/50",
-}
-
 interface DiaryFiltersProps {
   categories: Category[]
   currentCategory: string
@@ -99,20 +92,25 @@ export function DiaryFilters({ categories, currentCategory, currentQ }: DiaryFil
         >
           Todos
         </button>
-        {categories.map((cat) => (
-          <button
-            key={cat.id}
-            onClick={() => handleCategory(cat.name)}
-            className={cn(
-              "rounded-full border px-4 py-1.5 text-xs font-semibold uppercase tracking-widest transition-all",
-              currentCategory === cat.name
-                ? "border-primary bg-primary/10 text-primary"
-                : "border-border text-foreground/60 hover:border-foreground/30 hover:text-foreground"
-            )}
-          >
-            {cat.name}
-          </button>
-        ))}
+        {categories.map((cat) => {
+          const isActive = currentCategory === cat.name
+          const color = cat.color || "primary"
+          
+          return (
+            <button
+              key={cat.id}
+              onClick={() => handleCategory(cat.name)}
+              className={cn(
+                "rounded-full border px-4 py-1.5 text-xs font-semibold uppercase tracking-widest transition-all",
+                isActive
+                  ? `border-${color}-500/30 bg-${color}-500/10 text-${color}-600 dark:text-${color}-400`
+                  : "border-border text-foreground/60 hover:border-foreground/30 hover:text-foreground"
+              )}
+            >
+              {cat.name}
+            </button>
+          )
+        })}
 
         {hasFilter && (
           <button

@@ -9,13 +9,27 @@ import { cn } from "@/lib/utils"
 
 const ORGANIC_SHAPES = ["border-organic", "border-organic-2", "border-organic-3"] as const
 
+import { type Category } from "@/lib/actions/categories"
+
 interface TimelineSectionProps {
   year: number
   projects: Project[]
   isEven: boolean
+  categories: Category[]
 }
 
-export function TimelineSection({ year, projects, isEven }: TimelineSectionProps) {
+export function TimelineSection({ year, projects, isEven, categories }: TimelineSectionProps) {
+  const getCategoryColor = (catName: string) => {
+    const cat = categories.find(c => c.name === catName)
+    const color = cat?.color || "primary"
+    
+    if (color === "primary") {
+      return "bg-primary/10 text-primary border-primary/20"
+    }
+    
+    return `bg-${color}-500/15 text-${color}-700 dark:text-${color}-400 border-${color}-500/30`
+  }
+
   return (
     <section className="relative">
       {/* Year Marker */}
@@ -45,6 +59,7 @@ export function TimelineSection({ year, projects, isEven }: TimelineSectionProps
               align={align}
               shape={shape}
               index={index}
+              getCategoryColor={getCategoryColor}
             />
           )
         })}
@@ -58,9 +73,10 @@ interface ProjectTimelineCardProps {
   align: "left" | "right"
   shape: typeof ORGANIC_SHAPES[number]
   index: number
+  getCategoryColor: (catName: string) => string
 }
 
-function ProjectTimelineCard({ project, align, shape, index }: ProjectTimelineCardProps) {
+function ProjectTimelineCard({ project, align, shape, index, getCategoryColor }: ProjectTimelineCardProps) {
   return (
     <div
       className={cn(
@@ -96,7 +112,10 @@ function ProjectTimelineCard({ project, align, shape, index }: ProjectTimelineCa
           */}
           {/* Badge de categoria — fora do clip para não ser cortado */}
           <div className="mb-3">
-            <span className="inline-flex rounded-full bg-foreground/10 border border-border px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-foreground/70 backdrop-blur-sm">
+            <span className={cn(
+              "inline-flex rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-widest backdrop-blur-sm",
+              getCategoryColor(project.category)
+            )}>
               {project.category}
             </span>
           </div>

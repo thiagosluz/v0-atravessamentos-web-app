@@ -9,13 +9,15 @@ import { AdminWrapper } from "@/components/admin/admin-wrapper"
 import { getProjects } from "@/lib/actions/projects"
 import { getMembers } from "@/lib/actions/members"
 import { getBlogPosts } from "@/lib/actions/blog-posts"
+import { getCategories } from "@/lib/actions/categories"
 
 export default async function HomePage() {
   // Busca todos os dados em paralelo no servidor
-  const [projects, members, blogPosts] = await Promise.all([
+  const [projects, members, blogPosts, categories] = await Promise.all([
     getProjects(),
     getMembers(),
     getBlogPosts(),
+    getCategories(),
   ])
 
   return (
@@ -24,9 +26,9 @@ export default async function HomePage() {
       <main>
         <HeroSection />
         <AboutSection />
-        <ProjectsSection initialProjects={projects} />
+        <ProjectsSection initialProjects={projects} categories={categories} />
         <MembersSection initialMembers={members} />
-        <BlogSection initialPosts={blogPosts} />
+        <BlogSection initialPosts={blogPosts} categories={categories} />
       </main>
       <SiteFooter />
     </>

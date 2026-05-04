@@ -294,30 +294,30 @@ export function AdminDashboard({ user, initialProjects, initialMembers, initialB
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <StatCard
                   label="Projetos publicados"
-                  value="32"
-                  trend="+4 este mês"
+                  value={localProjects.filter(p => p.status === "Publicado").length.toString()}
+                  trend={`${localProjects.length} totais no banco`}
                   icon={FolderKanban}
                   accent="bg-primary/10 text-primary"
                 />
                 <StatCard
                   label="Pessoas no coletivo"
-                  value="14"
-                  trend="+2 novas"
+                  value={localMembers.length.toString()}
+                  trend="Membros cadastrados"
                   icon={Users}
                   accent="bg-accent/15 text-accent"
                 />
                 <StatCard
                   label="Posts no diário"
-                  value="58"
-                  trend="+12 este trimestre"
-                  icon={FileText}
+                  value={localBlogPosts.filter(p => p.status === "Publicado").length.toString()}
+                  trend={`${localBlogPosts.length} rascunhos e publicados`}
+                  icon={BookOpen}
                   accent="bg-[var(--ouro)]/25 text-foreground"
                 />
                 <StatCard
-                  label="Alcance médio"
-                  value="8.4K"
-                  trend="+18% vs. mês passado"
-                  icon={TrendingUp}
+                  label="Categorias & Tags"
+                  value={initialCategories.length.toString()}
+                  trend="Filtros globais do sistema"
+                  icon={LayoutDashboard}
                   accent="bg-foreground text-background"
                 />
               </div>

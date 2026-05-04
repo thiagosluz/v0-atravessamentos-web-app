@@ -6,18 +6,14 @@ import Link from "next/link"
 import { ArrowUpRight, Clock } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-const categoryStyles: Record<string, string> = {
-  Reflexão: "bg-primary/15 text-primary",
-  Evento: "bg-accent/20 text-accent",
-  Manifesto: "bg-foreground text-background",
-  Notícia: "bg-[var(--ouro)]/30 text-foreground",
-}
+import { type Category } from "@/lib/actions/categories"
 
 interface DiaryFeedProps {
   posts: (BlogPost & { slug: string })[]
+  categories: Category[]
 }
 
-export function DiaryFeed({ posts }: DiaryFeedProps) {
+export function DiaryFeed({ posts, categories }: DiaryFeedProps) {
   return (
     <div className="relative">
       {/* Linha do tempo vertical */}
@@ -25,15 +21,29 @@ export function DiaryFeed({ posts }: DiaryFeedProps) {
 
       <div className="space-y-0">
         {posts.map((post, index) => (
-          <DiaryEntry key={post.id} post={post} index={index} />
+          <DiaryEntry key={post.id} post={post} index={index} categories={categories} />
         ))}
       </div>
     </div>
   )
 }
 
-function DiaryEntry({ post, index }: { post: BlogPost & { slug: string }; index: number }) {
+function DiaryEntry({ 
+  post, 
+  index, 
+  categories 
+}: { 
+  post: BlogPost & { slug: string }; 
+  index: number;
+  categories: Category[];
+}) {
   const href = `/diario/${post.slug ?? post.id}`
+
+  const getCategoryColor = (catName: string) => {
+    const cat = categories.find(c => c.name === catName)
+    const color = cat?.color || "primary"
+    return `bg-${color}-500/10 text-${color}-600 dark:text-${color}-400 border border-${color}-500/20`
+  }
 
   return (
     <motion.article
@@ -55,7 +65,7 @@ function DiaryEntry({ post, index }: { post: BlogPost & { slug: string }; index:
               <span
                 className={cn(
                   "inline-flex rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest",
-                  categoryStyles[post.category]
+                  getCategoryColor(post.category)
                 )}
               >
                 {post.category}

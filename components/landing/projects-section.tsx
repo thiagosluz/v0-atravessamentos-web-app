@@ -13,19 +13,23 @@ import {
 import { type Project } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
 
-const categoryStyles: Record<string, string> = {
-  Audiovisual: "bg-primary text-primary-foreground",
-  Educação: "bg-accent text-accent-foreground",
-  Evento: "bg-[var(--ouro)] text-foreground",
-  Pesquisa: "bg-foreground text-background",
-  Editorial: "bg-secondary text-secondary-foreground border border-foreground/20",
-}
+import { type Category } from "@/lib/actions/categories"
 
 interface ProjectsSectionProps {
   initialProjects: Project[]
+  categories: Category[]
 }
 
-export function ProjectsSection({ initialProjects }: ProjectsSectionProps) {
+export function ProjectsSection({ initialProjects, categories }: ProjectsSectionProps) {
+  const getCategoryColor = (catName: string) => {
+    const cat = categories.find(c => c.name === catName)
+    const color = cat?.color || "primary"
+    
+    // Na seção de projetos, os cards têm fundo escuro, então usamos cores sólidas ou contrastantes
+    if (color === "primary") return "bg-primary text-primary-foreground"
+    return `bg-${color}-500 text-white`
+  }
+
   return (
     <section
       id="projetos"
@@ -74,7 +78,7 @@ export function ProjectsSection({ initialProjects }: ProjectsSectionProps) {
                 .filter((p) => p.status === "Publicado")
                 .map((project, index) => (
                   <CarouselItem key={project.id} className="pl-4 md:basis-1/2 lg:basis-1/3">
-                    <ProjectCard project={project} index={index} />
+                    <ProjectCard project={project} index={index} getCategoryColor={getCategoryColor} />
                   </CarouselItem>
                 ))}
             </CarouselContent>
@@ -95,7 +99,7 @@ export function ProjectsSection({ initialProjects }: ProjectsSectionProps) {
   )
 }
 
-function ProjectCard({ project, index }: { project: Project; index: number }) {
+function ProjectCard({ project, index, getCategoryColor }: { project: Project; index: number; getCategoryColor: (catName: string) => string }) {
   return (
     <motion.article
       initial={{ opacity: 0, y: 30 }}
@@ -117,7 +121,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
             <span
               className={cn(
                 "inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide",
-                categoryStyles[project.category],
+                getCategoryColor(project.category)
               )}
             >
               {project.category}

@@ -102,6 +102,7 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
                     year={year}
                     projects={groupedProjects[year]}
                     isEven={index % 2 === 0}
+                    categories={categories}
                   />
                 ))}
               </div>
