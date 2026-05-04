@@ -27,7 +27,7 @@ export default async function HomePage() {
         <HeroSection />
         <AboutSection />
         <ProjectsSection initialProjects={projects} categories={categories} />
-        <MembersSection initialMembers={members} />
+        <MembersSection initialMembers={members} categories={categories} />
         <BlogSection initialPosts={blogPosts} categories={categories} />
       </main>
       <SiteFooter />

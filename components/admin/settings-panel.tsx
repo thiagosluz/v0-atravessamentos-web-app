@@ -38,9 +38,10 @@ export function SettingsPanel({ categories: initialCategories }: SettingsPanelPr
   return (
     <Tabs defaultValue="posts" className="flex flex-col w-full">
       <div className="border-b border-border px-4 py-3 md:px-6 md:py-4 bg-muted/10">
-        <TabsList className="grid w-full grid-cols-2 lg:w-[400px]">
-          <TabsTrigger value="posts">Categorias do Diário</TabsTrigger>
-          <TabsTrigger value="projects">Categorias de Projetos</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-3 lg:w-[600px]">
+          <TabsTrigger value="posts">Diário</TabsTrigger>
+          <TabsTrigger value="projects">Projetos</TabsTrigger>
+          <TabsTrigger value="members">Membros</TabsTrigger>
         </TabsList>
       </div>
 
@@ -62,12 +63,21 @@ export function SettingsPanel({ categories: initialCategories }: SettingsPanelPr
           onChange={(newCats) => setCategories([...categories.filter(c => c.type !== "project"), ...newCats])}
         />
       </TabsContent>
+      <TabsContent value="members" className="m-0 border-0 outline-none">
+        <CategoryManager 
+          type="member"
+          title="Tags de Membros"
+          description="Especialidades e papéis para identificar os integrantes do coletivo."
+          categories={categories.filter(c => c.type === "member")}
+          onChange={(newCats) => setCategories([...categories.filter(c => c.type !== "member"), ...newCats])}
+        />
+      </TabsContent>
     </Tabs>
   )
 }
 
 interface CategoryManagerProps {
-  type: "post" | "project"
+  type: "post" | "project" | "member"
   title: string
   description: string
   categories: Category[]

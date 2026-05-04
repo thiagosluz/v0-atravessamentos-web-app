@@ -18,7 +18,7 @@ import { useToast } from "@/hooks/use-toast"
 import { type Category, upsertCategory } from "@/lib/actions/categories"
 
 interface CategoryFormDialogProps {
-  type: "post" | "project"
+  type: "post" | "project" | "member"
   initialData?: Category | null
   onSuccess: (category: Category, isEdit: boolean) => void
   totalCount: number

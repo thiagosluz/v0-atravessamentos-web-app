@@ -3,7 +3,7 @@
 import { createAdminClient } from "@/lib/supabase/admin"
 import { revalidatePath } from "next/cache"
 
-export type CategoryType = "post" | "project"
+export type CategoryType = "post" | "project" | "member"
 
 export interface Category {
   id: string

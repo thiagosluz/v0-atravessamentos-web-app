@@ -36,10 +36,10 @@ export function HeroSection() {
             transition={{ duration: 0.8, delay: 0.1 }}
             className="font-display text-[clamp(3rem,11vw,8.5rem)] font-bold leading-[0.85] tracking-[-0.04em] text-balance"
           >
-            ATRAVES
+            COLETIVO
             <span className="block">
-              SAMEN
-              <span className="italic font-light text-primary">tos</span>
+
+              <span className="italic font-light text-primary">Atravessamentos</span>
             </span>
           </motion.h1>
 

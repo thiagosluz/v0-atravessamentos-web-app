@@ -2,26 +2,39 @@
 
 import * as React from "react"
 import { motion, AnimatePresence } from "motion/react"
-import { X, Plus, Loader2, Upload, Pencil } from "lucide-react"
+import { X, Plus, Loader2, Upload, Pencil, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { createMember, updateMember } from "@/lib/actions/members-admin"
 import { type Member } from "@/lib/mock-data"
 import { useToast } from "@/hooks/use-toast"
+import { cn } from "@/lib/utils"
+import { type Category } from "@/lib/actions/categories"
 
 interface MemberFormDialogProps {
   initialData?: Member
   onSuccess: (member: any, isEdit: boolean) => void
+  categories: Category[]
 }
 
-export function MemberFormDialog({ initialData, onSuccess }: MemberFormDialogProps) {
+export function MemberFormDialog({ initialData, onSuccess, categories }: MemberFormDialogProps) {
   const [open, setOpen] = React.useState(false)
   const [pending, setPending] = React.useState(false)
   const { toast } = useToast()
   const [error, setError] = React.useState<string | null>(null)
   const [preview, setPreview] = React.useState<string | null>(initialData?.avatar || null)
+  const [selectedTags, setSelectedTags] = React.useState<string[]>(initialData?.tags || [])
 
   const isEdit = !!initialData
+  const memberCategories = categories.filter(c => c.type === "member")
+
+  function toggleTag(tagName: string) {
+    setSelectedTags(prev => 
+      prev.includes(tagName) 
+        ? prev.filter(t => t !== tagName)
+        : [...prev, tagName]
+    )
+  }
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
@@ -45,6 +58,10 @@ export function MemberFormDialog({ initialData, onSuccess }: MemberFormDialogPro
     setError(null)
 
     const formData = new FormData(e.currentTarget)
+    
+    // Injetar as tags selecionadas no formData (como string separada por vírgula para o backend)
+    formData.set("tags", selectedTags.join(","))
+
     let result
 
     if (isEdit) {
@@ -59,9 +76,6 @@ export function MemberFormDialog({ initialData, onSuccess }: MemberFormDialogPro
       return
     }
 
-    const tagsStr = formData.get("tags") as string
-    const tags = tagsStr ? tagsStr.split(",").map(t => t.trim()).filter(Boolean) : []
-
     const optimistic: any = {
       id: isEdit ? initialData.id : `temp-${Date.now()}`,
       name: formData.get("name") as string,
@@ -71,7 +85,7 @@ export function MemberFormDialog({ initialData, onSuccess }: MemberFormDialogPro
       linkedin: formData.get("linkedin") as string,
       email: formData.get("email") as string,
       phone: formData.get("phone") as string,
-      tags,
+      tags: selectedTags,
       avatar: preview, // optimistic preview
     }
 
@@ -180,11 +194,40 @@ export function MemberFormDialog({ initialData, onSuccess }: MemberFormDialogPro
                   </div>
                 </div>
 
-                <div className="space-y-1.5">
-                  <label htmlFor="mem-tags" className="text-xs font-semibold uppercase tracking-widest text-foreground/50">
-                    Tags (separadas por vírgula)
+                <div className="space-y-2.5">
+                  <label className="text-xs font-semibold uppercase tracking-widest text-foreground/50">
+                    Especialidades / Tags
                   </label>
-                  <Input id="mem-tags" name="tags" defaultValue={initialData?.tags?.join(", ")} disabled={pending} placeholder="Ex: Educadoras, Artistas" className="h-10" />
+                  <div className="flex flex-wrap gap-2">
+                    {memberCategories.length > 0 ? (
+                      memberCategories.map((cat) => {
+                        const isSelected = selectedTags.includes(cat.name)
+                        const color = cat.color || "primary"
+                        
+                        return (
+                          <button
+                            key={cat.id}
+                            type="button"
+                            onClick={() => toggleTag(cat.name)}
+                            disabled={pending}
+                            className={cn(
+                              "relative flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-all duration-200",
+                              isSelected 
+                                ? `bg-${color}-500/20 text-${color}-700 border-${color}-500/40 ring-1 ring-${color}-500/20`
+                                : "bg-muted/50 text-foreground/50 border-border hover:bg-muted hover:text-foreground"
+                            )}
+                          >
+                            {isSelected && <Check className="h-3 w-3" />}
+                            {cat.name}
+                          </button>
+                        )
+                      })
+                    ) : (
+                      <p className="text-[10px] text-foreground/40 italic">
+                        Nenhuma tag de membro cadastrada em Configurações.
+                      </p>
+                    )}
+                  </div>
                 </div>
 
                 <div className="space-y-1.5">

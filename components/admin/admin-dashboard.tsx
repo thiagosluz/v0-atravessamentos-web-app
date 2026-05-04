@@ -430,7 +430,7 @@ export function AdminDashboard({ user, initialProjects, initialMembers, initialB
                           Gerencie quem faz parte do Atravessamentos.
                         </p>
                       </div>
-                      <MemberFormDialog onSuccess={handleMemberSuccess} />
+                      <MemberFormDialog onSuccess={handleMemberSuccess} categories={initialCategories} />
                     </div>
                     <div className="overflow-x-auto">
                       <Table>
@@ -476,7 +476,7 @@ export function AdminDashboard({ user, initialProjects, initialMembers, initialB
                                 </TableCell>
                                 <TableCell className="text-right">
                                   <div className="flex items-center justify-end gap-2">
-                                    <MemberFormDialog initialData={member} onSuccess={handleMemberSuccess} />
+                                    <MemberFormDialog initialData={member} onSuccess={handleMemberSuccess} categories={initialCategories} />
                                     <Button
                                       variant="ghost"
                                       size="icon"

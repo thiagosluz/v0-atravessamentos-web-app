@@ -5,11 +5,26 @@ import { type Member } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 
-const tagColors: Record<string, string> = {
-  Educadoras: "bg-primary/15 text-primary border-primary/30",
-  Artistas: "bg-accent/20 text-accent border-accent/30",
-  Pesquisadoras: "bg-[var(--ouro)]/25 text-foreground border-[var(--ouro)]/40",
+import { type Category } from "@/lib/actions/categories"
+
+interface MembersSectionProps {
+  initialMembers: Member[]
+  categories: Category[]
 }
+
+export function MembersSection({ initialMembers, categories }: MembersSectionProps) {
+  const memberCategories = categories.filter(c => c.type === "member")
+
+  const getCategoryColor = (catName: string) => {
+    const cat = categories.find(c => c.name === catName)
+    const color = cat?.color || "primary"
+    
+    if (color === "primary") {
+      return "bg-primary/15 text-primary border-primary/30"
+    }
+    
+    return `bg-${color}-500/15 text-${color}-700 dark:text-${color}-400 border-${color}-500/30`
+  }
 
 const cardShapes = [
   "border-organic",
@@ -42,11 +57,6 @@ const overlayPatterns = [
   </div>,
 ]
 
-interface MembersSectionProps {
-  initialMembers: Member[]
-}
-
-export function MembersSection({ initialMembers }: MembersSectionProps) {
   return (
     <section id="coletivo" className="relative scroll-mt-24 py-20 md:py-32">
       <div className="mx-auto max-w-7xl px-4 md:px-8">
@@ -72,15 +82,15 @@ export function MembersSection({ initialMembers }: MembersSectionProps) {
             </p>
 
             <div className="mt-8 flex flex-wrap gap-2">
-              {Object.keys(tagColors).map((tag) => (
+              {memberCategories.map((cat) => (
                 <span
-                  key={tag}
+                  key={cat.id}
                   className={cn(
                     "rounded-full border px-3 py-1 text-xs font-medium",
-                    tagColors[tag],
+                    getCategoryColor(cat.name),
                   )}
                 >
-                  {tag}
+                  {cat.name}
                 </span>
               ))}
             </div>
@@ -131,7 +141,7 @@ export function MembersSection({ initialMembers }: MembersSectionProps) {
                             key={tag}
                             className={cn(
                               "rounded-full border px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide",
-                              tagColors[tag] || "border-foreground/20 text-foreground/70",
+                              getCategoryColor(tag),
                             )}
                           >
                             {tag}
