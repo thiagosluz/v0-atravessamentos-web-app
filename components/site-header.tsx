@@ -6,13 +6,15 @@ import { Lock, Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { cn } from "@/lib/utils"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
 
 const navItems = [
-  { label: "Sobre", href: "#sobre" },
-  { label: "Projetos", href: "#projetos" },
-  { label: "Coletivo", href: "#coletivo" },
-  { label: "Diário", href: "#diario" },
-  { label: "Contato", href: "#contato" },
+  { label: "Sobre", href: "/#sobre" },
+  { label: "Projetos", href: "/projetos" },
+  { label: "Coletivo", href: "/#coletivo" },
+  { label: "Diário", href: "/diario" },
+  { label: "Contato", href: "/#contato" },
 ]
 
 interface SiteHeaderProps {
@@ -23,6 +25,8 @@ export function SiteHeader({ onOpenAdmin }: SiteHeaderProps) {
   const handleOpenAdmin = onOpenAdmin || (() => { window.location.href = "/admin" })
   const [open, setOpen] = React.useState(false)
   const [scrolled, setScrolled] = React.useState(false)
+  const pathname = usePathname()
+  const isHome = pathname === "/"
 
   React.useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24)
@@ -44,27 +48,36 @@ export function SiteHeader({ onOpenAdmin }: SiteHeaderProps) {
       )}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 md:h-20 md:px-8">
-        {/* Logo */}
-        <a href="#topo" className="group flex items-center gap-2">
+        {/* Logo — sempre volta para home */}
+        <Link href="/" className="group flex items-center gap-2">
           <span className="relative flex h-9 w-9 items-center justify-center bg-primary text-primary-foreground border-organic transition-transform group-hover:rotate-12">
             <span className="font-display text-lg font-bold leading-none">A</span>
           </span>
           <span className="font-display text-base font-bold tracking-tight md:text-lg">
             atravessamentos
           </span>
-        </a>
+        </Link>
 
-        {/* Desktop nav */}
         <nav className="hidden items-center gap-1 lg:flex" aria-label="Principal">
-          {navItems.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              className="relative rounded-full px-4 py-2 text-sm font-medium text-foreground/80 transition-colors hover:text-foreground"
-            >
-              {item.label}
-            </a>
-          ))}
+          {navItems.map((item) => {
+            const isActive = item.href === "/projetos" || item.href === "/diario"
+              ? pathname === item.href
+              : false
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "relative rounded-full px-4 py-2 text-sm font-medium transition-colors",
+                  isActive
+                    ? "text-foreground font-semibold after:absolute after:bottom-1 after:left-1/2 after:h-1 after:w-1 after:rounded-full after:bg-primary after:-translate-x-1/2"
+                    : "text-foreground/80 hover:text-foreground"
+                )}
+              >
+                {item.label}
+              </Link>
+            )
+          })}
         </nav>
 
         {/* Actions */}
@@ -101,14 +114,14 @@ export function SiteHeader({ onOpenAdmin }: SiteHeaderProps) {
         >
           <nav className="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-4">
             {navItems.map((item) => (
-              <a
+              <Link
                 key={item.href}
                 href={item.href}
                 onClick={() => setOpen(false)}
                 className="rounded-lg px-3 py-3 text-base font-medium text-foreground/80 hover:bg-foreground/5"
               >
                 {item.label}
-              </a>
+              </Link>
             ))}
             <Button
               onClick={() => {

@@ -4,6 +4,42 @@ import { createAdminClient } from "@/lib/supabase/admin"
 import { revalidatePath } from "next/cache"
 import { type BlogPost } from "@/lib/mock-data"
 
+async function uploadImage(supabase: any, file: File, bucket: string) {
+  if (!file || file.size === 0) return null
+
+  const fileExt = file.name.split('.').pop()
+  const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`
+  const filePath = `${fileName}`
+
+  const { data, error } = await supabase.storage
+    .from(bucket)
+    .upload(filePath, file)
+
+  if (error) {
+    console.error(`Erro no upload (${bucket}):`, error)
+    return null
+  }
+
+  const { data: { publicUrl } } = supabase.storage
+    .from(bucket)
+    .getPublicUrl(data.path)
+
+  return publicUrl
+}
+
+export async function uploadBlogImage(formData: FormData) {
+  const supabase = createAdminClient()
+  const file = formData.get("image") as File
+  
+  if (!file) return { error: "Nenhuma imagem enviada." }
+  
+  const url = await uploadImage(supabase, file, "blog-media")
+  
+  if (!url) return { error: "Erro ao fazer upload da imagem." }
+  
+  return { url }
+}
+
 export async function createBlogPost(formData: FormData) {
   const supabase = createAdminClient()
 
@@ -14,6 +50,13 @@ export async function createBlogPost(formData: FormData) {
   const author = formData.get("author") as string
   const readTime = formData.get("readTime") as string
   const status = formData.get("status") as "Publicado" | "Rascunho"
+  const coverFile = formData.get("coverImage") as File | null
+  
+  let coverImageUrl = null
+
+  if (coverFile && coverFile.size > 0) {
+    coverImageUrl = await uploadImage(supabase, coverFile, "blog-media")
+  }
 
   if (!title || !category || !author || !status) {
     return { error: "Preencha todos os campos obrigatórios." }
@@ -35,7 +78,7 @@ export async function createBlogPost(formData: FormData) {
     read_time: readTime,
     slug,
     status,
-    cover_image: null,
+    cover_image: coverImageUrl,
   })
 
   if (error) {
@@ -52,6 +95,9 @@ export async function createBlogPost(formData: FormData) {
 }
 
 export async function updateBlogPost(id: string, formData: FormData) {
+  if (id.startsWith("temp-")) {
+    return { error: "Aguarde o post ser salvo antes de editá-lo." }
+  }
   const supabase = createAdminClient()
 
   const title = formData.get("title") as string
@@ -61,6 +107,13 @@ export async function updateBlogPost(id: string, formData: FormData) {
   const author = formData.get("author") as string
   const readTime = formData.get("readTime") as string
   const status = formData.get("status") as "Publicado" | "Rascunho"
+  const coverFile = formData.get("coverImage") as File | null
+
+  let coverImageUrl = null
+
+  if (coverFile && coverFile.size > 0) {
+    coverImageUrl = await uploadImage(supabase, coverFile, "blog-media")
+  }
 
   if (!title || !category || !author || !status) {
     return { error: "Preencha todos os campos obrigatórios." }
@@ -84,7 +137,7 @@ export async function updateBlogPost(id: string, formData: FormData) {
       read_time: readTime,
       slug,
       status,
-      updated_at: new Date().toISOString(),
+      ...(coverImageUrl ? { cover_image: coverImageUrl } : {}),
     })
     .eq("id", id)
 

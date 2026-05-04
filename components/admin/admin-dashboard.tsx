@@ -16,6 +16,7 @@ import {
   Trash2,
   TrendingUp,
   Users,
+  UserCircle,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -54,6 +55,9 @@ import { deleteBlogPost } from "@/lib/actions/blog-admin"
 import { ProjectFormDialog } from "@/components/admin/project-form-dialog"
 import { MemberFormDialog } from "@/components/admin/member-form-dialog"
 import { BlogFormDialog } from "@/components/admin/blog-form-dialog"
+import { SettingsPanel } from "@/components/admin/settings-panel"
+import { ProfilePanel } from "@/components/admin/profile-panel"
+import { type Category } from "@/lib/actions/categories"
 
 const navigation = [
   { id: "overview", label: "Visão Geral", icon: LayoutDashboard },
@@ -61,21 +65,24 @@ const navigation = [
   { id: "members", label: "Membros", icon: Users },
   { id: "blog", label: "Blog", icon: BookOpen },
   { id: "settings", label: "Configurações", icon: Settings },
+  { id: "profile", label: "Meu Perfil", icon: UserCircle },
 ]
 
-const statusStyles: Record<ProjectStatus, string> = {
-  Publicado: "bg-[var(--musgo)]/15 text-[var(--musgo)] border-[var(--musgo)]/30",
-  Rascunho: "bg-foreground/10 text-foreground/70 border-foreground/20",
-  "Em revisão": "bg-[var(--ouro)]/20 text-foreground border-[var(--ouro)]/40",
-}
+const statusStyles = {
+  Publicado: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20 dark:bg-emerald-500/20 dark:text-emerald-400",
+  Rascunho: "bg-amber-500/10 text-amber-600 border-amber-500/20 dark:bg-amber-500/20 dark:text-amber-400",
+  "Em revisão": "bg-primary/10 text-primary border-primary/20",
+} as const
 
 interface AdminDashboardProps {
+  user: any
   initialProjects: Project[]
   initialMembers: Member[]
   initialBlogPosts: BlogPost[]
+  initialCategories: Category[]
 }
 
-export function AdminDashboard({ initialProjects, initialMembers, initialBlogPosts }: AdminDashboardProps) {
+export function AdminDashboard({ user, initialProjects, initialMembers, initialBlogPosts, initialCategories }: AdminDashboardProps) {
   const [active, setActive] = React.useState("dashboard")
   const [query, setQuery] = React.useState("")
   const [deleteConfirm, setDeleteConfirm] = React.useState<{type: "project" | "member" | "blog", id: string} | null>(null)
@@ -225,15 +232,15 @@ export function AdminDashboard({ initialProjects, initialMembers, initialBlogPos
 
           <div className="border-t border-sidebar-border p-3">
             <div className="flex items-center gap-3 rounded-lg px-2 py-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-sidebar-accent font-display text-sm font-bold">
-                AS
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-sidebar-accent font-display text-sm font-bold uppercase">
+                {user?.user_metadata?.full_name?.substring(0, 2) || user?.email?.substring(0, 2) || "U"}
               </div>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-medium text-sidebar-foreground">
-                  Aline Sá
+                  {user?.user_metadata?.full_name || user?.email?.split("@")[0] || "Usuário"}
                 </p>
                 <p className="truncate text-xs text-sidebar-foreground/55">
-                  admin@atravessamentos.org
+                  {user?.email || "Sem e-mail"}
                 </p>
               </div>
               <Button
@@ -328,7 +335,7 @@ export function AdminDashboard({ initialProjects, initialMembers, initialBlogPos
                           Gerencie publicações, rascunhos e revisões do coletivo.
                         </p>
                       </div>
-                      <ProjectFormDialog onSuccess={handleProjectSuccess} />
+                      <ProjectFormDialog categories={initialCategories.filter(c => c.type === "project")} onSuccess={handleProjectSuccess} />
                     </div>
 
                     <div className="overflow-x-auto">
@@ -392,7 +399,7 @@ export function AdminDashboard({ initialProjects, initialMembers, initialBlogPos
                                 </TableCell>
                                 <TableCell className="text-right">
                                   <div className="flex items-center justify-end gap-2">
-                                    <ProjectFormDialog initialData={project} onSuccess={handleProjectSuccess} />
+                                    <ProjectFormDialog initialData={project} categories={initialCategories.filter(c => c.type === "project")} onSuccess={handleProjectSuccess} />
                                     <Button
                                       variant="ghost"
                                       size="icon"
@@ -500,7 +507,7 @@ export function AdminDashboard({ initialProjects, initialMembers, initialBlogPos
                           Gerencie os posts do blog e artigos.
                         </p>
                       </div>
-                      <BlogFormDialog onSuccess={handleBlogPostSuccess} />
+                      <BlogFormDialog categories={initialCategories.filter(c => c.type === "post")} onSuccess={handleBlogPostSuccess} />
                     </div>
                     <div className="overflow-x-auto">
                       <Table>
@@ -527,7 +534,7 @@ export function AdminDashboard({ initialProjects, initialMembers, initialBlogPos
                                   <span
                                     className={cn(
                                       "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium",
-                                      post.status === "Publicado" ? "bg-[var(--musgo)]/15 text-[var(--musgo)] border-[var(--musgo)]/30" : "bg-foreground/10 text-foreground/70 border-foreground/20"
+                                      statusStyles[post.status as keyof typeof statusStyles] || statusStyles.Publicado
                                     )}
                                   >
                                     <span className="h-1.5 w-1.5 rounded-full bg-current" />
@@ -548,7 +555,7 @@ export function AdminDashboard({ initialProjects, initialMembers, initialBlogPos
                                 </TableCell>
                                 <TableCell className="text-right">
                                   <div className="flex items-center justify-end gap-2">
-                                    <BlogFormDialog initialData={post} onSuccess={handleBlogPostSuccess} />
+                                    <BlogFormDialog initialData={post} categories={initialCategories.filter(c => c.type === "post")} onSuccess={handleBlogPostSuccess} />
                                     <Button
                                       variant="ghost"
                                       size="icon"
@@ -568,7 +575,15 @@ export function AdminDashboard({ initialProjects, initialMembers, initialBlogPos
                   </>
                 )}
 
-                {active !== "projects" && active !== "members" && active !== "blog" && (
+                {active === "settings" && (
+                  <SettingsPanel categories={initialCategories} />
+                )}
+                
+                {active === "profile" && (
+                  <ProfilePanel user={user} />
+                )}
+
+                {active !== "projects" && active !== "members" && active !== "blog" && active !== "settings" && active !== "profile" && (
                   <div className="p-12 text-center text-foreground/60">
                     Esta seção estará disponível em breve.
                   </div>

@@ -103,11 +103,10 @@ export default async function BlogPostPage({ params }: Props) {
           </p>
 
           {post.content ? (
-            <div className="prose prose-lg max-w-none text-foreground/80 leading-relaxed">
-              {post.content.split("\n\n").map((para, i) => (
-                <p key={i}>{para}</p>
-              ))}
-            </div>
+            <div 
+              className="prose prose-lg max-w-none text-foreground/80 leading-relaxed"
+              dangerouslySetInnerHTML={{ __html: post.content }}
+            />
           ) : (
             <div className="rounded-2xl border border-dashed border-border bg-muted/40 p-8 text-center">
               <p className="text-sm text-foreground/50">

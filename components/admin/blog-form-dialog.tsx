@@ -2,29 +2,63 @@
 
 import * as React from "react"
 import { motion, AnimatePresence } from "motion/react"
-import { X, Plus, Loader2, Pencil } from "lucide-react"
+import { X, Plus, Loader2, Pencil, Upload, Image as ImageIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { createBlogPost, updateBlogPost } from "@/lib/actions/blog-admin"
 import { cn } from "@/lib/utils"
 import { useToast } from "@/hooks/use-toast"
+import { RichTextEditor } from "@/components/admin/rich-text-editor"
 
-const CATEGORIES = ["Reflexão", "Evento", "Manifesto", "Notícia"] as const
+import { type Category } from "@/lib/actions/categories"
+
 const STATUSES = ["Publicado", "Rascunho"] as const
 
 interface BlogFormDialogProps {
   initialData?: any
+  categories: Category[]
   onSuccess: (post: any, isEdit: boolean) => void
 }
 
-export function BlogFormDialog({ initialData, onSuccess }: BlogFormDialogProps) {
+export function BlogFormDialog({ initialData, categories, onSuccess }: BlogFormDialogProps) {
   const [open, setOpen] = React.useState(false)
   const [pending, setPending] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
   const [status, setStatus] = React.useState<string>(initialData?.status || "Rascunho")
+  const [editorContent, setEditorContent] = React.useState<string>(initialData?.content || "")
+  const [coverPreview, setCoverPreview] = React.useState<string | null>(initialData?.coverImage || null)
   const { toast } = useToast()
 
+  // Resetar formulário quando abrir para um NOVO post
+  React.useEffect(() => {
+    if (open && !initialData) {
+      setEditorContent("")
+      setCoverPreview(null)
+      setStatus("Rascunho")
+    } else if (open && initialData) {
+      setEditorContent(initialData.content || "")
+      setCoverPreview(initialData.coverImage || null)
+      setStatus(initialData.status || "Rascunho")
+    }
+  }, [open, initialData])
+
   const isEdit = !!initialData
+
+  function handleCoverChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        toast({
+          title: "Arquivo muito grande",
+          description: "A capa deve ter no máximo 2MB.",
+          variant: "destructive",
+        })
+        e.target.value = ""
+        return
+      }
+      setCoverPreview(URL.createObjectURL(file))
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -33,6 +67,7 @@ export function BlogFormDialog({ initialData, onSuccess }: BlogFormDialogProps) 
 
     const formData = new FormData(e.currentTarget)
     formData.set("status", status)
+    formData.set("content", editorContent)
 
     let result
 
@@ -53,12 +88,12 @@ export function BlogFormDialog({ initialData, onSuccess }: BlogFormDialogProps) 
       title: formData.get("title") as string,
       category: formData.get("category") as string,
       excerpt: formData.get("excerpt") as string,
-      content: formData.get("content") as string,
+      content: editorContent,
       author: formData.get("author") as string,
       readTime: formData.get("readTime") as string,
       status: status,
       date: initialData?.date || new Date().toISOString(),
-      coverImage: initialData?.coverImage || null,
+      coverImage: coverPreview,
     }
 
     onSuccess(optimistic, isEdit)
@@ -69,6 +104,12 @@ export function BlogFormDialog({ initialData, onSuccess }: BlogFormDialogProps) 
         ? `O post "${optimistic.title}" foi atualizado com sucesso.`
         : `O post "${optimistic.title}" foi adicionado ao diário.`,
     })
+
+    if (!isEdit) {
+      setEditorContent("")
+      setCoverPreview(null)
+      setStatus("Rascunho")
+    }
 
     setOpen(false)
     setPending(false)
@@ -132,6 +173,67 @@ export function BlogFormDialog({ initialData, onSuccess }: BlogFormDialogProps) 
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4">
+                {/* Cover Image Upload */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold uppercase tracking-widest text-foreground/50">
+                    Imagem de Capa
+                  </label>
+                  <div 
+                    className={cn(
+                      "group relative flex aspect-[21/9] w-full items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-border bg-muted/30 transition-all hover:bg-muted/50",
+                      coverPreview && "border-solid border-transparent"
+                    )}
+                  >
+                    {coverPreview ? (
+                      <>
+                        <img src={coverPreview} alt="Capa" className="h-full w-full object-cover" />
+                        <div className="absolute inset-0 flex items-center justify-center bg-foreground/20 opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100">
+                          <Button 
+                            type="button" 
+                            variant="secondary" 
+                            size="sm" 
+                            className="rounded-full shadow-lg"
+                            onClick={() => (document.getElementById("blog-cover") as HTMLInputElement).click()}
+                          >
+                            <Upload className="mr-2 h-4 w-4" /> Alterar capa
+                          </Button>
+                          <Button 
+                            type="button" 
+                            variant="destructive" 
+                            size="icon" 
+                            className="ml-2 rounded-full shadow-lg"
+                            onClick={() => setCoverPreview(null)}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="flex flex-col items-center gap-2 text-foreground/30">
+                        <ImageIcon className="h-8 w-8" />
+                        <span className="text-xs font-medium">Recomendado: 1200x500px</span>
+                        <Button 
+                          type="button" 
+                          variant="outline" 
+                          size="sm" 
+                          className="mt-2 rounded-full border-dashed border-foreground/30 bg-transparent text-foreground/50 hover:bg-muted"
+                          onClick={() => (document.getElementById("blog-cover") as HTMLInputElement).click()}
+                        >
+                          Escolher imagem
+                        </Button>
+                      </div>
+                    )}
+                    <input 
+                      id="blog-cover" 
+                      name="coverImage" 
+                      type="file" 
+                      accept="image/*" 
+                      className="hidden" 
+                      onChange={handleCoverChange} 
+                    />
+                  </div>
+                </div>
+
                 <div className="space-y-1.5">
                   <label htmlFor="blog-title" className="text-xs font-semibold uppercase tracking-widest text-foreground/50">
                     Título *
@@ -145,16 +247,16 @@ export function BlogFormDialog({ initialData, onSuccess }: BlogFormDialogProps) 
                       Categoria *
                     </label>
                     <select
-                      id="blog-category"
                       name="category"
+                      id="category"
+                      defaultValue={initialData?.category || categories[0]?.name || ""}
+                      className="flex h-10 w-full items-center justify-between rounded-md border border-border bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       required
-                      defaultValue={initialData?.category || ""}
-                      disabled={pending}
-                      className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                     >
-                      <option value="">Selecione…</option>
-                      {CATEGORIES.map((c) => (
-                        <option key={c} value={c}>{c}</option>
+                      {categories.map((c) => (
+                        <option key={c.id} value={c.name} className="bg-background text-foreground">
+                          {c.name}
+                        </option>
                       ))}
                     </select>
                   </div>
@@ -186,7 +288,9 @@ export function BlogFormDialog({ initialData, onSuccess }: BlogFormDialogProps) 
                         className={cn(
                           "inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium transition-colors",
                           status === s 
-                            ? "border-primary bg-primary/10 text-primary" 
+                            ? s === "Publicado" 
+                              ? "border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" 
+                              : "border-amber-500 bg-amber-500/10 text-amber-600 dark:text-amber-400"
                             : "border-border bg-background hover:bg-muted text-foreground/70"
                         )}
                       >
@@ -204,10 +308,14 @@ export function BlogFormDialog({ initialData, onSuccess }: BlogFormDialogProps) 
                 </div>
 
                 <div className="space-y-1.5">
-                  <label htmlFor="blog-content" className="text-xs font-semibold uppercase tracking-widest text-foreground/50">
+                  <label className="text-xs font-semibold uppercase tracking-widest text-foreground/50">
                     Conteúdo
                   </label>
-                  <textarea id="blog-content" name="content" defaultValue={initialData?.content} rows={8} disabled={pending} className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring resize-none font-mono" placeholder="Escreva o conteúdo em parágrafos separados..." />
+                  <RichTextEditor 
+                    content={editorContent} 
+                    onChange={setEditorContent} 
+                    placeholder="Escreva o conteúdo do post..." 
+                  />
                 </div>
 
                 {error && <p className="text-sm text-destructive">{error}</p>}

@@ -45,13 +45,13 @@ export function BlogSection({ initialPosts }: BlogSectionProps) {
               Ensaios, manifestos, crônicas e chamadas para os encontros que estão por vir.
             </p>
           </div>
-          <a
-            href="#"
+          <Link
+            href="/diario"
             className="inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-colors hover:bg-foreground/85"
           >
             Ler o diário completo
             <ArrowUpRight className="h-4 w-4" />
-          </a>
+          </Link>
         </motion.div>
 
         <div className="mt-12 grid gap-6 md:grid-cols-12">

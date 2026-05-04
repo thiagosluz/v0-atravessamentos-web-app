@@ -29,3 +29,25 @@ export async function getSession() {
   const { data: { user } } = await supabase.auth.getUser()
   return user
 }
+
+export async function updateProfile(formData: FormData) {
+  const supabase = await createClient()
+  
+  const name = formData.get("name") as string | null
+  const email = formData.get("email") as string | null
+  const password = formData.get("password") as string | null
+  
+  const updates: any = {}
+  
+  if (name) updates.data = { full_name: name }
+  if (email) updates.email = email
+  if (password) updates.password = password
+  
+  const { error } = await supabase.auth.updateUser(updates)
+  
+  if (error) {
+    return { error: error.message }
+  }
+  
+  return { success: true }
+}

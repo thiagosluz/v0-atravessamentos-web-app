@@ -15,6 +15,7 @@ function mapPost(p: any): BlogPost & { slug: string; content?: string } {
     coverImage: p.cover_image,
     slug: p.slug,
     content: p.content,
+    status: p.status,
   }
 }
 
@@ -55,4 +56,66 @@ export async function getBlogPostSlugs() {
   const { data } = await supabase.from("blog_posts").select("slug")
 
   return (data ?? []).map((p) => p.slug) as string[]
+}
+
+export async function getAdminBlogPosts() {
+  const supabase = createAdminClient()
+
+  const { data, error } = await supabase
+    .from("blog_posts")
+    .select("*")
+    .order("published_at", { ascending: false })
+
+  if (error) {
+    console.error("Erro ao buscar posts admin:", error)
+    return []
+  }
+
+  return data.map(mapPost)
+}
+
+export type BlogPostsFilter = {
+  page?: number
+  category?: string
+  q?: string
+  limit?: number
+}
+
+export async function getPaginatedBlogPosts(filters: BlogPostsFilter = {}) {
+  const supabase = createAdminClient()
+
+  const { page = 1, category, q, limit = 10 } = filters
+  const from = (page - 1) * limit
+  const to = from + limit - 1
+
+  let query = supabase
+    .from("blog_posts")
+    .select("*", { count: "exact" })
+    .eq("status", "Publicado")
+    .order("published_at", { ascending: false })
+    .range(from, to)
+
+  if (category) {
+    query = query.eq("category", category)
+  }
+
+  if (q) {
+    query = query.or(`title.ilike.%${q}%,excerpt.ilike.%${q}%`)
+  }
+
+  const { data, error, count } = await query
+
+  if (error) {
+    console.error("Erro ao buscar posts paginados:", error)
+    return { posts: [], total: 0, totalPages: 0 }
+  }
+
+  const total = count ?? 0
+  const totalPages = Math.ceil(total / limit)
+
+  return {
+    posts: (data ?? []).map(mapPost),
+    total,
+    totalPages,
+  }
 }

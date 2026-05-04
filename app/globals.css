@@ -1,33 +1,97 @@
 @import 'tailwindcss';
+@plugin '@tailwindcss/typography';
 @import 'tw-animate-css';
+
+/* Tiptap Styles */
+.ProseMirror {
+  outline: none;
+}
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: var(--color-muted-foreground);
+  pointer-events: none;
+  height: 0;
+}
+
+.ProseMirror iframe,
+.prose iframe {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  height: auto;
+  border-radius: 1rem;
+  margin: 2rem 0;
+}
+
+.ProseMirror img,
+.prose img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 1rem;
+  margin-top: 2rem;
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+/* Estilo para legendas baseadas no atributo title */
+.prose img[title]::after {
+  content: attr(title);
+  display: block;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
+/* Caso usemos a estrutura de figure futuramente */
+.prose figure {
+  margin: 2rem 0;
+}
+
+.prose figcaption {
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+  margin-top: 0.75rem;
+  font-style: italic;
+  font-family: var(--font-sans);
+}
 
 @custom-variant dark (&:is(.dark *));
 
 :root {
   /* Paleta Atravessamentos - 5 cores */
   /* Off-white papel/cru, dark charcoal, terracota, verde-musgo, amarelo-ouro */
-  --background: oklch(0.96 0.018 85); /* cream / papel */
-  --foreground: oklch(0.2 0.015 60); /* dark charcoal */
+  --background: oklch(0.96 0.018 85);
+  /* cream / papel */
+  --foreground: oklch(0.2 0.015 60);
+  /* dark charcoal */
   --card: oklch(0.98 0.012 85);
   --card-foreground: oklch(0.2 0.015 60);
   --popover: oklch(0.98 0.012 85);
   --popover-foreground: oklch(0.2 0.015 60);
-  --primary: oklch(0.58 0.14 40); /* terracota */
+  --primary: oklch(0.58 0.14 40);
+  /* terracota */
   --primary-foreground: oklch(0.98 0.012 85);
   --secondary: oklch(0.92 0.025 85);
   --secondary-foreground: oklch(0.25 0.015 60);
   --muted: oklch(0.92 0.025 85);
   --muted-foreground: oklch(0.45 0.02 60);
-  --accent: oklch(0.5 0.08 130); /* verde-musgo */
+  --accent: oklch(0.5 0.08 130);
+  /* verde-musgo */
   --accent-foreground: oklch(0.98 0.012 85);
   --destructive: oklch(0.55 0.2 25);
   --destructive-foreground: oklch(0.98 0.012 85);
   --border: oklch(0.85 0.025 75);
   --input: oklch(0.88 0.025 75);
   --ring: oklch(0.58 0.14 40);
-  --chart-1: oklch(0.58 0.14 40); /* terracota */
-  --chart-2: oklch(0.5 0.08 130); /* verde-musgo */
-  --chart-3: oklch(0.75 0.13 85); /* amarelo-ouro */
+  --chart-1: oklch(0.58 0.14 40);
+  /* terracota */
+  --chart-2: oklch(0.5 0.08 130);
+  /* verde-musgo */
+  --chart-3: oklch(0.75 0.13 85);
+  /* amarelo-ouro */
   --chart-4: oklch(0.4 0.04 60);
   --chart-5: oklch(0.65 0.1 50);
   --radius: 0.625rem;
@@ -47,19 +111,23 @@
 }
 
 .dark {
-  --background: oklch(0.18 0.012 60); /* dark charcoal */
-  --foreground: oklch(0.94 0.018 85); /* off-white */
+  --background: oklch(0.18 0.012 60);
+  /* dark charcoal */
+  --foreground: oklch(0.94 0.018 85);
+  /* off-white */
   --card: oklch(0.22 0.012 60);
   --card-foreground: oklch(0.94 0.018 85);
   --popover: oklch(0.22 0.012 60);
   --popover-foreground: oklch(0.94 0.018 85);
-  --primary: oklch(0.65 0.16 40); /* terracota mais vibrante */
+  --primary: oklch(0.65 0.16 40);
+  /* terracota mais vibrante */
   --primary-foreground: oklch(0.18 0.012 60);
   --secondary: oklch(0.28 0.012 60);
   --secondary-foreground: oklch(0.94 0.018 85);
   --muted: oklch(0.28 0.012 60);
   --muted-foreground: oklch(0.7 0.018 75);
-  --accent: oklch(0.6 0.1 130); /* verde-musgo */
+  --accent: oklch(0.6 0.1 130);
+  /* verde-musgo */
   --accent-foreground: oklch(0.18 0.012 60);
   --destructive: oklch(0.55 0.2 25);
   --destructive-foreground: oklch(0.94 0.018 85);
@@ -134,23 +202,21 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
     background-image:
-      radial-gradient(
-        circle at 1px 1px,
+      radial-gradient(circle at 1px 1px,
         color-mix(in oklch, var(--foreground) 6%, transparent) 1px,
-        transparent 0
-      );
+        transparent 0);
     background-size: 24px 24px;
   }
+
   .dark body {
     background-image:
-      radial-gradient(
-        circle at 1px 1px,
+      radial-gradient(circle at 1px 1px,
         color-mix(in oklch, var(--foreground) 4%, transparent) 1px,
-        transparent 0
-      );
+        transparent 0);
   }
 }
 
@@ -159,17 +225,30 @@
     font-family: var(--font-display);
     font-feature-settings: 'ss01', 'ss02';
   }
+
   .border-organic {
     border-radius: 28% 72% 70% 30% / 30% 30% 70% 70%;
+    -webkit-mask-image: -webkit-radial-gradient(white, black); /* Force clipping on Chrome/Safari */
   }
+
   .border-organic-2 {
     border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
   }
+
   .border-organic-3 {
     border-radius: 40% 60% 70% 30% / 40% 50% 50% 60%;
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
   }
+
+  /* Utilitário para transição suave de filtros CSS sem criar nova GPU layer */
+  .transition-filter {
+    transition-property: filter;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
   .text-stroke {
-    -webkit-text-stroke: 2px currentColor;
+    -webkit-text-stroke: 2px var(--primary);
     color: transparent;
   }
 }

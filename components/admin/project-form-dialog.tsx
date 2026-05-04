@@ -8,21 +8,36 @@ import { Input } from "@/components/ui/input"
 import { createProject, updateProject } from "@/lib/actions/projects-admin"
 import { cn } from "@/lib/utils"
 import { useToast } from "@/hooks/use-toast"
+import { RichTextEditor } from "@/components/admin/rich-text-editor"
 
-const CATEGORIES = ["Audiovisual", "Educação", "Evento", "Pesquisa", "Editorial"] as const
+import { type Category } from "@/lib/actions/categories"
+
 const STATUSES = ["Publicado", "Rascunho", "Em revisão"] as const
 
 interface ProjectFormDialogProps {
   initialData?: any
+  categories: Category[]
   onSuccess: (project: any, isEdit: boolean) => void
 }
 
-export function ProjectFormDialog({ initialData, onSuccess }: ProjectFormDialogProps) {
+export function ProjectFormDialog({ initialData, categories, onSuccess }: ProjectFormDialogProps) {
   const [open, setOpen] = React.useState(false)
   const [pending, setPending] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
   const [status, setStatus] = React.useState<string>(initialData?.status || "Rascunho")
+  const [editorContent, setEditorContent] = React.useState<string>(initialData?.description || "")
   const { toast } = useToast()
+
+  // Resetar formulário quando abrir
+  React.useEffect(() => {
+    if (open && !initialData) {
+      setEditorContent("")
+      setStatus("Rascunho")
+    } else if (open && initialData) {
+      setEditorContent(initialData.description || "")
+      setStatus(initialData.status || "Rascunho")
+    }
+  }, [open, initialData])
 
   const isEdit = !!initialData
 
@@ -113,7 +128,7 @@ export function ProjectFormDialog({ initialData, onSuccess }: ProjectFormDialogP
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.96, y: 8 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed left-1/2 top-1/2 z-[101] w-full max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-border bg-card p-6 shadow-2xl text-left whitespace-normal"
+              className="fixed left-1/2 top-1/2 z-[101] w-full max-w-4xl -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-border bg-card p-6 shadow-2xl text-left whitespace-normal max-h-[90vh] overflow-y-auto"
             >
               <div className="mb-6 flex items-start justify-between">
                 <div>
@@ -157,19 +172,20 @@ export function ProjectFormDialog({ initialData, onSuccess }: ProjectFormDialogP
                     <label htmlFor="proj-category" className="text-xs font-semibold uppercase tracking-widest text-foreground/50">
                       Categoria *
                     </label>
-                    <select
-                      id="proj-category"
-                      name="category"
-                      required
-                      defaultValue={initialData?.category || ""}
-                      disabled={pending}
-                      className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-                    >
-                      <option value="">Selecione…</option>
-                      {CATEGORIES.map((c) => (
-                        <option key={c} value={c}>{c}</option>
-                      ))}
-                    </select>
+                      <select
+                        name="category"
+                        id="project-category"
+                        defaultValue={initialData?.category || categories[0]?.name || ""}
+                        className="flex h-10 w-full items-center justify-between rounded-md border border-border bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        required
+                        disabled={pending}
+                      >
+                        {categories.map((c) => (
+                          <option key={c.id} value={c.name} className="bg-background text-foreground">
+                            {c.name}
+                          </option>
+                        ))}
+                      </select>
                   </div>
                   <div className="space-y-1.5">
                     <label htmlFor="proj-year" className="text-xs font-semibold uppercase tracking-widest text-foreground/50">
@@ -204,7 +220,11 @@ export function ProjectFormDialog({ initialData, onSuccess }: ProjectFormDialogP
                         className={cn(
                           "inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium transition-colors",
                           status === s 
-                            ? "border-primary bg-primary/10 text-primary" 
+                            ? s === "Publicado" 
+                              ? "border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" 
+                              : s === "Rascunho"
+                                ? "border-amber-500 bg-amber-500/10 text-amber-600 dark:text-amber-400"
+                                : "border-primary bg-primary/10 text-primary"
                             : "border-border bg-background hover:bg-muted text-foreground/70"
                         )}
                       >
@@ -217,17 +237,14 @@ export function ProjectFormDialog({ initialData, onSuccess }: ProjectFormDialogP
                 {/* Description */}
                 <div className="space-y-1.5">
                   <label htmlFor="proj-desc" className="text-xs font-semibold uppercase tracking-widest text-foreground/50">
-                    Descrição
+                    Descrição do Projeto
                   </label>
-                  <textarea
-                    id="proj-desc"
-                    name="description"
-                    defaultValue={initialData?.description}
-                    placeholder="Um breve texto sobre o projeto…"
-                    rows={3}
-                    disabled={pending}
-                    className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring resize-none"
+                  <RichTextEditor 
+                    content={editorContent} 
+                    onChange={setEditorContent} 
+                    placeholder="Conte a história deste projeto, insira imagens e vídeos…" 
                   />
+                  <input type="hidden" name="description" value={editorContent} />
                 </div>
 
                 {error && (

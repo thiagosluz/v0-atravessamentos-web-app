@@ -52,13 +52,13 @@ export function ProjectsSection({ initialProjects }: ProjectsSectionProps) {
               escuta, criação e disputa de narrativa.
             </p>
           </div>
-          <a
-            href="#"
+          <Link
+            href="/projetos"
             className="inline-flex items-center gap-2 rounded-full border border-background/30 px-5 py-2.5 text-sm font-medium transition-colors hover:bg-background hover:text-foreground"
           >
             Ver todos os projetos
             <ArrowUpRight className="h-4 w-4" />
-          </a>
+          </Link>
         </motion.div>
 
         <div className="mt-12">

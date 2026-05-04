@@ -26,6 +26,15 @@ export function MemberFormDialog({ initialData, onSuccess }: MemberFormDialogPro
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        toast({
+          title: "Arquivo muito grande",
+          description: "O tamanho máximo permitido é 2MB.",
+          variant: "destructive",
+        })
+        e.target.value = "" // clear input
+        return
+      }
       setPreview(URL.createObjectURL(file))
     }
   }
