@@ -3,7 +3,7 @@
 import { motion } from "motion/react"
 import { ArrowUpRight, Clock } from "lucide-react"
 import { type BlogPost, formatDate } from "@/lib/mock-data"
-import { cn } from "@/lib/utils"
+import { cn, getCategoryStyle } from "@/lib/utils"
 import Link from "next/link"
 
 import { type Category } from "@/lib/actions/categories"
@@ -15,12 +15,6 @@ interface BlogSectionProps {
 
 export function BlogSection({ initialPosts, categories }: BlogSectionProps) {
   const [featured, ...rest] = initialPosts
-
-  const getCategoryColor = (catName: string) => {
-    const cat = categories.find(c => c.name === catName)
-    const color = cat?.color || "primary"
-    return `bg-${color}-500/10 text-${color}-600 dark:text-${color}-400 border border-${color}-500/20`
-  }
 
   return (
     <section
@@ -78,7 +72,7 @@ export function BlogSection({ initialPosts, categories }: BlogSectionProps) {
                   <span
                     className={cn(
                       "rounded-full px-2.5 py-1 font-semibold uppercase tracking-wide",
-                      getCategoryColor(featured.category)
+                      getCategoryStyle(featured.category, categories, "post")
                     )}
                   >
                     {featured.category}
@@ -129,7 +123,7 @@ export function BlogSection({ initialPosts, categories }: BlogSectionProps) {
                     <span
                       className={cn(
                         "inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide",
-                        getCategoryColor(post.category)
+                        getCategoryStyle(post.category, categories, "post")
                       )}
                     >
                       {post.category}

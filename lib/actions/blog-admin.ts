@@ -43,7 +43,7 @@ export async function uploadBlogImage(formData: FormData) {
 export async function createBlogPost(formData: FormData) {
   const supabase = createAdminClient()
 
-  const title = formData.get("title") as string
+  const title = (formData.get("title") as string)?.trim()
   const category = formData.get("category") as BlogPost["category"]
   const excerpt = formData.get("excerpt") as string
   const content = formData.get("content") as string
@@ -69,7 +69,7 @@ export async function createBlogPost(formData: FormData) {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "")
 
-  const { error } = await supabase.from("blog_posts").insert({
+  const { data, error } = await supabase.from("blog_posts").insert({
     title,
     category,
     excerpt,
@@ -79,7 +79,7 @@ export async function createBlogPost(formData: FormData) {
     slug,
     status,
     cover_image: coverImageUrl,
-  })
+  }).select("id").single()
 
   if (error) {
     console.error("Erro ao criar post:", error)
@@ -90,8 +90,9 @@ export async function createBlogPost(formData: FormData) {
   }
 
   revalidatePath("/")
+  revalidatePath("/diario")
   revalidatePath("/admin")
-  return { success: true }
+  return { success: true, id: data.id }
 }
 
 export async function updateBlogPost(id: string, formData: FormData) {
@@ -100,7 +101,7 @@ export async function updateBlogPost(id: string, formData: FormData) {
   }
   const supabase = createAdminClient()
 
-  const title = formData.get("title") as string
+  const title = (formData.get("title") as string)?.trim()
   const category = formData.get("category") as BlogPost["category"]
   const excerpt = formData.get("excerpt") as string
   const content = formData.get("content") as string
@@ -137,6 +138,7 @@ export async function updateBlogPost(id: string, formData: FormData) {
       read_time: readTime,
       slug,
       status,
+      ...(status === "Publicado" ? { published_at: new Date().toISOString() } : {}),
       ...(coverImageUrl ? { cover_image: coverImageUrl } : {}),
     })
     .eq("id", id)
@@ -147,6 +149,7 @@ export async function updateBlogPost(id: string, formData: FormData) {
   }
 
   revalidatePath("/")
+  revalidatePath("/diario")
   revalidatePath("/admin")
   return { success: true }
 }
@@ -161,6 +164,7 @@ export async function deleteBlogPost(id: string) {
   }
 
   revalidatePath("/")
+  revalidatePath("/diario")
   revalidatePath("/admin")
   return { success: true }
 }

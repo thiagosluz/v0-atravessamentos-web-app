@@ -11,7 +11,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel"
 import { type Project } from "@/lib/mock-data"
-import { cn } from "@/lib/utils"
+import { cn, getCategoryStyle } from "@/lib/utils"
 
 import { type Category } from "@/lib/actions/categories"
 
@@ -21,14 +21,6 @@ interface ProjectsSectionProps {
 }
 
 export function ProjectsSection({ initialProjects, categories }: ProjectsSectionProps) {
-  const getCategoryColor = (catName: string) => {
-    const cat = categories.find(c => c.name === catName)
-    const color = cat?.color || "primary"
-    
-    // Na seção de projetos, os cards têm fundo escuro, então usamos cores sólidas ou contrastantes
-    if (color === "primary") return "bg-primary text-primary-foreground"
-    return `bg-${color}-500 text-white`
-  }
 
   return (
     <section
@@ -78,7 +70,7 @@ export function ProjectsSection({ initialProjects, categories }: ProjectsSection
                 .filter((p) => p.status === "Publicado")
                 .map((project, index) => (
                   <CarouselItem key={project.id} className="pl-4 md:basis-1/2 lg:basis-1/3">
-                    <ProjectCard project={project} index={index} getCategoryColor={getCategoryColor} />
+                    <ProjectCard project={project} index={index} categories={categories} />
                   </CarouselItem>
                 ))}
             </CarouselContent>
@@ -99,7 +91,7 @@ export function ProjectsSection({ initialProjects, categories }: ProjectsSection
   )
 }
 
-function ProjectCard({ project, index, getCategoryColor }: { project: Project; index: number; getCategoryColor: (catName: string) => string }) {
+function ProjectCard({ project, index, categories }: { project: Project; index: number; categories: Category[] }) {
   return (
     <motion.article
       initial={{ opacity: 0, y: 30 }}
@@ -121,7 +113,7 @@ function ProjectCard({ project, index, getCategoryColor }: { project: Project; i
             <span
               className={cn(
                 "inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide",
-                getCategoryColor(project.category)
+                getCategoryStyle(project.category, categories, "project")
               )}
             >
               {project.category}

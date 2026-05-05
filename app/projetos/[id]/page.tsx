@@ -3,6 +3,7 @@ import { ArrowLeft, Calendar, FolderKanban } from "lucide-react"
 import { getProjectById, getProjectIds } from "@/lib/actions/projects"
 import { formatDate } from "@/lib/mock-data"
 import { getProjects } from "@/lib/actions/projects"
+import { getCategories } from "@/lib/actions/categories"
 import { ProjectsSection } from "@/components/landing/projects-section"
 import Link from "next/link"
 
@@ -32,7 +33,10 @@ export default async function ProjectPage({ params }: Props) {
 
   if (!project) notFound()
 
-  const allProjects = await getProjects()
+  const [allProjects, categories] = await Promise.all([
+    getProjects(),
+    getCategories()
+  ])
   const related = allProjects.filter((p) => p.id !== id && p.category === project.category).slice(0, 3)
 
   return (
@@ -138,7 +142,7 @@ export default async function ProjectPage({ params }: Props) {
               <span className="text-primary italic font-light">{project.category}</span>
             </h2>
             <div className="mt-10">
-              <ProjectsSection initialProjects={related} />
+              <ProjectsSection initialProjects={related} categories={categories} />
             </div>
           </div>
         </div>

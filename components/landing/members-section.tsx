@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react"
 import { type Member } from "@/lib/mock-data"
-import { cn } from "@/lib/utils"
+import { cn, getCategoryStyle } from "@/lib/utils"
 import Link from "next/link"
 
 import { type Category } from "@/lib/actions/categories"
@@ -14,17 +14,6 @@ interface MembersSectionProps {
 
 export function MembersSection({ initialMembers, categories }: MembersSectionProps) {
   const memberCategories = categories.filter(c => c.type === "member")
-
-  const getCategoryColor = (catName: string) => {
-    const cat = categories.find(c => c.name === catName)
-    const color = cat?.color || "primary"
-    
-    if (color === "primary") {
-      return "bg-primary/15 text-primary border-primary/30"
-    }
-    
-    return `bg-${color}-500/15 text-${color}-700 dark:text-${color}-400 border-${color}-500/30`
-  }
 
 const cardShapes = [
   "border-organic",
@@ -87,7 +76,7 @@ const overlayPatterns = [
                   key={cat.id}
                   className={cn(
                     "rounded-full border px-3 py-1 text-xs font-medium",
-                    getCategoryColor(cat.name),
+                    getCategoryStyle(cat.name, categories, "member"),
                   )}
                 >
                   {cat.name}
@@ -141,7 +130,7 @@ const overlayPatterns = [
                             key={tag}
                             className={cn(
                               "rounded-full border px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide",
-                              getCategoryColor(tag),
+                              getCategoryStyle(tag, categories, "member"),
                             )}
                           >
                             {tag}

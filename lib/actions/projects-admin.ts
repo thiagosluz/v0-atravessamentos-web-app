@@ -7,7 +7,7 @@ import { type ProjectCategory, type ProjectStatus } from "@/lib/mock-data"
 export async function createProject(formData: FormData) {
   const supabase = createAdminClient()
 
-  const title = formData.get("title") as string
+  const title = (formData.get("title") as string)?.trim()
   const category = formData.get("category") as ProjectCategory
   const description = formData.get("description") as string
   const year = parseInt(formData.get("year") as string)
@@ -17,14 +17,14 @@ export async function createProject(formData: FormData) {
     return { error: "Preencha todos os campos obrigatórios." }
   }
 
-  const { error } = await supabase.from("projects").insert({
+  const { data, error } = await supabase.from("projects").insert({
     title,
     category,
     description,
     year,
     status,
     cover_image: null,
-  })
+  }).select("id").single()
 
   if (error) {
     console.error("Erro ao criar projeto:", error)
@@ -32,14 +32,15 @@ export async function createProject(formData: FormData) {
   }
 
   revalidatePath("/")
+  revalidatePath("/projetos")
   revalidatePath("/admin")
-  return { success: true }
+  return { success: true, id: data.id }
 }
 
 export async function updateProject(id: string, formData: FormData) {
   const supabase = createAdminClient()
 
-  const title = formData.get("title") as string
+  const title = (formData.get("title") as string)?.trim()
   const category = formData.get("category") as ProjectCategory
   const description = formData.get("description") as string
   const year = parseInt(formData.get("year") as string)
@@ -67,6 +68,7 @@ export async function updateProject(id: string, formData: FormData) {
   }
 
   revalidatePath("/")
+  revalidatePath("/projetos")
   revalidatePath("/admin")
   return { success: true }
 }
@@ -81,6 +83,7 @@ export async function deleteProject(id: string) {
   }
 
   revalidatePath("/")
+  revalidatePath("/projetos")
   revalidatePath("/admin")
   return { success: true }
 }

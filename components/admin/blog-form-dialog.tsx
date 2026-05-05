@@ -84,7 +84,7 @@ export function BlogFormDialog({ initialData, categories, onSuccess }: BlogFormD
     }
 
     const optimistic = {
-      id: isEdit ? initialData.id : `temp-${Date.now()}`,
+      id: isEdit ? initialData.id : (result.id || `temp-${Date.now()}`),
       title: formData.get("title") as string,
       category: formData.get("category") as string,
       excerpt: formData.get("excerpt") as string,
@@ -122,6 +122,7 @@ export function BlogFormDialog({ initialData, categories, onSuccess }: BlogFormD
           variant="ghost"
           size="icon"
           className="h-8 w-8 text-foreground/70 hover:text-foreground"
+          aria-label="Editar post"
           onClick={() => setOpen(true)}
         >
           <Pencil className="h-4 w-4" />
@@ -172,7 +173,7 @@ export function BlogFormDialog({ initialData, categories, onSuccess }: BlogFormD
                 </button>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form id="blog-form" onSubmit={handleSubmit} className="space-y-4">
                 {/* Cover Image Upload */}
                 <div className="space-y-1.5">
                   <label className="text-xs font-semibold uppercase tracking-widest text-foreground/50">
@@ -285,6 +286,7 @@ export function BlogFormDialog({ initialData, categories, onSuccess }: BlogFormD
                         type="button"
                         onClick={() => setStatus(s)}
                         disabled={pending}
+                        aria-label={`Status ${s}`}
                         className={cn(
                           "inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium transition-colors",
                           status === s 

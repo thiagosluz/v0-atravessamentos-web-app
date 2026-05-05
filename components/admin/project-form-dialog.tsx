@@ -66,7 +66,7 @@ export function ProjectFormDialog({ initialData, categories, onSuccess }: Projec
 
     // Build a temporary project object for optimistic UI update
     const optimistic = {
-      id: isEdit ? initialData.id : `temp-${Date.now()}`,
+      id: isEdit ? initialData.id : (result.id || `temp-${Date.now()}`),
       title: formData.get("title") as string,
       category: formData.get("category") as string,
       description: formData.get("description") as string,
@@ -96,6 +96,7 @@ export function ProjectFormDialog({ initialData, categories, onSuccess }: Projec
           variant="ghost"
           size="icon"
           className="h-8 w-8 text-foreground/70 hover:text-foreground"
+          aria-label="Editar projeto"
           onClick={() => setOpen(true)}
         >
           <Pencil className="h-4 w-4" />
@@ -149,7 +150,7 @@ export function ProjectFormDialog({ initialData, categories, onSuccess }: Projec
                 </button>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form id="project-form" onSubmit={handleSubmit} className="space-y-4">
                 {/* Title */}
                 <div className="space-y-1.5">
                   <label htmlFor="proj-title" className="text-xs font-semibold uppercase tracking-widest text-foreground/50">
@@ -217,6 +218,7 @@ export function ProjectFormDialog({ initialData, categories, onSuccess }: Projec
                         type="button"
                         onClick={() => setStatus(s)}
                         disabled={pending}
+                        aria-label={`Status ${s}`}
                         className={cn(
                           "inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium transition-colors",
                           status === s 
