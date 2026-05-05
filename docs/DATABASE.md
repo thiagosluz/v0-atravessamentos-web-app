@@ -1,88 +1,148 @@
-# 📂 Guia do Banco de Dados (Supabase)
+# Banco de dados (Supabase)
 
-O Atravessamentos utiliza o **PostgreSQL** hospedado no Supabase. Abaixo estão as especificações das tabelas e o esquema necessário para o funcionamento do site.
+PostgreSQL no **Supabase**, consumido pelo app via **Supabase JS** e **Server Actions**. Os nomes de colunas abaixo seguem o que o código usa ao ler/gravar (`snake_case` no Postgres, mapeado para `camelCase` em alguns retornos).
 
 ---
 
-## 📋 Tabelas principais
+## Tabelas principais
 
-### 1. `categories`
-Armazena as categorias para posts, projetos e tags de membros.
-- `id` (uuid, primary key)
-- `name` (text): Nome visível (ex: "Educação")
-- `slug` (text): Identificador para URL
-- `type` (text): Valores permitidos: `post`, `project`, `member`
-- `color` (text): Nome da cor Tailwind (ex: `amber`, `rose`, `indigo`)
-- `sort_order` (int): Ordem de exibição
-- `created_at` (timestamp)
+### `categories`
 
-### 2. `blog_posts`
-Posts do Diário.
-- `id` (uuid, primary key)
-- `title` (text)
-- `slug` (text, unique)
-- `excerpt` (text): Resumo para o feed
-- `content` (text): Conteúdo completo
-- `category` (text): Nome da categoria associada
-- `published_at` (timestamp)
-- `image_url` (text): Imagem de capa
-- `status` (text): `Publicado`, `Rascunho`, `Em revisão`
+Categorias do diário, dos projetos e tags de membros.
 
-### 3. `projects`
+| Coluna | Tipo | Notas |
+|--------|------|--------|
+| `id` | uuid | PK |
+| `name` | text | Nome exibido |
+| `slug` | text | Identificador estável |
+| `type` | text | `post` \| `project` \| `member` |
+| `color` | text | Nome para o tema (ex.: `amber`, `rose`) |
+| `sort_order` | int | Ordem na UI |
+| `created_at` | timestamptz | |
+
+Constraint típica de `type`: `CHECK (type IN ('post', 'project', 'member'))`.
+
+---
+
+### `blog_posts`
+
+Posts do diário.
+
+| Coluna | Tipo | Notas |
+|--------|------|--------|
+| `id` | uuid | PK |
+| `title` | text | |
+| `slug` | text | Único; usado em `/diario/[slug]` |
+| `excerpt` | text | Resumo no feed |
+| `content` | text | HTML do Tiptap |
+| `category` | text | Nome da categoria (referência por nome, não FK) |
+| `author` | text | |
+| `read_time` | text | Ex.: "5 min" |
+| `status` | text | No código admin: `Publicado` \| `Rascunho` |
+| `published_at` | timestamptz | Ordenação e data pública |
+| `cover_image` | text | URL (ex.: Storage público) |
+
+O site público lista apenas linhas com `status = 'Publicado'`.
+
+---
+
+### `projects`
+
 Projetos e ações do coletivo.
-- `id` (uuid, primary key)
-- `title` (text)
-- `description` (text)
-- `year` (text): Ex: "2024"
-- `status` (text): `Ativo`, `Finalizado`
-- `category` (text): Categoria principal
-- `image_url` (text)
-- `order` (int)
 
-### 4. `members`
-Integrantes do coletivo.
-- `id` (uuid, primary key)
-- `name` (text)
-- `role` (text): Papel principal (ex: "Pesquisadora")
-- `bio` (text)
-- `avatar` (text): URL da foto de perfil
-- `tags` (text[]): Array de tags (referenciando nomes em `categories` do tipo `member`)
-- `instagram` (text)
-- `linkedin` (text)
-- `email` (text)
+| Coluna | Tipo | Notas |
+|--------|------|--------|
+| `id` | uuid | PK |
+| `title` | text | |
+| `description` | text | Pode conter HTML (editor rico) |
+| `year` | int | Usado na linha do tempo / filtros |
+| `status` | text | `Publicado` \| `Rascunho` \| `Em revisão` (tipos em `lib/mock-data.ts`) |
+| `category` | text | Nome da categoria |
+| `cover_image` | text | URL opcional |
+| `updated_at` | timestamptz | Atualizado nas mutações → ordenação em `getProjects` |
+
+A listagem pública filtrada usa `status = 'Publicado'`.
 
 ---
 
-## 🛠️ Scripts SQL Necessários
+### `members`
 
-### Correção de Constraints (Importante)
-Se você estiver recebendo erros ao salvar novos tipos de categorias, certifique-se de atualizar as travas do banco:
+Integrantes.
+
+| Coluna | Tipo | Notas |
+|--------|------|--------|
+| `id` | uuid | PK |
+| `name` | text | Também usado para achar posts do diário onde `author` = nome |
+| `role` | text | |
+| `bio` | text | |
+| `avatar` | text | URL |
+| `tags` | text[] | Nomes alinhados a categorias `type = 'member'` |
+| `instagram` | text | Opcional |
+| `linkedin` | text | Opcional |
+| `email` | text | Opcional |
+| `phone` | text | Opcional |
+| `created_at` | timestamptz | Ordenação em `getMembers` |
+
+---
+
+### `site_settings`
+
+Configurações únicas do rodapé e contatos (o código assume registro com `id = 1` no `update`).
+
+Campos usados em `lib/actions/settings.ts`, entre outros: `footer_description`, `location_text`, `location_url`, `instagram_url`, `youtube_url`, `contact_email`, `whatsapp_number`, `privacy_policy_url`, `terms_url`, `accessibility_url`, `updated_at`.
+
+Se a tabela estiver vazia ou houver erro na leitura, a action devolve **valores padrão** em código.
+
+---
+
+## Storage (buckets)
+
+Conforme as Server Actions:
+
+- **`blog-media`**: imagens de capa / mídia de posts (`blog-admin.ts`).
+- **`avatars`**: fotos de membros (`members-admin.ts`).
+
+Configure políticas de Storage no Supabase para leitura pública onde necessário e escrita apenas para o perfil de serviço ou usuários autenticados, conforme a política de segurança do coletivo.
+
+---
+
+## Relacionamentos
+
+Categorias são referenciadas por **nome** (e eventualmente slug) nos registros de posts e projetos, não por FK obrigatória — simplifica formulários e troca de rótulos, com o trade-off de manter nomes consistentes.
+
+---
+
+## RLS e políticas (exemplo)
+
+Habilite RLS nas tabelas expostas e defina políticas explícitas por operação (`SELECT`, `INSERT`, `UPDATE`, `DELETE`). Exemplo **ilustrativo** só para leitura pública em posts:
 
 ```sql
--- Atualiza os tipos permitidos de categorias
-ALTER TABLE categories 
+ALTER TABLE blog_posts ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "leitura_publica_blog"
+ON blog_posts
+FOR SELECT
+USING (true);
+
+-- Políticas de INSERT/UPDATE/DELETE para papéis autenticados ou service role
+-- devem ser criadas separadamente, de acordo com o modelo de permissão desejado.
+```
+
+Ajuste sempre ao esquema e aos papéis reais do projeto (incluindo uso de **service role** no backend, que ignora RLS).
+
+---
+
+## Scripts úteis
+
+### Constraint de `categories.type`
+
+```sql
+ALTER TABLE categories
 DROP CONSTRAINT IF EXISTS categories_type_check;
 
-ALTER TABLE categories 
-ADD CONSTRAINT categories_type_check 
+ALTER TABLE categories
+ADD CONSTRAINT categories_type_check
 CHECK (type IN ('post', 'project', 'member'));
 ```
 
-### Configuração de RLS (Row Level Security)
-Permitir que qualquer pessoa leia o conteúdo, mas apenas admins (autenticados) editem:
-
-```sql
--- Exemplo para a tabela blog_posts
-ALTER TABLE blog_posts ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY "Acesso público de leitura" ON blog_posts
-FOR SELECT USING (true);
-
-CREATE POLICY "Acesso total para admins autenticados" ON blog_posts
-USING (auth.role() = 'authenticated');
-```
-
----
-
-## 🔄 Relacionamentos
-O sistema utiliza uma abordagem de **Referência por Nome/Slug** para as categorias, simplificando as consultas e permitindo que a troca de nomes no banco seja refletida dinamicamente na UI sem JOINS complexos no frontend.
+Se a base foi criada com nomes de colunas diferentes dos usados nas actions (ex.: `image_url` em vez de `cover_image`), será necessário migrar colunas ou views para coincidir com o código.

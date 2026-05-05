@@ -1,57 +1,76 @@
-# 👤 Guia Administrativo
+# Guia administrativo
 
-Este guia explica como gerenciar o conteúdo do site Atravessamentos através do Painel Administrativo.
-
----
-
-## 🔑 Acesso ao Painel
-1. Acesse o link de login (ex: `/login` ou via botão "Área Restrita" no rodapé).
-2. Insira suas credenciais cadastradas no Supabase Auth.
-3. Você será redirecionado para o Dashboard.
+Como gerenciar o conteúdo do site pelo painel em **`/admin`** (após login em **`/login`**).
 
 ---
 
-## 📂 Gerenciando Categorias e Tags (O Coração do Site)
-Antes de criar posts ou membros, você deve configurar as categorias em **Configurações**:
+## Acesso
 
-### 1. Categorias do Diário e Projetos
-- Escolha um nome e uma **Cor**.
-- As cores usam o sistema Tailwind (ex: `amber`, `rose`, `sky`).
-- A cor escolhida aparecerá automaticamente nos "badges" (etiquetas) no site.
-
-### 2. Tags de Membros
-- Defina especialidades (ex: "Pesquisadora", "Artista").
-- Essas tags estarão disponíveis para seleção no formulário de membros.
+1. Abra `/login` (ou o link equivalente indicado pelo coletivo).
+2. Use o e-mail e a senha criados no **Supabase Auth** para este projeto.
+3. Com sessão válida, o painel carrega em `/admin`; há abas para projetos, membros, diário, configurações e perfil.
 
 ---
 
-## ✍️ Criando Conteúdo
+## Configurações — categorias e site
 
-### 📅 Diário (Blog)
-- **Título e Resumo**: Aparecem no feed principal.
-- **Categoria**: Selecione uma das categorias cadastradas anteriormente.
-- **Status**: Mude para "Publicado" para que apareça no site.
+### Categorias e “tags” de membros
 
-### 🚀 Projetos
-- **Ano**: Define a posição na linha do tempo.
-- **Imagem de Capa**: Use URLs de imagens hospedadas ou caminhos locais.
+Na área **Configurações**, gerencie a tabela de **categorias**:
 
-### 👥 Membros
-- **Papel Principal**: Ex: "Cineasta e Educadora".
-- **Tags**: Clique nos badges para selecionar as especialidades. Você pode selecionar múltiplas tags.
-- **Links**: Redes sociais e contato.
+- Tipos possíveis: **`post`** (diário), **`project`** (projetos), **`member`** (tags de membros).
+- Cada item tem **nome**, **slug**, **cor** (nome Tailwind, ex.: `emerald`, `rose`) e **ordem** de exibição.
+- As cores aparecem nos badges do site público.
 
----
+### Configurações gerais do site
 
-## 💡 Dicas para um Conteúdo Bonito
+Ainda em Configurações, o bloco de **dados do site** (tabela `site_settings`) permite editar, entre outros:
 
-1. **Imagens**: Tente usar imagens com boa resolução. Para fotos de membros, prefira fotos quadradas (1:1).
-2. **Resumos**: Mantenha os resumos do diário curtos (até 150 caracteres) para manter o feed organizado.
-3. **Cores**: Tente variar as cores das categorias para que o site fique vibrante, mas mantenha uma consistência (ex: todos os projetos de "Educação" com a mesma cor).
+- Texto e links do rodapé, localização (texto + URL do mapa).
+- E-mail de contato, WhatsApp.
+- Redes (Instagram, YouTube).
+- URLs das páginas legais (privacidade, termos, acessibilidade) — normalmente caminhos como `/privacidade`, `/termos`, `/acessibilidade`.
 
 ---
 
-## ⚠️ Solução de Problemas
-- **O conteúdo não aparece?** Verifique se o status está como "Publicado".
-- **Erro ao salvar?** Certifique-se de que todos os campos obrigatórios (*) foram preenchidos.
-- **As cores estão erradas?** Verifique se o nome da cor em Configurações está escrito corretamente (apenas letras minúsculas, ex: `emerald`).
+## Diário (blog)
+
+- **Título e resumo** aparecem no feed e na capa do post.
+- **Conteúdo**: editor rico (**Tiptap**) — negrito, listas, links, imagens e incorporação de YouTube; o que for salvo é **HTML** exibido na página do post.
+- **Categoria**: deve existir nas categorias do tipo `post`.
+- **Status**: apenas **Publicado** entra no site público; rascunhos ficam só no painel.
+- **Capa**: pode ser enviada como arquivo (bucket `blog-media` no Supabase).
+
+---
+
+## Projetos
+
+- **Ano**, **categoria** (tipo `project`), **status** (`Publicado`, `Rascunho`, `Em revisão` no domínio atual).
+- **Descrição**: texto rico (Tiptap), com campo oculto que envia o HTML ao salvar.
+- **Imagem de capa**: o banco tem `cover_image`, mas o **modal atual não inclui upload de capa** — novos projetos são criados com capa nula até que isso seja implementado ou ajustado direto no Supabase.
+
+Só projetos **Publicados** entram na listagem pública filtrada (`/projetos`).
+
+---
+
+## Membros
+
+- **Papel**, **bio**, **avatar** (upload no bucket `avatars` quando aplicável).
+- **Tags**: escolha entre categorias do tipo `member`.
+- **Contato**: Instagram, LinkedIn, e-mail, telefone, quando preenchidos.
+
+---
+
+## Dicas de conteúdo
+
+1. **Imagens**: boa resolução; avatares funcionam bem em proporção quadrada.
+2. **Resumos do diário**: curtos para o feed (por volta de uma ou duas linhas na listagem).
+3. **Cores**: use nomes Tailwind em **minúsculas** nas categorias, consistentes entre itens do mesmo eixo (ex.: todos os posts de um eixo com a mesma cor).
+
+---
+
+## Problemas comuns
+
+- **Post ou projeto não aparece no site?** Confira se o **status** é **Publicado**.
+- **Erro ao salvar?** Preencha campos obrigatórios; no diário, verifique categoria existente.
+- **Cor estranha no badge?** O campo de cor na categoria deve ser um token válido do tema (nome Tailwind acordado pelo projeto).

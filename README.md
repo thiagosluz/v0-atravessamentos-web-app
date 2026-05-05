@@ -4,107 +4,111 @@
 
 > **"Corpo coletivo que escuta, sonha e age. Travessia, afeto, política e criação."**
 
-O Atravessamentos é uma plataforma digital dedicada a preservar e difundir a memória, os projetos e as reflexões de um coletivo artístico e educativo nascido em Jataí — GO. O site combina uma estética orgânica e moderna com um sistema de gerenciamento de conteúdo (CMS) potente e dinâmico.
+O Atravessamentos é uma plataforma digital dedicada a preservar e difundir a memória, os projetos e as reflexões de um coletivo artístico e educativo nascido em Jataí — GO. O site combina uma estética orgânica e moderna com um sistema de gerenciamento de conteúdo (CMS) integrado ao Supabase.
 
 ---
 
-## ✨ Funcionalidades Principais
+## ✨ Funcionalidades principais
 
-### 🌐 Portal Público
-- **Hero Dinâmico**: Tipografia artística com sobreposição ("Typographic Overlap") que reforça o conceito de "atravessamento".
-- **Arquivo de Projetos**: Linha do tempo e galeria de ações do coletivo com filtragem por categorias.
-- **Diário (Blog)**: Espaço de escrita e reflexão com feed cronológico.
-- **Coletivo (Membros)**: Galeria de integrantes com tags dinâmicas e perfis detalhados.
-- **Design Orgânico**: Interface fluida com formas mutáveis, animações suaves e paleta de cores curada.
+### Portal público
 
-### 🔐 Painel Administrativo (CMS)
-- **Gestão de Conteúdo**: CRUD completo para Projetos, Membros e Posts do Diário.
-- **Metadados Gerenciáveis**: Sistema centralizado para gerenciar categorias e tags com cores customizáveis via banco de dados.
-- **Dashboard de Controle**: Visão geral de métricas e status de publicação.
-- **Segurança**: Autenticação via Supabase Auth com proteção de rotas no servidor.
+- **Hero**: tipografia com sobreposição (“Typographic Overlap”) no conceito de atravessamento.
+- **Projetos**: listagem em `/projetos`, detalhe em `/projetos/[id]`, com filtro por categoria e busca.
+- **Diário (blog)**: arquivo em `/diario` (paginação, filtro por categoria, busca) e post em `/diario/[slug]`.
+- **Membros**: perfis em `/membros/[id]` e seção na landing.
+- **Páginas legais**: termos, privacidade e acessibilidade em rotas agrupadas em `app/(legal)/`.
+- **Tema**: claro/escuro via `next-themes`.
+
+### Painel administrativo (CMS)
+
+- **CRUD**: projetos, membros, posts do diário e categorias (tipos `post`, `project`, `member`).
+- **Editor rico**: Tiptap nos formulários de **Diário** e **Projetos** (HTML gravado no banco).
+- **Mídia**: uploads para buckets do Supabase Storage (`blog-media`, `avatars`).
+- **Configurações do site**: tabela `site_settings` (rodapé, localização, redes, e-mail, WhatsApp, URLs legais).
+- **Autenticação**: Supabase Auth; `/admin` exige sessão válida (verificação no servidor na página).
 
 ---
 
-## 🛠️ Tech Stack
+## Tech stack
 
-- **Framework**: [Next.js 15 (App Router)](https://nextjs.org/)
+- **Framework**: [Next.js 16](https://nextjs.org/) (App Router)
 - **Linguagem**: [TypeScript](https://www.typescriptlang.org/)
-- **Estilização**: [Tailwind CSS](https://tailwindcss.com/)
-- **Animações**: [Motion (framer-motion)](https://motion.dev/)
-- **Banco de Dados & Auth**: [Supabase](https://supabase.com/)
-- **UI Components**: [Shadcn/UI](https://ui.shadcn.com/)
-- **Ícones**: [Lucide React](https://lucide.dev/)
+- **Estilo**: [Tailwind CSS 4](https://tailwindcss.com/), tokens em `app/globals.css`
+- **Animação**: [Motion](https://motion.dev/)
+- **Dados e auth**: [Supabase](https://supabase.com/) (Postgres + Auth + Storage)
+- **UI**: [shadcn/ui](https://ui.shadcn.com/) (Radix), [Lucide](https://lucide.dev/)
+- **Formulários / validação**: React Hook Form, Zod
+- **Editor**: [Tiptap](https://tiptap.dev/) (`@tiptap/react`, starter-kit, link, image, YouTube, placeholder)
+- **Analytics** (produção): [@vercel/analytics](https://vercel.com/analytics)
 
 ---
 
-## 🚀 Como Começar
+## Como começar
 
 ### Pré-requisitos
-- Node.js 18+
-- pnpm (recomendado) ou npm
+
+- **Node.js 20+** (recomendado para Next.js 16)
+- **pnpm** (o repositório usa `pnpm-lock.yaml`)
 
 ### Instalação
 
 1. Clone o repositório:
+
 ```bash
 git clone https://github.com/thiagosluz/v0-atravessamentos-web-app.git
 cd v0-atravessamentos-web-app
 ```
 
 2. Instale as dependências:
+
 ```bash
 pnpm install
 ```
 
 3. Configure as variáveis de ambiente (`.env.local`):
+
 ```env
 NEXT_PUBLIC_SUPABASE_URL=seu_url_do_supabase
-NEXT_PUBLIC_SUPABASE_ANON_KEY=sua_chave_anon_key
+NEXT_PUBLIC_SUPABASE_ANON_KEY=sua_chave_anon
 SUPABASE_SERVICE_ROLE_KEY=sua_chave_service_role
 ```
 
-4. Inicie o servidor de desenvolvimento:
+A chave **service role** é usada nas Server Actions que conversam com o banco e o Storage no servidor. Mantenha-a apenas em ambiente seguro; nunca exponha no cliente.
+
+4. Inicie o ambiente de desenvolvimento:
+
 ```bash
 pnpm dev
 ```
 
 ---
 
-## 🧪 Testes e Qualidade
+## Testes e qualidade
 
-O projeto conta com uma suíte de testes robusta que atinge **100% de cobertura de linhas** nas lógicas administrativas.
+- **Vitest** (`pnpm test`): testes unitários com mocks do Supabase, focados nas Server Actions e utilitários. Relatório de cobertura: `pnpm exec vitest run --coverage` (trechos como `e2e/`, `proxy.ts` e configs costumam ficar fora do escopo — ver `vitest.config.ts`).
+- **Playwright** (`pnpm test:e2e`): fluxos no navegador; sobe `pnpm dev` automaticamente quando não está em CI (ver `playwright.config.ts`).
+- **ESLint** (`pnpm lint`).
 
-### 🛠️ Comandos Principais
+Credenciais de exemplo para testes locais (conforme usuário criado no Supabase do ambiente de desenvolvimento):
 
-| Comando | Descrição |
-| :--- | :--- |
-| `pnpm test` | Executa todos os testes unitários (Vitest). |
-| `pnpm test:watch` | Executa testes unitários em modo de observação. |
-| `pnpm test:coverage:open` | Gera o relatório de cobertura e **abre o HTML no navegador**. |
-| `pnpm test:e2e` | Executa os testes de ponta a ponta (Playwright). |
-| `pnpm lint` | Valida a qualidade e padrões do código (ESLint). |
-
-### 📊 Cobertura de Testes
-Utilizamos o provedor `v8` para garantir que todas as Server Actions e utilitários estejam protegidos contra regressões. O relatório detalhado pode ser gerado localmente para inspeção visual de cada linha de código.
-
-### 🔐 Credenciais de Teste (Ambiente Local)
 - **E-mail:** `test@atravessamentos.com`
 - **Senha:** `password123`
 
 ---
 
-## 📖 Documentação Detalhada
+## Documentação no repositório
 
-Para entender melhor a estrutura e manutenção do projeto, consulte:
-
-- 🏗️ **[Arquitetura do Sistema](docs/ARCHITECTURE.md)**: Visão técnica e fluxo de dados.
-- 📂 **[Guia do Banco de Dados](docs/DATABASE.md)**: Esquemas das tabelas e relacionamentos.
-- 👤 **[Guia Administrativo](docs/ADMIN_GUIDE.md)**: Como gerenciar o conteúdo do site.
-- 💻 **[Guia do Desenvolvedor](docs/DEVELOPER_GUIDE.md)**: Padrões de código e deployment.
+| Documento | Conteúdo |
+|-----------|----------|
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Pastas, fluxo de dados, auth, deploy |
+| [docs/DATABASE.md](docs/DATABASE.md) | Tabelas, colunas alinhadas ao código, Storage |
+| [docs/ADMIN_GUIDE.md](docs/ADMIN_GUIDE.md) | Uso do painel para editores |
+| [docs/DEVELOPER_GUIDE.md](docs/DEVELOPER_GUIDE.md) | Padrões e comandos para quem desenvolve |
+| [docs/plan_tiptap_editor.md](docs/plan_tiptap_editor.md) | Plano histórico do editor rico e melhorias opcionais |
 
 ---
 
-## 📄 Licença
+## Licença
 
 Este projeto é desenvolvido para o Coletivo Atravessamentos. Todos os direitos reservados.
 
