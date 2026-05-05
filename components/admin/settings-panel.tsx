@@ -17,6 +17,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
 import { type Category, deleteCategory } from "@/lib/actions/categories"
 import { CategoryFormDialog } from "@/components/admin/category-form-dialog"
+import { type SiteSettings } from "@/lib/actions/settings"
+import { GeneralSettingsManager } from "@/components/admin/general-settings-manager"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -30,20 +32,26 @@ import {
 
 interface SettingsPanelProps {
   categories: Category[]
+  siteSettings: SiteSettings
 }
 
-export function SettingsPanel({ categories: initialCategories }: SettingsPanelProps) {
+export function SettingsPanel({ categories: initialCategories, siteSettings }: SettingsPanelProps) {
   const [categories, setCategories] = React.useState<Category[]>(initialCategories)
 
   return (
-    <Tabs defaultValue="posts" className="flex flex-col w-full">
+    <Tabs defaultValue="general" className="flex flex-col w-full">
       <div className="border-b border-border px-4 py-3 md:px-6 md:py-4 bg-muted/10">
-        <TabsList className="grid w-full grid-cols-3 lg:w-[600px]">
+        <TabsList className="grid w-full grid-cols-4 lg:w-[800px]">
+          <TabsTrigger value="general">Geral</TabsTrigger>
           <TabsTrigger value="posts">Diário</TabsTrigger>
           <TabsTrigger value="projects">Projetos</TabsTrigger>
           <TabsTrigger value="members">Membros</TabsTrigger>
         </TabsList>
       </div>
+
+      <TabsContent value="general" className="m-0 border-0 outline-none">
+        <GeneralSettingsManager initialSettings={siteSettings} />
+      </TabsContent>
 
       <TabsContent value="posts" className="m-0 border-0 outline-none">
         <CategoryManager 

@@ -10,14 +10,16 @@ import { getProjects } from "@/lib/actions/projects"
 import { getMembers } from "@/lib/actions/members"
 import { getBlogPosts } from "@/lib/actions/blog-posts"
 import { getCategories } from "@/lib/actions/categories"
+import { getSiteSettings } from "@/lib/actions/settings"
 
 export default async function HomePage() {
   // Busca todos os dados em paralelo no servidor
-  const [projects, members, blogPosts, categories] = await Promise.all([
+  const [projects, members, blogPosts, categories, settings] = await Promise.all([
     getProjects(),
     getMembers(),
-    getBlogPosts(),
+    getBlogPosts(6),
     getCategories(),
+    getSiteSettings(),
   ])
 
   return (
@@ -30,7 +32,7 @@ export default async function HomePage() {
         <MembersSection initialMembers={members} categories={categories} />
         <BlogSection initialPosts={blogPosts} categories={categories} />
       </main>
-      <SiteFooter />
+      <SiteFooter settings={settings} />
     </>
   )
 }

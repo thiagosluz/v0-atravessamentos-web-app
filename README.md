@@ -70,25 +70,24 @@ pnpm dev
 
 ---
 
-## 🧪 Testes Automatizados
+## 🧪 Testes e Qualidade
 
-O projeto conta com uma suíte de testes completa para garantir a estabilidade das funcionalidades críticas.
+O projeto conta com uma suíte de testes robusta que atinge **100% de cobertura de linhas** nas lógicas administrativas.
 
-### Testes E2E (Playwright)
-Validam os fluxos de ponta a ponta, desde o login até a criação e publicação de conteúdo no site público.
-- **Executar todos os testes:** `npx playwright test`
-- **Executar um teste específico:** `npx playwright test e2e/cms.spec.ts`
-- **Ver relatório:** `npx playwright show-report`
+### 🛠️ Comandos Principais
 
-> **Nota:** Para rodar os testes E2E, o servidor de desenvolvimento deve estar acessível em `http://localhost:3000`.
+| Comando | Descrição |
+| :--- | :--- |
+| `pnpm test` | Executa todos os testes unitários (Vitest). |
+| `pnpm test:watch` | Executa testes unitários em modo de observação. |
+| `pnpm test:coverage:open` | Gera o relatório de cobertura e **abre o HTML no navegador**. |
+| `pnpm test:e2e` | Executa os testes de ponta a ponta (Playwright). |
+| `pnpm lint` | Valida a qualidade e padrões do código (ESLint). |
 
-### Testes Unitários (Vitest)
-Validam lógicas isoladas, helpers e componentes de UI.
-- **Executar:** `pnpm test`
-- **Modo Watch:** `npx vitest`
+### 📊 Cobertura de Testes
+Utilizamos o provedor `v8` para garantir que todas as Server Actions e utilitários estejam protegidos contra regressões. O relatório detalhado pode ser gerado localmente para inspeção visual de cada linha de código.
 
-### Credenciais de Teste
-Para desenvolvimento local e automação, utilizamos um usuário de teste padrão:
+### 🔐 Credenciais de Teste (Ambiente Local)
 - **E-mail:** `test@atravessamentos.com`
 - **Senha:** `password123`
 

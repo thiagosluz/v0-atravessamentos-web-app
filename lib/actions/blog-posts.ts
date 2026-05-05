@@ -19,14 +19,20 @@ function mapPost(p: any): BlogPost & { slug: string; content?: string } {
   }
 }
 
-export async function getBlogPosts() {
+export async function getBlogPosts(limit?: number) {
   const supabase = createAdminClient()
 
-  const { data, error } = await supabase
+  let query = supabase
     .from("blog_posts")
     .select("*")
     .eq("status", "Publicado")
     .order("published_at", { ascending: false })
+
+  if (limit) {
+    query = query.limit(limit)
+  }
+
+  const { data, error } = await query
 
   if (error) {
     console.error("Erro ao buscar posts:", error)

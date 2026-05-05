@@ -4,6 +4,8 @@ import { getBlogPostBySlug, getBlogPostSlugs } from "@/lib/actions/blog-posts"
 import { formatDate } from "@/lib/mock-data"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
+import { SiteFooter } from "@/components/site-footer"
+import { getSiteSettings } from "@/lib/actions/settings"
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -34,7 +36,10 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params
-  const post = await getBlogPostBySlug(slug)
+  const [post, settings] = await Promise.all([
+    getBlogPostBySlug(slug),
+    getSiteSettings(),
+  ])
 
   if (!post) notFound()
 
@@ -135,6 +140,7 @@ export default async function BlogPostPage({ params }: Props) {
           </div>
         </div>
       </article>
+      <SiteFooter settings={settings} />
     </div>
   )
 }

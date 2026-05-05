@@ -2,6 +2,7 @@ import { getMemberById, getMemberIds } from "@/lib/actions/members"
 import { notFound } from "next/navigation"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
+import { getSiteSettings } from "@/lib/actions/settings"
 import Link from "next/link"
 import { ArrowLeft, Instagram, Linkedin, Mail, Phone } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -27,7 +28,10 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 export default async function MemberPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const data = await getMemberById(id)
+  const [data, settings] = await Promise.all([
+    getMemberById(id),
+    getSiteSettings(),
+  ])
 
   if (!data) {
     notFound()
@@ -148,7 +152,7 @@ export default async function MemberPage({ params }: { params: Promise<{ id: str
           </div>
         </div>
       </main>
-      <SiteFooter />
+      <SiteFooter settings={settings} />
     </div>
   )
 }

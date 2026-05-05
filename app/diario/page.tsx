@@ -1,5 +1,6 @@
 import { getPaginatedBlogPosts } from "@/lib/actions/blog-posts"
 import { getCategories } from "@/lib/actions/categories"
+import { getSiteSettings } from "@/lib/actions/settings"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { DiaryFeed } from "@/components/blog/diary-feed"
@@ -30,7 +31,7 @@ export default async function DiarioPage({ searchParams }: DiarioPageProps) {
   const category = params.categoria ?? ""
   const q = params.q ?? ""
 
-  const [{ posts, total, totalPages }, categories] = await Promise.all([
+  const [{ posts, total, totalPages }, categories, settings] = await Promise.all([
     getPaginatedBlogPosts({
       page,
       category: category || undefined,
@@ -38,6 +39,7 @@ export default async function DiarioPage({ searchParams }: DiarioPageProps) {
       limit: LIMIT,
     }),
     getCategories("post"),
+    getSiteSettings(),
   ])
 
   return (
@@ -104,7 +106,7 @@ export default async function DiarioPage({ searchParams }: DiarioPageProps) {
         </div>
       </main>
 
-      <SiteFooter />
+      <SiteFooter settings={settings} />
     </div>
   )
 }

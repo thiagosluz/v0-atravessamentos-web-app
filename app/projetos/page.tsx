@@ -1,5 +1,5 @@
-import { getFilteredProjects } from "@/lib/actions/projects"
 import { getCategories } from "@/lib/actions/categories"
+import { getSiteSettings } from "@/lib/actions/settings"
 import type { Metadata } from "next"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
@@ -27,12 +27,13 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
   const category = params.categoria ?? ""
   const q = params.q ?? ""
 
-  const [projects, categories] = await Promise.all([
+  const [projects, categories, settings] = await Promise.all([
     getFilteredProjects({
       category: category || undefined,
       q: q || undefined,
     }),
     getCategories("project"),
+    getSiteSettings(),
   ])
 
   // Agrupar por ano
@@ -120,7 +121,7 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
         </div>
       </main>
 
-      <SiteFooter />
+      <SiteFooter settings={settings} />
     </div>
   )
 }

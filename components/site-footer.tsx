@@ -5,12 +5,8 @@ import { Instagram, Mail, MapPin, Youtube } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
-const socials = [
-  { label: "Instagram", icon: Instagram, href: "#" },
-  { label: "YouTube", icon: Youtube, href: "#" },
-  { label: "E-mail", icon: Mail, href: "mailto:contato@atravessamentos.org" },
-]
-
+import { type SiteSettings } from "@/lib/actions/settings"
+ 
 const footerLinks = [
   {
     title: "Coletivo",
@@ -25,12 +21,22 @@ const footerLinks = [
     links: ["Parcerias", "Editais", "Colabore", "Trabalhe conosco"],
   },
 ]
+ 
+interface SiteFooterProps {
+  settings: SiteSettings
+}
 
-export function SiteFooter() {
-  const [year, setYear] = React.useState<number>(2025)
+export function SiteFooter({ settings }: SiteFooterProps) {
+  const [mounted, setMounted] = React.useState(false)
+
+  const socials = [
+    { label: "Instagram", icon: Instagram, href: settings.instagram_url || "#" },
+    { label: "YouTube", icon: Youtube, href: settings.youtube_url || "#" },
+    { label: "E-mail", icon: Mail, href: `mailto:${settings.contact_email}` },
+  ]
 
   React.useEffect(() => {
-    setYear(new Date().getFullYear())
+    setMounted(true)
   }, [])
 
   return (
@@ -75,7 +81,6 @@ export function SiteFooter() {
               <Button
                 type="submit"
                 size="lg"
-                suppressHydrationWarning
                 className="h-12 rounded-full bg-primary px-7 font-semibold text-primary-foreground hover:bg-primary/90"
               >
                 Assinar
@@ -99,12 +104,17 @@ export function SiteFooter() {
               </span>
             </a>
             <p className="mt-5 max-w-md text-base text-background/70">
-              Coletivo de educação, arte e justiça social nascido em Jataí — Goiás.
+              {settings.footer_description}
             </p>
-            <p className="mt-4 inline-flex items-center gap-2 text-sm text-background/60">
+            <a 
+              href={settings.location_url} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="mt-4 inline-flex items-center gap-2 text-sm text-background/60 hover:text-background transition-colors"
+            >
               <MapPin className="h-4 w-4" />
-              Jataí — GO, Brasil · Cerrado
-            </p>
+              {settings.location_text}
+            </a>
 
             <div className="mt-6 flex gap-2">
               {socials.map((s) => {
@@ -146,15 +156,15 @@ export function SiteFooter() {
 
         {/* Bottom: legal */}
         <div className="flex flex-col items-start justify-between gap-4 border-t border-background/15 pt-8 text-xs text-background/55 md:flex-row md:items-center">
-          <p>© {year} Coletivo Atravessamentos. Feito com afeto e disputa.</p>
+          <p>© {mounted ? new Date().getFullYear() : "2025"} Coletivo Atravessamentos. Feito com afeto e disputa.</p>
           <div className="flex flex-wrap gap-x-5 gap-y-1">
-            <a href="#" className="hover:text-background">
+            <a href={settings.privacy_policy_url} className="hover:text-background">
               Política de privacidade
             </a>
-            <a href="#" className="hover:text-background">
+            <a href={settings.terms_url} className="hover:text-background">
               Termos
             </a>
-            <a href="#" className="hover:text-background">
+            <a href={settings.accessibility_url} className="hover:text-background">
               Acessibilidade
             </a>
           </div>

@@ -58,6 +58,7 @@ import { BlogFormDialog } from "@/components/admin/blog-form-dialog"
 import { SettingsPanel } from "@/components/admin/settings-panel"
 import { ProfilePanel } from "@/components/admin/profile-panel"
 import { type Category } from "@/lib/actions/categories"
+import { type SiteSettings } from "@/lib/actions/settings"
 
 const navigation = [
   { id: "overview", label: "Visão Geral", icon: LayoutDashboard },
@@ -80,9 +81,10 @@ interface AdminDashboardProps {
   initialMembers: Member[]
   initialBlogPosts: BlogPost[]
   initialCategories: Category[]
+  siteSettings: SiteSettings
 }
 
-export function AdminDashboard({ user, initialProjects, initialMembers, initialBlogPosts, initialCategories }: AdminDashboardProps) {
+export function AdminDashboard({ user, initialProjects, initialMembers, initialBlogPosts, initialCategories, siteSettings }: AdminDashboardProps) {
   const [active, setActive] = React.useState("dashboard")
   const [query, setQuery] = React.useState("")
   const [deleteConfirm, setDeleteConfirm] = React.useState<{type: "project" | "member" | "blog", id: string} | null>(null)
@@ -579,7 +581,7 @@ export function AdminDashboard({ user, initialProjects, initialMembers, initialB
                 )}
 
                 {active === "settings" && (
-                  <SettingsPanel categories={initialCategories} />
+                  <SettingsPanel categories={initialCategories} siteSettings={siteSettings} />
                 )}
                 
                 {active === "profile" && (

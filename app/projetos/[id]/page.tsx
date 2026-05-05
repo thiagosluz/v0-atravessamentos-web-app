@@ -4,6 +4,8 @@ import { getProjectById, getProjectIds } from "@/lib/actions/projects"
 import { formatDate } from "@/lib/mock-data"
 import { getProjects } from "@/lib/actions/projects"
 import { getCategories } from "@/lib/actions/categories"
+import { getSiteSettings } from "@/lib/actions/settings"
+import { SiteFooter } from "@/components/site-footer"
 import { ProjectsSection } from "@/components/landing/projects-section"
 import Link from "next/link"
 
@@ -29,7 +31,10 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function ProjectPage({ params }: Props) {
   const { id } = await params
-  const project = await getProjectById(id)
+  const [project, settings] = await Promise.all([
+    getProjectById(id),
+    getSiteSettings(),
+  ])
 
   if (!project) notFound()
 
@@ -147,6 +152,7 @@ export default async function ProjectPage({ params }: Props) {
           </div>
         </div>
       )}
+      <SiteFooter settings={settings} />
     </div>
   )
 }
