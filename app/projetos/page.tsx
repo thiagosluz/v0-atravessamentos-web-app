@@ -1,5 +1,6 @@
 import { getCategories } from "@/lib/actions/categories"
 import { getSiteSettings } from "@/lib/actions/settings"
+import { getFilteredProjects } from "@/lib/actions/projects"
 import type { Metadata } from "next"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
