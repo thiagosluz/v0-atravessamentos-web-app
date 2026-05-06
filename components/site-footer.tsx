@@ -27,7 +27,6 @@ interface SiteFooterProps {
 }
 
 export function SiteFooter({ settings }: SiteFooterProps) {
-  const [mounted, setMounted] = React.useState(false)
 
   const socials = [
     { label: "Instagram", icon: Instagram, href: settings.instagram_url || "#" },
@@ -35,9 +34,6 @@ export function SiteFooter({ settings }: SiteFooterProps) {
     { label: "E-mail", icon: Mail, href: `mailto:${settings.contact_email}` },
   ]
 
-  React.useEffect(() => {
-    setMounted(true)
-  }, [])
 
   return (
     <footer
@@ -156,7 +152,7 @@ export function SiteFooter({ settings }: SiteFooterProps) {
 
         {/* Bottom: legal */}
         <div className="flex flex-col items-start justify-between gap-4 border-t border-background/15 pt-8 text-xs text-background/55 md:flex-row md:items-center">
-          <p>© {mounted ? new Date().getFullYear() : "2025"} Coletivo Atravessamentos. Feito com afeto e disputa.</p>
+          <p>© {new Date().getFullYear()} Coletivo Atravessamentos. Feito com afeto e disputa.</p>
           <div className="flex flex-wrap gap-x-5 gap-y-1">
             <a href={settings.privacy_policy_url} className="hover:text-background">
               Política de privacidade

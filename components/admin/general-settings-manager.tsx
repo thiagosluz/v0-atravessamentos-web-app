@@ -8,6 +8,10 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
 import { type SiteSettings, updateSiteSettings } from "@/lib/actions/settings"
+import { RichTextEditor } from "@/components/admin/rich-text-editor"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { SEOPreview } from "@/components/admin/seo-preview"
+import { SmartImageUpload } from "@/components/admin/smart-image-upload"
 
 interface GeneralSettingsManagerProps {
   initialSettings: SiteSettings
@@ -55,13 +59,57 @@ export function GeneralSettingsManager({ initialSettings }: GeneralSettingsManag
           </div>
 
           <div className="space-y-2">
+            <Label htmlFor="seo_title">Título do Site (SEO)</Label>
+            <Input
+              id="seo_title"
+              value={settings.seo_title || ""}
+              onChange={(e) => setSettings({ ...settings, seo_title: e.target.value })}
+              placeholder="Ex: Atravessamentos — Arte e Educação"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="global_seo_desc">Meta Descrição Global</Label>
+            <Textarea
+              id="global_seo_desc"
+              value={settings.seo_description || ""}
+              onChange={(e) => setSettings({ ...settings, seo_description: e.target.value })}
+              placeholder="Descrição principal que representa o coletivo em todo o site..."
+              className="h-24 resize-none"
+            />
+            <p className="text-xs text-foreground/40">Aparece nos resultados de busca do Google (120-160 caracteres).</p>
+          </div>
+
+          <div className="space-y-4">
+            <Label htmlFor="og_image">Imagem de Compartilhamento (SEO)</Label>
+            <SmartImageUpload 
+              value={settings.og_image_url || ""}
+              onChange={(url) => setSettings({ ...settings, og_image_url: url })}
+            />
+            <p className="text-xs text-foreground/40">Aparece no WhatsApp e Redes Sociais. Qualquer imagem enviada será automaticamente centralizada com fundo borrado no tamanho ideal (1200x630px).</p>
+          </div>
+
+          <div className="space-y-2">
             <Label htmlFor="footer_description">Descrição do Rodapé</Label>
             <Textarea
               id="footer_description"
               value={settings.footer_description}
               onChange={(e) => setSettings({ ...settings, footer_description: e.target.value })}
               placeholder="Ex: Coletivo de educação, arte e justiça social..."
-              className="h-24 resize-none"
+              className="h-24"
+            />
+          </div>
+
+          {/* SEO Preview Section */}
+          <div className="mt-8 pt-8 border-t border-border/50">
+            <div className="mb-6">
+              <h4 className="text-sm font-bold uppercase tracking-widest text-foreground/70">Prévia da Identidade Digital</h4>
+              <p className="text-xs text-foreground/40 mt-1">Veja como o Coletivo aparece no mundo digital.</p>
+            </div>
+            <SEOPreview 
+              title={settings.seo_title || ""}
+              description={settings.seo_description || ""}
+              imageUrl={settings.og_image_url}
             />
           </div>
 
@@ -193,6 +241,95 @@ export function GeneralSettingsManager({ initialSettings }: GeneralSettingsManag
             />
           </div>
         </div>
+      </div>
+
+      <hr className="border-border" />
+
+      {/* Conteúdo Editorial */}
+      <div className="space-y-6">
+        <div>
+          <h3 className="text-lg font-bold flex items-center gap-2">
+            <FileText className="h-5 w-5 text-primary" />
+            Conteúdo Editorial das Páginas Legais
+          </h3>
+          <p className="text-sm text-foreground/60 mt-1">
+            Edite o texto completo que aparece nas páginas de conformidade.
+          </p>
+        </div>
+
+        <Tabs defaultValue="access" className="w-full">
+          <TabsList className="grid w-full grid-cols-3 rounded-xl">
+            <TabsTrigger value="access" className="rounded-lg">Acessibilidade</TabsTrigger>
+            <TabsTrigger value="privacy" className="rounded-lg">Privacidade</TabsTrigger>
+            <TabsTrigger value="terms" className="rounded-lg">Termos</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="access" className="mt-4 space-y-4">
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="access_seo">Meta Descrição (SEO)</Label>
+                <Input
+                  id="access_seo"
+                  value={settings.accessibility_seo_description || ""}
+                  onChange={(e) => setSettings({ ...settings, accessibility_seo_description: e.target.value })}
+                  placeholder="Descrição que aparece no Google para esta página..."
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Conteúdo de Acessibilidade</Label>
+                <RichTextEditor 
+                  content={settings.accessibility_content || ""} 
+                  onChange={(content) => setSettings({ ...settings, accessibility_content: content })}
+                  placeholder="Descreva o compromisso do coletivo com a acessibilidade..."
+                />
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="privacy" className="mt-4 space-y-4">
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="privacy_seo">Meta Descrição (SEO)</Label>
+                <Input
+                  id="privacy_seo"
+                  value={settings.privacy_seo_description || ""}
+                  onChange={(e) => setSettings({ ...settings, privacy_seo_description: e.target.value })}
+                  placeholder="Descrição que aparece no Google para esta página..."
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Conteúdo da Política de Privacidade</Label>
+                <RichTextEditor 
+                  content={settings.privacy_policy_content || ""} 
+                  onChange={(content) => setSettings({ ...settings, privacy_policy_content: content })}
+                  placeholder="Descreva como os dados são tratados..."
+                />
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="terms" className="mt-4 space-y-4">
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="terms_seo">Meta Descrição (SEO)</Label>
+                <Input
+                  id="terms_seo"
+                  value={settings.terms_seo_description || ""}
+                  onChange={(e) => setSettings({ ...settings, terms_seo_description: e.target.value })}
+                  placeholder="Descrição que aparece no Google para esta página..."
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Conteúdo dos Termos de Uso</Label>
+                <RichTextEditor 
+                  content={settings.terms_of_use_content || ""} 
+                  onChange={(content) => setSettings({ ...settings, terms_of_use_content: content })}
+                  placeholder="Descreva as regras de convivência e uso do site..."
+                />
+              </div>
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
 
       <div className="flex justify-end border-t border-border pt-6">

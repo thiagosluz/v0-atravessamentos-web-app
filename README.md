@@ -16,30 +16,33 @@ O Atravessamentos é uma plataforma digital dedicada a preservar e difundir a me
 - **Projetos**: listagem em `/projetos`, detalhe em `/projetos/[id]`, com filtro por categoria e busca.
 - **Diário (blog)**: arquivo em `/diario` (paginação, filtro por categoria, busca) e post em `/diario/[slug]`.
 - **Membros**: perfis em `/membros/[id]` e seção na landing.
-- **Páginas legais**: termos, privacidade e acessibilidade em rotas agrupadas em `app/(legal)/`.
+- **Páginas legais dinâmicas**: termos, privacidade e acessibilidade com conteúdo gerenciado via CMS e proteção XSS.
+- **SEO Profissional**: metadados dinâmicos, OpenGraph e Twitter Cards automatizados por página.
 - **Tema**: claro/escuro via `next-themes`.
 
 ### Painel administrativo (CMS)
 
-- **CRUD**: projetos, membros, posts do diário e categorias (tipos `post`, `project`, `member`).
-- **Editor rico**: Tiptap nos formulários de **Diário** e **Projetos** (HTML gravado no banco).
-- **Mídia**: uploads para buckets do Supabase Storage (`blog-media`, `avatars`).
-- **Configurações do site**: tabela `site_settings` (rodapé, localização, redes, e-mail, WhatsApp, URLs legais).
-- **Autenticação**: Supabase Auth; `/admin` exige sessão válida (verificação no servidor na página).
+- **CRUD**: projetos, membros, posts do diário e categorias.
+- **Editor rico**: Tiptap nos formulários de **Diário**, **Projetos** e **Páginas Legais**.
+- **Smart Media Processing**: upload inteligente com processamento via Canvas API (centralização e fundo blur automático para SEO).
+- **SEO Preview**: simulador visual de Google e Redes Sociais integrado ao gerenciador de configurações.
+- **Configurações do site**: tabela `site_settings` expandida para incluir identidade digital e metadados globais.
+- **Autenticação**: Supabase Auth com proteção de rotas no servidor.
 
 ---
 
 ## Tech stack
 
-- **Framework**: [Next.js 16](https://nextjs.org/) (App Router)
+- **Framework**: [Next.js 16](https://nextjs.org/) (App Router, Turbopack)
 - **Linguagem**: [TypeScript](https://www.typescriptlang.org/)
-- **Estilo**: [Tailwind CSS 4](https://tailwindcss.com/), tokens em `app/globals.css`
+- **Estilo**: [Tailwind CSS 4](https://tailwindcss.com/)
 - **Animação**: [Motion](https://motion.dev/)
 - **Dados e auth**: [Supabase](https://supabase.com/) (Postgres + Auth + Storage)
-- **UI**: [shadcn/ui](https://ui.shadcn.com/) (Radix), [Lucide](https://lucide.dev/)
-- **Formulários / validação**: React Hook Form, Zod
-- **Editor**: [Tiptap](https://tiptap.dev/) (`@tiptap/react`, starter-kit, link, image, YouTube, placeholder)
-- **Analytics** (produção): [@vercel/analytics](https://vercel.com/analytics)
+- **Processamento de Imagem**: Canvas API (Client-side)
+- **Segurança**: [isomorphic-dompurify](https://www.npmjs.com/package/isomorphic-dompurify) (Sanitização XSS)
+- **Util**: [date-fns](https://date-fns.org/) (Localização pt-BR)
+- **Editor**: [Tiptap](https://tiptap.dev/)
+- **Analytics**: [@vercel/analytics](https://vercel.com/analytics)
 
 ---
 
@@ -47,8 +50,8 @@ O Atravessamentos é uma plataforma digital dedicada a preservar e difundir a me
 
 ### Pré-requisitos
 
-- **Node.js 20+** (recomendado para Next.js 16)
-- **pnpm** (o repositório usa `pnpm-lock.yaml`)
+- **Node.js 20+**
+- **pnpm**
 
 ### Instalação
 
@@ -73,9 +76,9 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=sua_chave_anon
 SUPABASE_SERVICE_ROLE_KEY=sua_chave_service_role
 ```
 
-A chave **service role** é usada nas Server Actions que conversam com o banco e o Storage no servidor. Mantenha-a apenas em ambiente seguro; nunca exponha no cliente.
+4. **Storage**: Certifique-se de criar o bucket `site-assets` com acesso público no Supabase para as imagens de SEO e identidade.
 
-4. Inicie o ambiente de desenvolvimento:
+5. Inicie o ambiente de desenvolvimento:
 
 ```bash
 pnpm dev
@@ -85,14 +88,9 @@ pnpm dev
 
 ## Testes e qualidade
 
-- **Vitest** (`pnpm test`): testes unitários com mocks do Supabase, focados nas Server Actions e utilitários. Relatório de cobertura: `pnpm exec vitest run --coverage` (trechos como `e2e/`, `proxy.ts` e configs costumam ficar fora do escopo — ver `vitest.config.ts`).
-- **Playwright** (`pnpm test:e2e`): fluxos no navegador; sobe `pnpm dev` automaticamente quando não está em CI (ver `playwright.config.ts`).
+- **Vitest** (`pnpm test`): testes unitários focados nas Server Actions.
+- **Playwright** (`pnpm test:e2e`): fluxos de navegação e CRUD no navegador.
 - **ESLint** (`pnpm lint`).
-
-Credenciais de exemplo para testes locais (conforme usuário criado no Supabase do ambiente de desenvolvimento):
-
-- **E-mail:** `test@atravessamentos.com`
-- **Senha:** `password123`
 
 ---
 
@@ -101,16 +99,16 @@ Credenciais de exemplo para testes locais (conforme usuário criado no Supabase 
 | Documento | Conteúdo |
 |-----------|----------|
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Pastas, fluxo de dados, auth, deploy |
-| [docs/DATABASE.md](docs/DATABASE.md) | Tabelas, colunas alinhadas ao código, Storage |
+| [docs/SEO.md](docs/SEO.md) | Estratégia de SEO Global e Contextual 🆕 |
+| [docs/COMPONENTS.md](docs/COMPONENTS.md) | Guia técnico de Smart Upload e SEO Preview 🆕 |
 | [docs/ADMIN_GUIDE.md](docs/ADMIN_GUIDE.md) | Uso do painel para editores |
 | [docs/DEVELOPER_GUIDE.md](docs/DEVELOPER_GUIDE.md) | Padrões e comandos para quem desenvolve |
-| [docs/plan_tiptap_editor.md](docs/plan_tiptap_editor.md) | Plano histórico do editor rico e melhorias opcionais |
 
 ---
 
 ## Licença
 
-Este projeto é desenvolvido para o Coletivo Atravessamentos. Todos os direitos reservados.
+Este projeto é desenvolvido para o Coletivo Atravessamentos e está sob a [Licença MIT](LICENSE).
 
 ---
 
