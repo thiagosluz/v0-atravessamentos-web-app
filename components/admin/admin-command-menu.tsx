@@ -81,6 +81,7 @@ export function AdminCommandMenu({ setActive, onEditItem }: AdminCommandMenuProp
     <>
       <button
         onClick={() => setOpen(true)}
+        data-testid="command-menu-trigger"
         className="group relative flex h-9 w-56 items-center rounded-full border border-border bg-muted/50 px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted md:w-64"
       >
         <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
@@ -91,6 +92,7 @@ export function AdminCommandMenu({ setActive, onEditItem }: AdminCommandMenuProp
       </button>
  
       <CommandDialog open={open} onOpenChange={setOpen} shouldFilter={false}>
+        <div data-testid="command-menu-dialog" className="hidden" />
         <CommandInput 
           placeholder="O que você quer fazer?" 
           value={query}

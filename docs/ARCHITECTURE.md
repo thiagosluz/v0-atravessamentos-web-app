@@ -98,6 +98,16 @@ A aplicação é otimizada para visibilidade máxima:
 
 ---
 
+## 📬 Sistema de Contato e Comunicação
+
+O fluxo de contato utiliza uma arquitetura híbrida para máxima resiliência e segurança:
+- **Fluxo de Dados**: `Formulário (Client)` -> `Server Action (Server)` -> `Supabase (DB)` -> `Resend (Email)`.
+- **Persistência**: Todas as mensagens são salvas na tabela `contact_messages` via **Service Role**, permitindo que o coletivo tenha um backup caso o e-mail não chegue.
+- **Anti-Spam**: Proteção multicamada com **Honeypot** (campo invisível) e **Zod Validation**.
+- **Entrega**: Integração com a API do **Resend** para entrega de e-mails transacionais com templates HTML limpos.
+
+---
+
 ## Deploy
 
 - Compatível com **Vercel** (ou qualquer host com suporte a Next.js Node).

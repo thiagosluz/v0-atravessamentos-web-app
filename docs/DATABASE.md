@@ -95,6 +95,25 @@ Se a tabela estiver vazia ou houver erro na leitura, a action devolve **valores 
 
 ---
 
+### `contact_messages`
+
+Persistência das mensagens enviadas pelo formulário de contato público.
+
+| Coluna | Tipo | Notas |
+|--------|------|--------|
+| `id` | uuid | PK |
+| `created_at` | timestamptz | |
+| `name` | text | |
+| `email` | text | |
+| `category` | text | `Parceria` \| `Edital` \| `Colaboração` \| `Trabalho` \| `Outros` |
+| `subject` | text | |
+| `message` | text | |
+| `status` | text | `Lido` \| `Respondido` |
+
+As mensagens são gravadas via **Admin Client** (Service Role) a partir da Server Action `sendContactMessage`, ignorando RLS para garantir a captura do contato mesmo sem autenticação do remetente.
+
+---
+
 ## Storage (buckets)
 
 Conforme as Server Actions:

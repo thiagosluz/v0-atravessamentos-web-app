@@ -30,16 +30,34 @@ test.describe('Dashboard Admin - Smoke Test', () => {
   });
 
   test('deve funcionar o atalho de teclado inteligente e navegação', async ({ page }) => {
+    // Garantir viewport desktop para o menu não estar oculto (sm:block)
+    await page.setViewportSize({ width: 1280, height: 720 });
+    
     // Detectar SO e testar atalho
     const isMac = process.platform === 'darwin';
     const modifier = isMac ? 'Meta' : 'Control';
     
-    // Abrir Command Menu via atalho
-    await page.keyboard.press(`${modifier}+k`);
+    // 1. Abrir Command Menu via Botão Visual (Estratégia mais estável)
+    const searchButton = page.getByTestId('command-menu-trigger');
+    await expect(searchButton).toBeVisible();
+    await searchButton.click();
     
-    // Verificar se o menu abriu
+    // Verificar se o menu abriu usando o diálogo ou o marcador que adicionamos
     const commandMenu = page.locator('[role="dialog"]');
-    await expect(commandMenu).toBeVisible();
+    await expect(commandMenu).toBeVisible({ timeout: 10000 });
+    
+    // Fechar menu para testar o atalho
+    await page.keyboard.press('Escape');
+    await expect(commandMenu).not.toBeVisible();
+
+    // Pequeno delay para o evento de fechamento processar
+    await page.waitForTimeout(500);
+
+    // 2. Testar o atalho de teclado (Estratégia secundária)
+    await page.keyboard.down(modifier);
+    await page.keyboard.press('k');
+    await page.keyboard.up(modifier);
+    await expect(commandMenu).toBeVisible({ timeout: 10000 });
     
     // Verificar opção de voltar para o site público
     const backToSiteOption = page.locator('text="Ver Site Público"');

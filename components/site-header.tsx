@@ -15,7 +15,7 @@ const navItems = [
   { label: "Projetos", href: "/projetos" },
   { label: "Coletivo", href: "/#coletivo" },
   { label: "Diário", href: "/diario" },
-  { label: "Contato", href: "/#contato" },
+  { label: "Contato", href: "/contato" },
 ]
 
 interface SiteHeaderProps {

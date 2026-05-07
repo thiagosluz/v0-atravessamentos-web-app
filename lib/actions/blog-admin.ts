@@ -6,6 +6,7 @@ import { type BlogPost } from "@/lib/mock-data"
 import { ensureAdmin } from "@/lib/utils/auth-guard"
 import { blogPostSchema } from "@/lib/validations"
 import { z } from "zod"
+import { broadcastNews } from "./broadcast"
 
 async function uploadImage(supabase: any, file: File, bucket: string) {
   if (!file || file.size === 0) return null
@@ -94,6 +95,25 @@ export async function createBlogPost(formData: FormData) {
     revalidatePath("/")
     revalidatePath("/diario")
     revalidatePath("/admin")
+
+    // Disparar Newsletter se estiver publicado
+    if (validated.status === "Publicado") {
+      broadcastNews({
+        title: validated.title,
+        excerpt: validated.excerpt,
+        category: validated.category,
+        slug: slug,
+        imageUrl: coverImageUrl || undefined,
+      }).then(async (res) => {
+        if (res.success) {
+          await supabase
+            .from("blog_posts")
+            .update({ newsletter_sent_at: new Date().toISOString() })
+            .eq("id", data.id)
+        }
+      }).catch(err => console.error("Falha silenciosa no broadcast:", err))
+    }
+
     return { success: true, id: data.id }
   } catch (error: any) {
     if (error instanceof z.ZodError) {
@@ -135,7 +155,7 @@ export async function updateBlogPost(id: string, formData: FormData) {
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/(^-|-$)/g, "")
 
-    const { error } = await supabase
+    const { data: updatedPost, error } = await supabase
       .from("blog_posts")
       .update({
         ...validated,
@@ -145,10 +165,30 @@ export async function updateBlogPost(id: string, formData: FormData) {
         ...(coverImageUrl ? { cover_image: coverImageUrl } : {}),
       })
       .eq("id", id)
+      .select("*, newsletter_sent_at")
+      .single()
 
     if (error) {
       console.error("Erro ao atualizar post:", error)
       return { error: "Não foi possível atualizar o post." }
+    }
+
+    // Disparar Newsletter se estiver publicado e nunca enviado
+    if (validated.status === "Publicado" && !updatedPost.newsletter_sent_at) {
+      broadcastNews({
+        title: validated.title,
+        excerpt: validated.excerpt,
+        category: validated.category,
+        slug: slug,
+        imageUrl: updatedPost.cover_image || undefined,
+      }).then(async (res) => {
+        if (res.success) {
+          await supabase
+            .from("blog_posts")
+            .update({ newsletter_sent_at: new Date().toISOString() })
+            .eq("id", id)
+        }
+      }).catch(err => console.error("Falha no broadcast:", err))
     }
 
     revalidatePath("/")
@@ -185,12 +225,32 @@ export async function updateBlogPostStatus(id: string, status: "Publicado" | "Ra
     await ensureAdmin()
     const supabase = createAdminClient()
 
-    const { error } = await supabase
+    const { data: updatedPost, error } = await supabase
       .from("blog_posts")
       .update({ status, published_at: status === "Publicado" ? new Date().toISOString() : null })
       .eq("id", id)
+      .select("*")
+      .single()
 
     if (error) return { error: "Erro ao atualizar status." }
+
+    // Disparar Newsletter se mudar para Publicado e nunca enviado
+    if (status === "Publicado" && !updatedPost.newsletter_sent_at) {
+      broadcastNews({
+        title: updatedPost.title,
+        excerpt: updatedPost.excerpt,
+        category: updatedPost.category,
+        slug: updatedPost.slug,
+        imageUrl: updatedPost.cover_image || undefined,
+      }).then(async (res) => {
+        if (res.success) {
+          await supabase
+            .from("blog_posts")
+            .update({ newsletter_sent_at: new Date().toISOString() })
+            .eq("id", id)
+        }
+      }).catch(err => console.error("Falha no broadcast:", err))
+    }
 
     revalidatePath("/")
     revalidatePath("/admin")

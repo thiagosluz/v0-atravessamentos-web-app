@@ -33,3 +33,12 @@ export const projectSchema = z.object({
   year: z.string().regex(/^\d{4}$/, "Ano inválido"),
   status: z.enum(["Publicado", "Rascunho", "Em revisão"]),
 })
+
+// Esquema para Contato
+export const contactSchema = z.object({
+  name: z.string().min(2, "Nome é obrigatório"),
+  email: z.string().email("E-mail inválido"),
+  category: z.string().min(1, "Selecione uma categoria"),
+  subject: z.string().min(5, "Assunto deve ter pelo menos 5 caracteres"),
+  message: z.string().min(10, "A mensagem deve ter pelo menos 10 caracteres"),
+})

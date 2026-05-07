@@ -7,34 +7,91 @@ import { Input } from "@/components/ui/input"
 import { ClientOnly } from "@/components/client-only"
 
 import { type SiteSettings } from "@/lib/actions/settings"
- 
+import Link from "next/link"
+
 const footerLinks = [
   {
     title: "Coletivo",
-    links: ["Sobre", "Manifesto", "Membros", "Imprensa"],
+    links: [
+      { name: "Home", href: "/#topo" },
+      { name: "Sobre", href: "/#sobre" },
+      { name: "Membros", href: "/#coletivo" },
+      { name: "Diário", href: "/diario" },
+    ],
   },
   {
     title: "Ações",
-    links: ["Projetos", "Audiovisual", "Educação", "Eventos"],
+    links: [
+      { name: "Projetos", href: "/projetos" },
+      { name: "Audiovisual", href: "/projetos?categoria=Audiovisual" },
+      { name: "Educação", href: "/projetos?categoria=Educação" },
+      { name: "Eventos", href: "/projetos?categoria=Evento" },
+    ],
   },
   {
     title: "Contato",
-    links: ["Parcerias", "Editais", "Colabore", "Trabalhe conosco"],
+    links: [
+      { name: "Parcerias", href: "/contato" },
+      { name: "Editais", href: "/contato" },
+      { name: "Colabore", href: "/contato" },
+      { name: "Trabalhe conosco", href: "/contato" },
+    ],
   },
 ]
- 
+
+import { useToast } from "@/hooks/use-toast"
+import { subscribeToNewsletter } from "@/lib/actions/newsletter"
+
 interface SiteFooterProps {
   settings: SiteSettings
 }
 
 export function SiteFooter({ settings }: SiteFooterProps) {
+  const { toast } = useToast()
+  const [isSubmitting, setIsSubmitting] = React.useState(false)
+
+  const handleSubscribe = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+
+    const form = e.currentTarget
+    const formData = new FormData(form)
+    
+    try {
+      const result = await subscribeToNewsletter(formData)
+      
+      if (result?.error) {
+        toast({
+          title: "Não foi possível assinar",
+          description: result.error,
+          variant: "destructive",
+        })
+      } else if (result?.success) {
+        toast({
+          title: "Inscrição confirmada!",
+          description: result.alreadySubscribed 
+            ? "Você já faz parte da nossa travessia!" 
+            : "Bem-vinda à nossa travessia! Em breve você receberá novidades.",
+        })
+        form.reset()
+      }
+    } catch (error) {
+      console.error("Erro na inscrição:", error)
+      toast({
+        title: "Erro de conexão",
+        description: "Houve um problema ao processar sua inscrição. Verifique sua internet.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
 
   const socials = [
     { label: "Instagram", icon: Instagram, href: settings.instagram_url || "#" },
     { label: "YouTube", icon: Youtube, href: settings.youtube_url || "#" },
     { label: "E-mail", icon: Mail, href: `mailto:${settings.contact_email}` },
   ]
-
 
   return (
     <footer
@@ -62,15 +119,21 @@ export function SiteFooter({ settings }: SiteFooterProps) {
           </div>
           <ClientOnly fallback={<div className="flex flex-col justify-end gap-3 md:col-span-5 h-[120px] animate-pulse bg-background/5 rounded-2xl" />}>
             <form
-              onSubmit={(e) => e.preventDefault()}
+              onSubmit={handleSubscribe}
               className="flex flex-col justify-end gap-3 md:col-span-5"
             >
+              {/* Honeypot */}
+              <div className="sr-only" aria-hidden="true">
+                <input name="website" type="text" tabIndex={-1} autoComplete="off" />
+              </div>
+
               <label htmlFor="newsletter-email" className="sr-only">
                 E-mail
               </label>
               <div className="flex flex-col gap-3 sm:flex-row">
                 <Input
                   id="newsletter-email"
+                  name="email"
                   type="email"
                   required
                   placeholder="seu@email.com"
@@ -79,9 +142,10 @@ export function SiteFooter({ settings }: SiteFooterProps) {
                 <Button
                   type="submit"
                   size="lg"
+                  disabled={isSubmitting}
                   className="h-12 rounded-full bg-primary px-7 font-semibold text-primary-foreground hover:bg-primary/90"
                 >
-                  Assinar
+                  {isSubmitting ? "Assinando..." : "Assinar"}
                 </Button>
               </div>
               <p className="text-xs text-background/55">
@@ -105,9 +169,9 @@ export function SiteFooter({ settings }: SiteFooterProps) {
             <p className="mt-5 max-w-md text-base text-background/70">
               {settings.footer_description}
             </p>
-            <a 
-              href={settings.location_url} 
-              target="_blank" 
+            <a
+              href={settings.location_url}
+              target="_blank"
               rel="noopener noreferrer"
               className="mt-4 inline-flex items-center gap-2 text-sm text-background/60 hover:text-background transition-colors"
             >
@@ -139,13 +203,13 @@ export function SiteFooter({ settings }: SiteFooterProps) {
               </h3>
               <ul className="mt-4 space-y-2.5">
                 {group.links.map((link) => (
-                  <li key={link}>
-                    <a
-                      href="#"
+                  <li key={link.name}>
+                    <Link
+                      href={link.href}
                       className="text-base text-background/85 transition-colors hover:text-primary"
                     >
-                      {link}
-                    </a>
+                      {link.name}
+                    </Link>
                   </li>
                 ))}
               </ul>

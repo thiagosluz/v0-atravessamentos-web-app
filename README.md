@@ -19,10 +19,11 @@ O Atravessamentos é uma plataforma digital dedicada a preservar e difundir a me
 
 ## 🛠️ Tecnologias
 
-- **Frontend**: Next.js 15+ (App Router), Tailwind CSS 4, Framer Motion.
+- **Frontend**: Next.js 15+ (App Router), Tailwind CSS 4, Framer Motion (Motion).
 - **Backend**: Supabase (Auth, Database, Storage), Server Actions.
 - **Visualização**: Recharts para o dashboard administrativo.
 - **Testes**: Playwright (E2E) e Vitest (Unitários).
+- **SEO**: Metadados dinâmicos, Sitemap.xml e Robots.txt integrados.
 - **Editor**: Tiptap Rich Text Editor customizado.
 
 ## 📦 Estrutura de Pastas
@@ -50,6 +51,8 @@ Crie um arquivo `.env.local` com suas credenciais do Supabase:
 NEXT_PUBLIC_SUPABASE_URL=sua-url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=sua-chave-anon
 SUPABASE_SERVICE_ROLE_KEY=sua-chave-service-role
+RESEND_API_KEY=re_sua_chave_resend
+RESEND_AUDIENCE_ID=seu_audience_id
 ```
 
 ### Desenvolvimento

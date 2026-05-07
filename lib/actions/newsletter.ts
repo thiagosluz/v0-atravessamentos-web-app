@@ -1,0 +1,58 @@
+"use server"
+
+import { Resend } from "resend"
+import { z } from "zod"
+
+const resend = new Resend(process.env.RESEND_API_KEY || "re_placeholder")
+const audienceId = process.env.RESEND_AUDIENCE_ID
+
+const newsletterSchema = z.object({
+  email: z.string().email("E-mail inválido"),
+})
+
+export async function subscribeToNewsletter(formData: FormData) {
+  try {
+    // 1. Honeypot check
+    const honeypot = formData.get("website")
+    if (honeypot) {
+      return { success: true }
+    }
+
+    // 2. Validate data
+    const email = formData.get("email") as string
+    const validated = newsletterSchema.parse({ email })
+
+    if (!audienceId) {
+      console.error("RESEND_AUDIENCE_ID não configurado")
+      return { error: "Configuração do servidor incompleta." }
+    }
+
+    // 3. Add contact to Resend Audience
+    const { error } = await resend.contacts.create({
+      email: validated.email,
+      audienceId: audienceId,
+    })
+
+    if (error) {
+      const resendError = error as any
+      console.error("Erro no Resend Newsletter:", resendError)
+
+      // Se o erro for que o contato já existe, tratamos como sucesso para o usuário
+      if (resendError.name === "contact_already_exists" || resendError.error_code === "contact_already_exists") {
+        return { success: true, alreadySubscribed: true }
+      }
+      
+      // Mensagem amigável para erro de permissão
+      if (resendError.name === "restricted_api_key" || resendError.message?.includes("restricted")) {
+        return { error: "Erro de configuração: A chave da API do Resend precisa de permissão 'Full Access'." }
+      }
+
+      return { error: resendError.message || "Não foi possível assinar no momento." }
+    }
+
+    return { success: true }
+  } catch (err: any) {
+    console.error("Erro fatal na Server Action de Newsletter:", err)
+    return { error: err?.message || "Ocorreu um erro inesperado no servidor." }
+  }
+}
