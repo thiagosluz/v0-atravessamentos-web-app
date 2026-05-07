@@ -80,6 +80,24 @@ O painel central (`OverviewPanel`) utiliza uma arquitetura de agregação de dad
 
 ---
 
+## 🎨 Design System & UX (Motion)
+
+O projeto utiliza uma estratégia de "Perceived Performance" (Performance Percebida) avançada:
+- **Transições de Página**: Implementadas via `app/template.tsx` com `motion/react`, garantindo um fade-in orgânico em cada navegação.
+- **Skeletons**: Áreas de alto impacto como o Dashboard, Arquivo de Projetos e Diário utilizam esqueletos de carregamento que espelham o layout real para evitar Layout Shifts.
+- **Micro-interações**: Toggle de tema orbital e feedbacks visuais em botões elevam a sensação de produto premium.
+
+---
+
+## 🔍 Estratégia de SEO
+
+A aplicação é otimizada para visibilidade máxima:
+- **Sitemap Dinâmico**: Gerado em `app/sitemap.ts`, indexando automaticamente novos projetos e posts.
+- **MetadataBase**: Configurado em `app/layout.tsx` para o domínio `atravessamentos.com.br`.
+- **OpenGraph Dinâmico**: Cada post do blog e projeto gera metadados específicos para redes sociais (WhatsApp, Instagram, etc) via `generateMetadata`.
+
+---
+
 ## Deploy
 
 - Compatível com **Vercel** (ou qualquer host com suporte a Next.js Node).

@@ -10,11 +10,12 @@ O Atravessamentos é uma plataforma digital dedicada a preservar e difundir a me
 
 ## 🚀 Funcionalidades Principais
 
-- 🌑 **Modo Escuro nativo**: Design moderno e focado em acessibilidade.
-- 📊 **Dashboard Administrativo**: Visão geral de métricas, atividades recentes e gráficos de distribuição de conteúdo.
+- 🌑 **Modo Escuro e Design System**: Estética orgânica com cores tailoreadas e animações de órbita.
+- 📊 **Dashboard Administrativo**: Visão geral de métricas, atividades recentes e gráficos de distribuição.
 - ⌨️ **Centro de Comando (Cmd+K / Ctrl+K)**: Navegação ultra-rápida entre todas as seções do admin.
-- 🔄 **Navegação Integrada**: Transição fluida entre o site público e a área de gestão.
-- 🧹 **Testes E2E com Limpeza Automática**: Infraestrutura de testes robusta que não polui o banco de dados.
+- 🔄 **UX Premium**: Transições de página fluidas, esqueletos de carregamento (Skeletons) e animações motion.
+- 🔍 **SEO de Elite**: Sitemap dinâmico, metadados automáticos e OpenGraph para compartilhamento social.
+- 🧹 **Testes E2E com Limpeza**: Infraestrutura robusta com limpeza automática no Supabase.
 
 ## 🛠️ Tecnologias
 

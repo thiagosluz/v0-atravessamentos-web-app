@@ -19,10 +19,13 @@ const bricolage = Bricolage_Grotesque({
 })
 
 export const metadata: Metadata = {
-  title: "Atravessamentos — Coletivo de educação, arte e justiça social",
+  metadataBase: new URL('https://atravessamentos.com.br'),
+  title: {
+    default: "Atravessamentos — Coletivo de educação, arte e justiça social",
+    template: "%s | Atravessamentos"
+  },
   description:
     "Corpo coletivo que escuta, sonha e age. Travessia, afeto, política e criação. Coletivo nascido em Jataí-GO atuando entre educação, arte, decolonialidade e movimentos feminista e LGBTQIAPN+.",
-  generator: "v0.app",
   keywords: [
     "Atravessamentos",
     "Jataí",
@@ -34,6 +37,32 @@ export const metadata: Metadata = {
     "LGBTQIAPN+",
     "cultura afro-brasileira",
   ],
+  openGraph: {
+    type: 'website',
+    locale: 'pt_BR',
+    url: 'https://atravessamentos.com.br',
+    siteName: 'Atravessamentos',
+    title: 'Atravessamentos — Coletivo de educação, arte e justiça social',
+    description: 'Corpo coletivo que escuta, sonha e age. Travessia, afeto, política e criação em Jataí-GO.',
+    images: [
+      {
+        url: '/og-image.jpg', // Imagem padrão (precisa existir na pasta public)
+        width: 1200,
+        height: 630,
+        alt: 'Atravessamentos Coletivo',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Atravessamentos — Coletivo',
+    description: 'Corpo coletivo que escuta, sonha e age.',
+    images: ['/og-image.jpg'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  }
 }
 
 export const viewport: Viewport = {

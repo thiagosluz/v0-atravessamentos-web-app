@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS site_settings (
   location_url TEXT NOT NULL DEFAULT 'https://maps.google.com/?q=Jataí+GO',
   instagram_url TEXT,
   youtube_url TEXT,
-  contact_email TEXT NOT NULL DEFAULT 'contato@atravessamentos.org',
+  contact_email TEXT NOT NULL DEFAULT 'contato@atravessamentos.com.br',
   whatsapp_number TEXT,
   privacy_policy_url TEXT DEFAULT '#',
   terms_url TEXT DEFAULT '#',

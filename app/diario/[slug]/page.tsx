@@ -29,9 +29,26 @@ export async function generateMetadata({ params }: Props) {
   const post = await getBlogPostBySlug(slug)
   if (!post) return {}
 
+  const title = `${post.title} — Diário de Travessia`
+  const description = post.excerpt
+
   return {
-    title: `${post.title} — Diário de Travessia · Atravessamentos`,
-    description: post.excerpt,
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: 'article',
+      publishedTime: post.date,
+      authors: [post.author],
+      images: post.coverImage ? [post.coverImage] : ['/og-image.jpg'],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: post.coverImage ? [post.coverImage] : ['/og-image.jpg'],
+    },
   }
 }
 

@@ -23,9 +23,23 @@ export async function generateMetadata({ params }: Props) {
   const project = await getProjectById(id)
   if (!project) return {}
 
+  const title = `${project.title} — Projetos`
+  
   return {
-    title: `${project.title} — Atravessamentos`,
+    title,
     description: project.description,
+    openGraph: {
+      title,
+      description: project.description,
+      type: 'website',
+      images: project.coverImage ? [project.coverImage] : ['/og-image.jpg'],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description: project.description,
+      images: project.coverImage ? [project.coverImage] : ['/og-image.jpg'],
+    },
   }
 }
 

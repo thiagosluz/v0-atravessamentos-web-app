@@ -44,7 +44,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       location_url: "https://maps.google.com/?q=Jataí+GO",
       instagram_url: "#",
       youtube_url: "#",
-      contact_email: "contato@atravessamentos.org",
+      contact_email: "contato@atravessamentos.com.br",
       whatsapp_number: null,
       privacy_policy_url: "/privacidade",
       terms_url: "/termos",
@@ -68,7 +68,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
 export async function updateSiteSettings(settings: Partial<SiteSettings>) {
   try {
     await ensureAdmin()
-    
+
     const validatedData = siteSettingsSchema.partial().parse(settings)
     const supabase = createAdminClient()
 
