@@ -46,12 +46,29 @@ export async function broadcastNews(props: BroadcastNewsProps) {
     // Para simplificar no início, faremos um batch único. 
     // Se a lista crescer muito, precisaremos de um loop com delay.
     
-    const emails = subscribers.map((contact) => ({
-      from: "Coletivo Atravessamentos <onboarding@resend.dev>", // Mudar após verificar domínio
-      to: contact.email,
-      subject: `✨ Nova publicação: ${props.title}`,
-      html: html,
-    }))
+    const FROM_EMAIL = "Coletivo Atravessamentos <onboarding@resend.dev>"
+    
+    const emails = subscribers
+      .map((contact) => ({
+        from: FROM_EMAIL,
+        to: contact.email,
+        subject: `✨ Nova publicação: ${props.title}`,
+        html: html,
+      }))
+      // Durante testes com onboarding@resend.dev, o Resend só permite enviar para o seu próprio e-mail.
+      // Vamos filtrar para evitar que a Action quebre se houver outros e-mails na lista.
+      .filter(email => {
+        if (FROM_EMAIL.includes("onboarding@resend.dev")) {
+          // Só permite se for para o e-mail que você usa no Resend (ou se for o seu e-mail de teste)
+          // Aqui você pode colocar o seu e-mail fixo de teste se quiser
+          return email.to === "coletivoatravessamentosapp@gmail.com" || email.to === "filhodaluz8@gmail.com"
+        }
+        return true
+      })
+
+    if (emails.length === 0) {
+      return { success: true, message: "Nenhum destinatário autorizado para o domínio de teste." }
+    }
 
     // Resend batch send
     const { data: batchData, error: batchError } = await resend.batch.send(emails)
