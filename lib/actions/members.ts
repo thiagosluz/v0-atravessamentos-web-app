@@ -3,31 +3,37 @@
 import { createAdminClient } from "@/lib/supabase/admin"
 import { type Member } from "@/lib/mock-data"
 
-export async function getMembers() {
+export async function getMembers(page: number = 1, limit: number = 10) {
   const supabase = createAdminClient()
+  const from = (page - 1) * limit
+  const to = from + limit - 1
 
-  const { data, error } = await supabase
+  const { data, error, count } = await supabase
     .from("members")
-    .select("*")
+    .select("*", { count: "exact" })
     .order("created_at", { ascending: true })
+    .range(from, to)
 
   if (error) {
     console.error("Erro ao buscar membros:", error)
-    return []
+    return { data: [], count: 0 }
   }
 
-  return data.map((m) => ({
-    id: m.id,
-    name: m.name,
-    role: m.role,
-    tags: m.tags ?? [],
-    avatar: m.avatar,
-    bio: m.bio,
-    instagram: m.instagram,
-    linkedin: m.linkedin,
-    email: m.email,
-    phone: m.phone,
-  })) as Member[]
+  return {
+    data: data.map((m) => ({
+      id: m.id,
+      name: m.name,
+      role: m.role,
+      tags: m.tags ?? [],
+      avatar: m.avatar,
+      bio: m.bio,
+      instagram: m.instagram,
+      linkedin: m.linkedin,
+      email: m.email,
+      phone: m.phone,
+    })) as Member[],
+    count: count || 0
+  }
 }
 
 export async function getMemberIds() {

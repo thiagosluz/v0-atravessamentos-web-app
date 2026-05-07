@@ -48,9 +48,9 @@ Há também `styles/globals.css` no repositório; o layout ativo importa **`app/
 
 ## Fluxo de dados
 
-1. **Leitura**: em geral via Server Components que chamam funções em `lib/actions/*.ts` (muitas usam `createAdminClient()` para leitura no servidor, sem expor chaves ao browser).
-2. **Interatividade**: dados hidratados em componentes `"use client"` (filtros, formulários, animações).
-3. **Escrita**: Server Actions em `lib/actions/*-admin.ts`, `categories.ts`, `settings.ts`, etc., usando o cliente admin do Supabase e `revalidatePath` após mutações para atualizar páginas estáticas/cache.
+1. **Leitura**: via Server Components que chamam funções em `lib/actions/*.ts`. Implementamos **Paginação Server-Side** nestas ações usando o método `.range()` do Supabase, retornando sempre `{ data, count }` para permitir cálculos de UI no frontend.
+2. **Interatividade**: dados hidratados em componentes `"use client"` (filtros, formulários, animações). O componente `<Pagination />` gerencia a navegação sincronizada com a URL.
+3. **Escrita**: Server Actions em `lib/actions/*-admin.ts`, etc., usando o cliente admin do Supabase. Agora todas as mutações são validadas com **Zod Schemas** antes de qualquer persistência.
 
 ---
 
@@ -64,10 +64,9 @@ Há também `styles/globals.css` no repositório; o layout ativo importa **`app/
 ## Autenticação e proteção de rotas
 
 - **Supabase Auth** para login e sessão (cookies geridos pelo cliente SSR em `lib/supabase/server.ts`).
-- **`/admin`**: a página `app/admin/page.tsx` chama `getSession()` e redireciona para `/login` se não houver usuário.
-- **`/login`**: redireciona para `/admin` se já existir sessão.
-- **Arquivo `proxy.ts`**: contém um `matcher` e lógica de redirect semelhante à de middleware, porém o Next.js **só executa automaticamente** um arquivo chamado **`middleware.ts`** na raiz (ou conforme a pasta `src/` do projeto). Com o layout atual, **`proxy.ts` não é invocado pelo framework**; quem mantém o repositório pode mover essa lógica para um `middleware.ts` na raiz ou remover o arquivo se optar apenas pela checagem nas páginas.
-- **`lib/supabase/middleware.ts`**: função `updateSession` documentada pelo Supabase para renovar sessão no Edge; integra-se ao pipeline quando existe `middleware.ts` que a chama.
+- **Middleware Nativo (`middleware.ts`)**: Implementado na raiz do projeto para proteção global de rotas. Ele gerencia redirecionamentos automáticos (Ex: `/admin` -> `/login` sem sessão) e garante que o usuário esteja autenticado antes mesmo da página carregar no servidor.
+- **`/admin`**: Protegida pelo Middleware e reforçada por checagens de sessão no Server Component da página.
+- **`lib/supabase/middleware.ts`**: Utilizado pelo `middleware.ts` principal para renovar tokens de sessão a cada requisição (refresh de cookies).
 
 Sobre **RLS**: as políticas no Postgres continuam importantes para acesso direto ao Supabase; o app também usa **service role** em várias actions — o modelo de segurança deve ser revisado em conjunto (RLS + validação de usuário nas actions) para ambientes de produção.
 

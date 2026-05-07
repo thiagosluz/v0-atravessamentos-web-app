@@ -56,7 +56,7 @@ Projetos e ações do coletivo.
 | `title` | text | |
 | `description` | text | Pode conter HTML (editor rico) |
 | `year` | int | Usado na linha do tempo / filtros |
-| `status` | text | `Publicado` \| `Rascunho` \| `Em revisão` (tipos em `lib/mock-data.ts`) |
+| `status` | text | `Ativo` \| `Concluído` \| `Em Desenvolvimento` (conforme Zod Schema no admin) |
 | `category` | text | Nome da categoria |
 | `cover_image` | text | URL opcional |
 | `updated_at` | timestamptz | Atualizado nas mutações → ordenação em `getProjects` |
@@ -101,6 +101,7 @@ Conforme as Server Actions:
 
 - **`blog-media`**: imagens de capa / mídia de posts (`blog-admin.ts`).
 - **`avatars`**: fotos de membros (`members-admin.ts`).
+- **`site-assets`**: imagens globais, favicons e metadados de SEO (`settings.ts`).
 
 Configure políticas de Storage no Supabase para leitura pública onde necessário e escrita apenas para o perfil de serviço ou usuários autenticados, conforme a política de segurança do coletivo.
 

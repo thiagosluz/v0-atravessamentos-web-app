@@ -6,6 +6,7 @@ import { type Project } from "@/lib/mock-data"
 import Link from "next/link"
 import { ArrowUpRight } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { SafeHTML } from "@/components/safe-html"
 
 const ORGANIC_SHAPES = ["border-organic", "border-organic-2", "border-organic-3"] as const
 
@@ -146,9 +147,9 @@ function ProjectTimelineCard({ project, align, shape, index, getCategoryColor }:
             {project.title}
           </h3>
 
-          <div
+          <SafeHTML
+            content={project.description}
             className="text-foreground/60 line-clamp-3 mb-6 leading-relaxed text-sm md:text-base prose-sm"
-            dangerouslySetInnerHTML={{ __html: project.description }}
           />
 
           <span

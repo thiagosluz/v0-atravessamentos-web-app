@@ -3,6 +3,9 @@
 import { createAdminClient } from "@/lib/supabase/admin"
 import { revalidatePath } from "next/cache"
 import { type BlogPost } from "@/lib/mock-data"
+import { ensureAdmin } from "@/lib/utils/auth-guard"
+import { blogPostSchema } from "@/lib/validations"
+import { z } from "zod"
 
 async function uploadImage(supabase: any, file: File, bucket: string) {
   if (!file || file.size === 0) return null
@@ -28,160 +31,171 @@ async function uploadImage(supabase: any, file: File, bucket: string) {
 }
 
 export async function uploadBlogImage(formData: FormData) {
-  const supabase = createAdminClient()
-  const file = formData.get("image") as File
-  
-  if (!file) return { error: "Nenhuma imagem enviada." }
-  
-  const url = await uploadImage(supabase, file, "blog-media")
-  
-  if (!url) return { error: "Erro ao fazer upload da imagem." }
-  
-  return { url }
+  try {
+    await ensureAdmin()
+    const supabase = createAdminClient()
+    const file = formData.get("image") as File
+    
+    if (!file) return { error: "Nenhuma imagem enviada." }
+    
+    const url = await uploadImage(supabase, file, "blog-media")
+    
+    if (!url) return { error: "Erro ao fazer upload da imagem." }
+    
+    return { url }
+  } catch (error: any) {
+    return { error: error.message || "Não autorizado." }
+  }
 }
 
 export async function createBlogPost(formData: FormData) {
-  const supabase = createAdminClient()
-
-  const title = (formData.get("title") as string)?.trim()
-  const category = formData.get("category") as BlogPost["category"]
-  const excerpt = formData.get("excerpt") as string
-  const content = formData.get("content") as string
-  const author = formData.get("author") as string
-  const readTime = formData.get("readTime") as string
-  const status = formData.get("status") as "Publicado" | "Rascunho"
-  const coverFile = formData.get("coverImage") as File | null
-  
-  let coverImageUrl = null
-
-  if (coverFile && coverFile.size > 0) {
-    coverImageUrl = await uploadImage(supabase, coverFile, "blog-media")
-  }
-
-  if (!title || !category || !author || !status) {
-    return { error: "Preencha todos os campos obrigatórios." }
-  }
-
-  const slug = title
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "")
-
-  const { data, error } = await supabase.from("blog_posts").insert({
-    title,
-    category,
-    excerpt,
-    content,
-    author,
-    read_time: readTime,
-    slug,
-    status,
-    cover_image: coverImageUrl,
-  }).select("id").single()
-
-  if (error) {
-    console.error("Erro ao criar post:", error)
-    if (error.code === "23505") {
-      return { error: "Já existe um post com este título/slug." }
+  try {
+    await ensureAdmin()
+    
+    const rawData = {
+      title: formData.get("title") as string,
+      category: formData.get("category") as string,
+      excerpt: formData.get("excerpt") as string,
+      content: formData.get("content") as string,
+      author: formData.get("author") as string,
+      read_time: formData.get("readTime") as string,
+      status: formData.get("status") as any,
     }
-    return { error: "Não foi possível criar o post." }
-  }
 
-  revalidatePath("/")
-  revalidatePath("/diario")
-  revalidatePath("/admin")
-  return { success: true, id: data.id }
+    const validated = blogPostSchema.parse(rawData)
+    const supabase = createAdminClient()
+    
+    const coverFile = formData.get("coverImage") as File | null
+    let coverImageUrl = null
+
+    if (coverFile && coverFile.size > 0) {
+      coverImageUrl = await uploadImage(supabase, coverFile, "blog-media")
+    }
+
+    const slug = validated.title
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "")
+
+    const { data, error } = await supabase.from("blog_posts").insert({
+      ...validated,
+      read_time: validated.read_time,
+      slug,
+      cover_image: coverImageUrl,
+    }).select("id").single()
+
+    if (error) {
+      console.error("Erro ao criar post:", error)
+      return { error: "Erro ao salvar no banco de dados." }
+    }
+
+    revalidatePath("/")
+    revalidatePath("/diario")
+    revalidatePath("/admin")
+    return { success: true, id: data.id }
+  } catch (error: any) {
+    if (error instanceof z.ZodError) {
+      return { error: "Dados inválidos: " + error.errors.map(e => e.message).join(", ") }
+    }
+    return { error: error.message || "Erro inesperado." }
+  }
 }
 
 export async function updateBlogPost(id: string, formData: FormData) {
-  if (id.startsWith("temp-")) {
-    return { error: "Aguarde o post ser salvo antes de editá-lo." }
+  try {
+    await ensureAdmin()
+    if (id.startsWith("temp-")) return { error: "ID inválido." }
+
+    const rawData = {
+      title: formData.get("title") as string,
+      category: formData.get("category") as string,
+      excerpt: formData.get("excerpt") as string,
+      content: formData.get("content") as string,
+      author: formData.get("author") as string,
+      read_time: formData.get("readTime") as string,
+      status: formData.get("status") as any,
+    }
+
+    const validated = blogPostSchema.parse(rawData)
+    const supabase = createAdminClient()
+
+    const coverFile = formData.get("coverImage") as File | null
+    let coverImageUrl = null
+
+    if (coverFile && coverFile.size > 0) {
+      coverImageUrl = await uploadImage(supabase, coverFile, "blog-media")
+    }
+
+    const slug = validated.title
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "")
+
+    const { error } = await supabase
+      .from("blog_posts")
+      .update({
+        ...validated,
+        read_time: validated.read_time,
+        slug,
+        ...(validated.status === "Publicado" ? { published_at: new Date().toISOString() } : {}),
+        ...(coverImageUrl ? { cover_image: coverImageUrl } : {}),
+      })
+      .eq("id", id)
+
+    if (error) {
+      console.error("Erro ao atualizar post:", error)
+      return { error: "Não foi possível atualizar o post." }
+    }
+
+    revalidatePath("/")
+    revalidatePath("/diario")
+    revalidatePath("/admin")
+    return { success: true }
+  } catch (error: any) {
+    if (error instanceof z.ZodError) {
+      return { error: "Dados inválidos: " + error.errors.map(e => e.message).join(", ") }
+    }
+    return { error: error.message || "Erro inesperado." }
   }
-  const supabase = createAdminClient()
-
-  const title = (formData.get("title") as string)?.trim()
-  const category = formData.get("category") as BlogPost["category"]
-  const excerpt = formData.get("excerpt") as string
-  const content = formData.get("content") as string
-  const author = formData.get("author") as string
-  const readTime = formData.get("readTime") as string
-  const status = formData.get("status") as "Publicado" | "Rascunho"
-  const coverFile = formData.get("coverImage") as File | null
-
-  let coverImageUrl = null
-
-  if (coverFile && coverFile.size > 0) {
-    coverImageUrl = await uploadImage(supabase, coverFile, "blog-media")
-  }
-
-  if (!title || !category || !author || !status) {
-    return { error: "Preencha todos os campos obrigatórios." }
-  }
-
-  const slug = title
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "")
-
-  const { error } = await supabase
-    .from("blog_posts")
-    .update({
-      title,
-      category,
-      excerpt,
-      content,
-      author,
-      read_time: readTime,
-      slug,
-      status,
-      ...(status === "Publicado" ? { published_at: new Date().toISOString() } : {}),
-      ...(coverImageUrl ? { cover_image: coverImageUrl } : {}),
-    })
-    .eq("id", id)
-
-  if (error) {
-    console.error("Erro ao atualizar post:", error)
-    return { error: "Não foi possível atualizar o post." }
-  }
-
-  revalidatePath("/")
-  revalidatePath("/diario")
-  revalidatePath("/admin")
-  return { success: true }
 }
 
 export async function deleteBlogPost(id: string) {
-  const supabase = createAdminClient()
+  try {
+    await ensureAdmin()
+    const supabase = createAdminClient()
+    const { error } = await supabase.from("blog_posts").delete().eq("id", id)
 
-  const { error } = await supabase.from("blog_posts").delete().eq("id", id)
+    if (error) return { error: "Erro ao excluir." }
 
-  if (error) {
-    return { error: "Não foi possível excluir o post." }
+    revalidatePath("/")
+    revalidatePath("/diario")
+    revalidatePath("/admin")
+    return { success: true }
+  } catch (error: any) {
+    return { error: error.message }
   }
-
-  revalidatePath("/")
-  revalidatePath("/diario")
-  revalidatePath("/admin")
-  return { success: true }
 }
 
 export async function updateBlogPostStatus(id: string, status: "Publicado" | "Rascunho") {
-  const supabase = createAdminClient()
+  try {
+    await ensureAdmin()
+    const supabase = createAdminClient()
 
-  const { error } = await supabase
-    .from("blog_posts")
-    .update({ status, published_at: status === "Publicado" ? new Date().toISOString() : null })
-    .eq("id", id)
+    const { error } = await supabase
+      .from("blog_posts")
+      .update({ status, published_at: status === "Publicado" ? new Date().toISOString() : null })
+      .eq("id", id)
 
-  if (error) {
-    return { error: "Não foi possível atualizar o status." }
+    if (error) return { error: "Erro ao atualizar status." }
+
+    revalidatePath("/")
+    revalidatePath("/admin")
+    return { success: true }
+  } catch (error: any) {
+    return { error: error.message }
   }
-
-  revalidatePath("/")
-  revalidatePath("/admin")
-  return { success: true }
 }

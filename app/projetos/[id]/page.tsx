@@ -38,7 +38,7 @@ export default async function ProjectPage({ params }: Props) {
 
   if (!project) notFound()
 
-  const [allProjects, categories] = await Promise.all([
+  const [{ data: allProjects }, categories] = await Promise.all([
     getProjects(),
     getCategories()
   ])

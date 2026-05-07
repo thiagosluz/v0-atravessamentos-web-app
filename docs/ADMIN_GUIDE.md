@@ -9,6 +9,7 @@ Como gerenciar o conteúdo do site pelo painel em **`/admin`** (após login em *
 1. Abra `/login` (ou o link equivalente indicado pelo coletivo).
 2. Use o e-mail e a senha criados no **Supabase Auth** para este projeto.
 3. Com sessão válida, o painel carrega em `/admin`; há abas para projetos, membros, diário, configurações e perfil.
+4. **Navegação Eficiente**: As listagens de projetos, membros e diário agora são **paginadas**. Utilize os controles de página no rodapé de cada tabela para navegar rapidamente entre grandes volumes de conteúdo sem perda de performance.
 
 ---
 

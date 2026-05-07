@@ -1,5 +1,5 @@
 import React from "react"
-import DOMPurify from "isomorphic-dompurify"
+import { SafeHTML } from "@/components/safe-html"
 import { format, parseISO } from "date-fns"
 import { ptBR } from "date-fns/locale"
 import Link from "next/link"
@@ -18,8 +18,6 @@ export function LegalPageLayout({
   content,
   lastUpdate,
 }: LegalPageLayoutProps) {
-  // Sanitize content to prevent XSS
-  const sanitizedContent = DOMPurify.sanitize(content)
 
   // Format date to Brazilian full format
   const formattedDate = lastUpdate
@@ -48,13 +46,14 @@ export function LegalPageLayout({
         </h1>
       </header>
 
-      <section 
+      <SafeHTML 
+        content={content}
         className="prose prose-neutral dark:prose-invert max-w-none 
           prose-headings:font-display prose-headings:tracking-tight 
           prose-a:text-primary hover:prose-a:opacity-80
           prose-p:leading-relaxed prose-li:leading-relaxed
           prose-img:rounded-2xl prose-img:shadow-lg"
-        dangerouslySetInnerHTML={{ __html: sanitizedContent }}
+        as="section"
       />
 
       {formattedDate && (

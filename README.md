@@ -22,12 +22,12 @@ O Atravessamentos é uma plataforma digital dedicada a preservar e difundir a me
 
 ### Painel administrativo (CMS)
 
-- **CRUD**: projetos, membros, posts do diário e categorias.
+- **CRUD Pagidado**: gerenciamento performático de projetos, membros e blog com paginação server-side via URL.
 - **Editor rico**: Tiptap nos formulários de **Diário**, **Projetos** e **Páginas Legais**.
 - **Smart Media Processing**: upload inteligente com processamento via Canvas API (centralização e fundo blur automático para SEO).
 - **SEO Preview**: simulador visual de Google e Redes Sociais integrado ao gerenciador de configurações.
 - **Configurações do site**: tabela `site_settings` expandida para incluir identidade digital e metadados globais.
-- **Autenticação**: Supabase Auth com proteção de rotas no servidor.
+- **Autenticação e Segurança**: Supabase Auth com proteção de rotas via Middleware nativo, validação de schemas com Zod e proteção contra XSS.
 
 ---
 
@@ -39,7 +39,7 @@ O Atravessamentos é uma plataforma digital dedicada a preservar e difundir a me
 - **Animação**: [Motion](https://motion.dev/)
 - **Dados e auth**: [Supabase](https://supabase.com/) (Postgres + Auth + Storage)
 - **Processamento de Imagem**: Canvas API (Client-side)
-- **Segurança**: [isomorphic-dompurify](https://www.npmjs.com/package/isomorphic-dompurify) (Sanitização XSS)
+- **Segurança**: [isomorphic-dompurify](https://www.npmjs.com/package/isomorphic-dompurify) e [Zod](https://zod.dev/) (Validação e Sanitização)
 - **Util**: [date-fns](https://date-fns.org/) (Localização pt-BR)
 - **Editor**: [Tiptap](https://tiptap.dev/)
 - **Analytics**: [@vercel/analytics](https://vercel.com/analytics)

@@ -16,20 +16,26 @@ function mapProject(p: any): Project {
   }
 }
 
-export async function getProjects() {
+export async function getProjects(page: number = 1, limit: number = 10) {
   const supabase = createAdminClient()
+  const from = (page - 1) * limit
+  const to = from + limit - 1
 
-  const { data, error } = await supabase
+  const { data, error, count } = await supabase
     .from("projects")
-    .select("*")
+    .select("*", { count: "exact" })
     .order("updated_at", { ascending: false })
+    .range(from, to)
 
   if (error) {
     console.error("Erro ao buscar projetos:", error)
-    return []
+    return { data: [], count: 0 }
   }
 
-  return data.map(mapProject) as Project[]
+  return {
+    data: data.map(mapProject) as Project[],
+    count: count || 0
+  }
 }
 
 export async function getProjectById(id: string) {

@@ -13,13 +13,39 @@ Manutenção e evolução do projeto Atravessamentos.
 
 ### React e Next.js
 
-- **Server Actions**: ficam em `lib/actions/`, com `"use server"` no topo dos arquivos que exportam ações.
+- **Server Actions**: ficam em `lib/actions/`, com `"use server"` no topo. Devem seguir o padrão de validação rigorosa com **Zod** e retorno de erros estruturados.
 - **Componentes**: prefira componentes pequenos; estado e efeitos complexos vão para arquivos `"use client"` dedicados.
-- **Dados**: App Router — priorize Server Components; passe props para clients quando precisar de interatividade.
+- **Dados**: App Router — priorize Server Components; utilize os parâmetros de busca da URL para gerir estados como a paginação.
 
 ### Tipos e domínio
 
 - Tipos compartilhados do site em `lib/mock-data.ts` (nomes legados; em essência espelham colunas e enums usados nas telas).
+
+---
+
+## 🛡️ Segurança e Validação
+
+### Validação com Zod
+Todas as mutações via Server Action devem ser validadas. Exemplo:
+```typescript
+const schema = zod.object({ ... });
+const validatedFields = schema.safeParse(formData);
+if (!validatedFields.success) {
+  return { error: 'Dados inválidos' };
+}
+```
+
+### Sanitização (XSS)
+Para exibir conteúdo HTML proveniente do editor Tiptap, utilize o utilitário de sanitização baseado em `isomorphic-dompurify` para neutralizar scripts maliciosos.
+
+---
+
+## 🔢 Paginação Server-Side
+
+O projeto utiliza paginação baseada em URL para as listagens administrativas e públicas.
+- **Componente**: `<Pagination />` em `components/admin/pagination.tsx`.
+- **Lógica**: A página (ex: `/admin`) captura os `searchParams` e os injeta nas Server Actions.
+- **Consultas**: Utilize `page` e `limit` para calcular o `.range(start, end)` nas chamadas ao Supabase.
 
 ---
 
@@ -76,4 +102,4 @@ pnpm lint         # ESLint
 
 - Monitoramento de erros em produção (ex.: Sentry).
 - CI (GitHub Actions ou similar) rodando `lint`, `test` e `build`.
-- `middleware.ts` na raiz integrando `updateSession` e políticas de redirect, se desejado no Edge.
+- Melhoria na cobertura de testes para os novos componentes de UI.

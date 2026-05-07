@@ -64,20 +64,26 @@ export async function getBlogPostSlugs() {
   return (data ?? []).map((p) => p.slug) as string[]
 }
 
-export async function getAdminBlogPosts() {
+export async function getAdminBlogPosts(page: number = 1, limit: number = 10) {
   const supabase = createAdminClient()
+  const from = (page - 1) * limit
+  const to = from + limit - 1
 
-  const { data, error } = await supabase
+  const { data, error, count } = await supabase
     .from("blog_posts")
-    .select("*")
+    .select("*", { count: "exact" })
     .order("published_at", { ascending: false })
+    .range(from, to)
 
   if (error) {
     console.error("Erro ao buscar posts admin:", error)
-    return []
+    return { data: [], count: 0 }
   }
 
-  return data.map(mapPost)
+  return {
+    data: data.map(mapPost),
+    count: count || 0
+  }
 }
 
 export type BlogPostsFilter = {

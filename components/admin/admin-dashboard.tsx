@@ -75,24 +75,52 @@ const statusStyles = {
   "Em revisão": "bg-primary/10 text-primary border-primary/20",
 } as const
 
+import { Pagination } from "@/components/admin/pagination"
+
 interface AdminDashboardProps {
   user: any
-  initialProjects: Project[]
-  initialMembers: Member[]
-  initialBlogPosts: BlogPost[]
+  projectsData: { data: Project[], count: number }
+  membersData: { data: Member[], count: number }
+  blogPostsData: { data: BlogPost[], count: number }
   initialCategories: Category[]
   siteSettings: SiteSettings
+  currentPage: {
+    projects: number
+    members: number
+    blog: number
+  }
 }
 
-export function AdminDashboard({ user, initialProjects, initialMembers, initialBlogPosts, initialCategories, siteSettings }: AdminDashboardProps) {
-  const [active, setActive] = React.useState("dashboard")
+export function AdminDashboard({ 
+  user, 
+  projectsData, 
+  membersData, 
+  blogPostsData, 
+  initialCategories, 
+  siteSettings,
+  currentPage
+}: AdminDashboardProps) {
+  const [active, setActive] = React.useState("overview")
   const [query, setQuery] = React.useState("")
   const [deleteConfirm, setDeleteConfirm] = React.useState<{type: "project" | "member" | "blog", id: string} | null>(null)
   const { toast } = useToast()
   
-  const [localProjects, setLocalProjects] = React.useState<Project[]>(initialProjects)
-  const [localMembers, setLocalMembers] = React.useState<Member[]>(initialMembers)
-  const [localBlogPosts, setLocalBlogPosts] = React.useState<BlogPost[]>(initialBlogPosts)
+  const [localProjects, setLocalProjects] = React.useState<Project[]>(projectsData.data)
+  const [localMembers, setLocalMembers] = React.useState<Member[]>(membersData.data)
+  const [localBlogPosts, setLocalBlogPosts] = React.useState<BlogPost[]>(blogPostsData.data)
+
+  // Sincroniza estado local quando as props mudam (navegação por página)
+  React.useEffect(() => {
+    setLocalProjects(projectsData.data)
+  }, [projectsData.data])
+
+  React.useEffect(() => {
+    setLocalMembers(membersData.data)
+  }, [membersData.data])
+
+  React.useEffect(() => {
+    setLocalBlogPosts(blogPostsData.data)
+  }, [blogPostsData.data])
 
   const filteredProjects = localProjects.filter((p) =>
     p.title.toLowerCase().includes(query.toLowerCase()),
@@ -419,6 +447,12 @@ export function AdminDashboard({ user, initialProjects, initialMembers, initialB
                         </TableBody>
                       </Table>
                     </div>
+                    <Pagination 
+                      totalCount={projectsData.count} 
+                      pageSize={10} 
+                      currentPage={currentPage.projects} 
+                      paramName="p_page" 
+                    />
                   </>
                 )}
 
@@ -497,6 +531,12 @@ export function AdminDashboard({ user, initialProjects, initialMembers, initialB
                         </TableBody>
                       </Table>
                     </div>
+                    <Pagination 
+                      totalCount={membersData.count} 
+                      pageSize={10} 
+                      currentPage={currentPage.members} 
+                      paramName="m_page" 
+                    />
                   </>
                 )}
 
@@ -577,6 +617,12 @@ export function AdminDashboard({ user, initialProjects, initialMembers, initialB
                         </TableBody>
                       </Table>
                     </div>
+                    <Pagination 
+                      totalCount={blogPostsData.count} 
+                      pageSize={10} 
+                      currentPage={currentPage.blog} 
+                      paramName="b_page" 
+                    />
                   </>
                 )}
 

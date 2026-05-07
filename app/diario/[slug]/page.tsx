@@ -6,6 +6,7 @@ import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { SiteFooter } from "@/components/site-footer"
 import { getSiteSettings } from "@/lib/actions/settings"
+import { SafeHTML } from "@/components/safe-html"
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -108,9 +109,9 @@ export default async function BlogPostPage({ params }: Props) {
           </p>
 
           {post.content ? (
-            <div 
+            <SafeHTML 
+              content={post.content} 
               className="prose prose-lg max-w-none text-foreground/80 leading-relaxed"
-              dangerouslySetInnerHTML={{ __html: post.content }}
             />
           ) : (
             <div className="rounded-2xl border border-dashed border-border bg-muted/40 p-8 text-center">

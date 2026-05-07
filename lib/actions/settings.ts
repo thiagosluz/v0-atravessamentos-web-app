@@ -2,6 +2,8 @@
 
 import { createAdminClient } from "@/lib/supabase/admin"
 import { revalidatePath } from "next/cache"
+import { ensureAdmin } from "@/lib/utils/auth-guard"
+import { siteSettingsSchema } from "@/lib/validations"
 
 export interface SiteSettings {
   footer_description: string
@@ -64,28 +66,39 @@ export async function getSiteSettings(): Promise<SiteSettings> {
 }
 
 export async function updateSiteSettings(settings: Partial<SiteSettings>) {
-  const supabase = createAdminClient()
+  try {
+    await ensureAdmin()
+    
+    const validatedData = siteSettingsSchema.partial().parse(settings)
+    const supabase = createAdminClient()
 
-  const { error } = await supabase
-    .from("site_settings")
-    .update({
-      ...settings,
-      updated_at: new Date().toISOString(),
-    })
-    .eq("id", 1)
+    const { error } = await supabase
+      .from("site_settings")
+      .update({
+        ...validatedData,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", 1)
 
-  if (error) {
-    console.error("Erro ao atualizar configurações:", error)
-    return { error: "Não foi possível salvar as configurações." }
+    if (error) {
+      console.error("Erro ao atualizar configurações:", error)
+      return { error: "Não foi possível salvar as configurações." }
+    }
+
+    revalidatePath("/")
+    revalidatePath("/admin")
+    return { success: true }
+  } catch (error: any) {
+    if (error.name === "ZodError") {
+      return { error: "Dados inválidos: " + error.errors.map((e: any) => e.message).join(", ") }
+    }
+    return { error: error.message || "Erro inesperado." }
   }
-
-  revalidatePath("/")
-  revalidatePath("/admin")
-  return { success: true }
 }
 
 export async function uploadSiteImage(formData: FormData) {
   try {
+    await ensureAdmin()
     const supabase = createAdminClient()
     const file = formData.get("image") as File
     if (!file) return { error: "Nenhuma imagem fornecida" }

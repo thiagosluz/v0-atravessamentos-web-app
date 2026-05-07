@@ -14,7 +14,7 @@ import { getSiteSettings } from "@/lib/actions/settings"
 
 export default async function HomePage() {
   // Busca todos os dados em paralelo no servidor
-  const [projects, members, blogPosts, categories, settings] = await Promise.all([
+  const [{ data: projects }, { data: members }, blogPosts, categories, settings] = await Promise.all([
     getProjects(),
     getMembers(),
     getBlogPosts(6),
