@@ -1,6 +1,6 @@
-# Atravessamentos — Coletivo e Memória
+# Atravessamentos - CMS & Portfólio Coletivo
 
-![Atravessamentos Hero](public/hero-preview.png)
+Plataforma oficial do coletivo **Atravessamentos**.
 
 > **"Corpo coletivo que escuta, sonha e age. Travessia, afeto, política e criação."**
 
@@ -8,110 +8,64 @@ O Atravessamentos é uma plataforma digital dedicada a preservar e difundir a me
 
 ---
 
-## ✨ Funcionalidades principais
+## 🚀 Funcionalidades Principais
 
-### Portal público
+- 🌑 **Modo Escuro nativo**: Design moderno e focado em acessibilidade.
+- 📊 **Dashboard Administrativo**: Visão geral de métricas, atividades recentes e gráficos de distribuição de conteúdo.
+- ⌨️ **Centro de Comando (Cmd+K / Ctrl+K)**: Navegação ultra-rápida entre todas as seções do admin.
+- 🔄 **Navegação Integrada**: Transição fluida entre o site público e a área de gestão.
+- 🧹 **Testes E2E com Limpeza Automática**: Infraestrutura de testes robusta que não polui o banco de dados.
 
-- **Hero**: tipografia com sobreposição (“Typographic Overlap”) no conceito de atravessamento.
-- **Projetos**: listagem em `/projetos`, detalhe em `/projetos/[id]`, com filtro por categoria e busca.
-- **Diário (blog)**: arquivo em `/diario` (paginação, filtro por categoria, busca) e post em `/diario/[slug]`.
-- **Membros**: perfis em `/membros/[id]` e seção na landing.
-- **Páginas legais dinâmicas**: termos, privacidade e acessibilidade com conteúdo gerenciado via CMS e proteção XSS.
-- **SEO Profissional**: metadados dinâmicos, OpenGraph e Twitter Cards automatizados por página.
-- **Tema**: claro/escuro via `next-themes`.
+## 🛠️ Tecnologias
 
-### Painel administrativo (CMS)
+- **Frontend**: Next.js 15+ (App Router), Tailwind CSS 4, Framer Motion.
+- **Backend**: Supabase (Auth, Database, Storage), Server Actions.
+- **Visualização**: Recharts para o dashboard administrativo.
+- **Testes**: Playwright (E2E) e Vitest (Unitários).
+- **Editor**: Tiptap Rich Text Editor customizado.
 
-- **CRUD Pagidado**: gerenciamento performático de projetos, membros e blog com paginação server-side via URL.
-- **Editor rico**: Tiptap nos formulários de **Diário**, **Projetos** e **Páginas Legais**.
-- **Smart Media Processing**: upload inteligente com processamento via Canvas API (centralização e fundo blur automático para SEO).
-- **SEO Preview**: simulador visual de Google e Redes Sociais integrado ao gerenciador de configurações.
-- **Configurações do site**: tabela `site_settings` expandida para incluir identidade digital e metadados globais.
-- **Autenticação e Segurança**: Supabase Auth com proteção de rotas via Middleware nativo, validação de schemas com Zod e proteção contra XSS.
+## 📦 Estrutura de Pastas
 
----
+O projeto utiliza a estrutura padrão do Next.js App Router com separação clara de domínios:
 
-## Tech stack
+- `app/`: Rotas públicas e administrativas.
+- `components/`: Componentes modulares (admin, landing, UI).
+- `lib/actions/`: Lógica de negócio e mutações via Server Actions.
+- `e2e/`: Suíte de testes ponta-a-ponta.
 
-- **Framework**: [Next.js 16](https://nextjs.org/) (App Router, Turbopack)
-- **Linguagem**: [TypeScript](https://www.typescriptlang.org/)
-- **Estilo**: [Tailwind CSS 4](https://tailwindcss.com/)
-- **Animação**: [Motion](https://motion.dev/)
-- **Dados e auth**: [Supabase](https://supabase.com/) (Postgres + Auth + Storage)
-- **Processamento de Imagem**: Canvas API (Client-side)
-- **Segurança**: [isomorphic-dompurify](https://www.npmjs.com/package/isomorphic-dompurify) e [Zod](https://zod.dev/) (Validação e Sanitização)
-- **Util**: [date-fns](https://date-fns.org/) (Localização pt-BR)
-- **Editor**: [Tiptap](https://tiptap.dev/)
-- **Analytics**: [@vercel/analytics](https://vercel.com/analytics)
-
----
-
-## Como começar
-
-### Pré-requisitos
-
-- **Node.js 20+**
-- **pnpm**
+## 🚦 Início Rápido
 
 ### Instalação
-
-1. Clone o repositório:
-
-```bash
-git clone https://github.com/thiagosluz/v0-atravessamentos-web-app.git
-cd v0-atravessamentos-web-app
-```
-
-2. Instale as dependências:
 
 ```bash
 pnpm install
 ```
 
-3. Configure as variáveis de ambiente (`.env.local`):
+### Configuração
+
+Crie um arquivo `.env.local` com suas credenciais do Supabase:
 
 ```env
-NEXT_PUBLIC_SUPABASE_URL=seu_url_do_supabase
-NEXT_PUBLIC_SUPABASE_ANON_KEY=sua_chave_anon
-SUPABASE_SERVICE_ROLE_KEY=sua_chave_service_role
+NEXT_PUBLIC_SUPABASE_URL=sua-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=sua-chave-anon
+SUPABASE_SERVICE_ROLE_KEY=sua-chave-service-role
 ```
 
-4. **Storage**: Certifique-se de criar o bucket `site-assets` com acesso público no Supabase para as imagens de SEO e identidade.
-
-5. Inicie o ambiente de desenvolvimento:
+### Desenvolvimento
 
 ```bash
 pnpm dev
 ```
 
----
+### Testes
 
-## Testes e qualidade
+```bash
+# Unitários
+pnpm test
 
-- **Vitest** (`pnpm test`): testes unitários focados nas Server Actions.
-- **Playwright** (`pnpm test:e2e`): fluxos de navegação e CRUD no navegador.
-- **ESLint** (`pnpm lint`).
-
----
-
-## Documentação no repositório
-
-| Documento | Conteúdo |
-|-----------|----------|
-| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Pastas, fluxo de dados, auth, deploy |
-| [docs/SEO.md](docs/SEO.md) | Estratégia de SEO Global e Contextual 🆕 |
-| [docs/COMPONENTS.md](docs/COMPONENTS.md) | Guia técnico de Smart Upload e SEO Preview 🆕 |
-| [docs/ADMIN_GUIDE.md](docs/ADMIN_GUIDE.md) | Uso do painel para editores |
-| [docs/DEVELOPER_GUIDE.md](docs/DEVELOPER_GUIDE.md) | Padrões e comandos para quem desenvolve |
+# E2E (Playwright)
+pnpm test:e2e
+```
 
 ---
-
-## Licença
-
-Este projeto é desenvolvido para o Coletivo Atravessamentos e está sob a [Licença MIT](LICENSE).
-
----
-
-<div align="center">
-  <p>Desenvolvido com ❤️ para a arte e educação de Jataí.</p>
-</div>
+Desenvolvido com afeto para o Coletivo Atravessamentos.

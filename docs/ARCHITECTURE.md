@@ -34,6 +34,8 @@ Visão técnica do projeto **Atravessamentos** (Next.js App Router + Supabase).
 │   ├── mock-data.ts        # Tipos TypeScript espelhando o domínio / colunas DB
 │   └── utils.ts
 ├── e2e/                    # Testes Playwright
+│   ├── cleanup.ts          # Script global de limpeza de dados (globalTeardown)
+│   └── …
 ├── __tests__/              # Testes Vitest (unit + setup)
 ├── public/                 # Estáticos
 ├── proxy.ts                # Lógica tipo-middleware (Supabase + redirects /admin e /login); ver nota abaixo
@@ -41,8 +43,6 @@ Visão técnica do projeto **Atravessamentos** (Next.js App Router + Supabase).
 ├── vitest.config.ts
 └── components.json         # Configuração shadcn/ui
 ```
-
-Há também `styles/globals.css` no repositório; o layout ativo importa **`app/globals.css`**.
 
 ---
 
@@ -54,21 +54,29 @@ Há também `styles/globals.css` no repositório; o layout ativo importa **`app/
 
 ---
 
-## Sistema de cores dinâmico (categorias)
+## Dashboard Administrativo (Overview)
 
-- Categorias no banco incluem um campo `color` com nome de cor compatível com Tailwind (ex.: `amber`, `rose`).
-- Helpers no frontend mapeiam isso para classes de badge/borda coerentes com o tema.
+O painel central (`OverviewPanel`) utiliza uma arquitetura de agregação de dados no cliente:
+- **Agregação**: Combina `projects`, `blogPosts` e `members` em uma lista unificada de atividades recentes.
+- **Visualização**: Utiliza `recharts` para o gráfico de rosca de distribuição de categorias de projeto.
+- **Normalização**: Uma camada de normalização de datas lida com campos disparatados (`updated_at`, `created_at`, `published_at`) para garantir a ordem cronológica correta.
+- **UX Adaptativa**: O componente detecta o SO do usuário para exibir atalhos apropriados (`Cmd+K` vs `Ctrl+K`).
 
 ---
 
 ## Autenticação e proteção de rotas
 
 - **Supabase Auth** para login e sessão (cookies geridos pelo cliente SSR em `lib/supabase/server.ts`).
-- **Middleware Nativo (`middleware.ts`)**: Implementado na raiz do projeto para proteção global de rotas. Ele gerencia redirecionamentos automáticos (Ex: `/admin` -> `/login` sem sessão) e garante que o usuário esteja autenticado antes mesmo da página carregar no servidor.
-- **`/admin`**: Protegida pelo Middleware e reforçada por checagens de sessão no Server Component da página.
-- **`lib/supabase/middleware.ts`**: Utilizado pelo `middleware.ts` principal para renovar tokens de sessão a cada requisição (refresh de cookies).
+- **Middleware Nativo (`middleware.ts`)**: Implementado na raiz do projeto para proteção global de rotas. Ele gerencia redirecionamentos automáticos (Ex: `/admin` -> `/login` sem sessão).
+- **RLS**: As políticas no Postgres continuam importantes para acesso direto ao Supabase; o app também usa **service role** em várias actions críticas.
 
-Sobre **RLS**: as políticas no Postgres continuam importantes para acesso direto ao Supabase; o app também usa **service role** em várias actions — o modelo de segurança deve ser revisado em conjunto (RLS + validação de usuário nas actions) para ambientes de produção.
+---
+
+## Estratégia de Testes e Qualidade
+
+- **Testes Unitários**: Vitest para funções puras e utilitários em `lib/utils.ts`.
+- **Testes E2E**: Playwright para fluxos completos do CMS.
+- **Vassoura de Dados (Cleanup)**: Implementamos um `globalTeardown` que identifica itens criados durante os testes (prefixados com `[E2E]`) e os remove automaticamente do banco ao final da execução. Isso mantém o banco de desenvolvimento livre de lixo.
 
 ---
 
