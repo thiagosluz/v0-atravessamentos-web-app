@@ -1,9 +1,9 @@
 "use client"
 
 import * as React from "react"
-import { 
-  Clock, 
-  AlertCircle, 
+import {
+  Clock,
+  AlertCircle,
   ArrowRight,
   FileText,
   FolderKanban,
@@ -13,12 +13,12 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { 
-  PieChart, 
-  Pie, 
-  Cell, 
-  ResponsiveContainer, 
-  Tooltip as RechartsTooltip 
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  Tooltip as RechartsTooltip
 } from "recharts"
 
 interface OverviewPanelProps {
@@ -32,6 +32,15 @@ interface OverviewPanelProps {
 const COLORS = ["#8B9D83", "#C5A059", "#D97D54", "#4A5D4E", "#7D6B4A"]
 
 export function OverviewPanel({ user, projects, blogPosts, members, setActive }: OverviewPanelProps) {
+  const [isMac, setIsMac] = React.useState(true)
+
+  React.useEffect(() => {
+    // Detecta se o SO é Mac para ajustar a exibição do atalho
+    if (typeof window !== "undefined" && navigator) {
+      setIsMac(navigator.platform.toUpperCase().indexOf('MAC') >= 0)
+    }
+  }, [])
+
   const userName = user?.user_metadata?.full_name?.split(" ")[0] || user?.email?.split("@")[0] || "Administrador"
 
   // Função auxiliar para normalizar a data de cada tipo de item
@@ -46,7 +55,7 @@ export function OverviewPanel({ user, projects, blogPosts, members, setActive }:
     const p = projects.map(item => ({ ...item, type: 'project' }))
     const b = blogPosts.map(item => ({ ...item, type: 'blog' }))
     const m = members.map(item => ({ ...item, type: 'member' }))
-    
+
     return [...p, ...b, ...m]
       .sort((a, b) => getItemDate(b).getTime() - getItemDate(a).getTime())
       .slice(0, 5)
@@ -56,7 +65,7 @@ export function OverviewPanel({ user, projects, blogPosts, members, setActive }:
   const pendingItems = React.useMemo(() => {
     const p = projects.filter(item => item.status !== 'Publicado').map(item => ({ ...item, type: 'project' }))
     const b = blogPosts.filter(item => item.status !== 'Publicado').map(item => ({ ...item, type: 'blog' }))
-    
+
     return [...p, ...b]
       .sort((a, b) => getItemDate(b).getTime() - getItemDate(a).getTime())
       .slice(0, 4)
@@ -74,10 +83,10 @@ export function OverviewPanel({ user, projects, blogPosts, members, setActive }:
   const newItemsCount = React.useMemo(() => {
     const thirtyDaysAgo = new Date()
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
-    
+
     const newProjects = projects.filter(p => getItemDate(p) > thirtyDaysAgo).length
     const newPosts = blogPosts.filter(b => getItemDate(b) > thirtyDaysAgo).length
-    
+
     return newProjects + newPosts
   }, [projects, blogPosts])
 
@@ -94,11 +103,10 @@ export function OverviewPanel({ user, projects, blogPosts, members, setActive }:
             Olá, {userName}!
           </h2>
           <p className="mt-2 max-w-xl text-background/70">
-            Temos <span className="font-bold text-background">{newItemsCount} novas atualizações</span> nos últimos 30 dias. 
-            O site está recebendo movimentações constantes.
+            Temos <span className="font-bold text-background">{newItemsCount} novas atualizações</span> nos últimos 30 dias.
           </p>
         </div>
-        {/* Elemento decorativo */}
+        {/* Elementos decorativos */}
         <div className="absolute -right-8 -top-8 h-48 w-48 rounded-full bg-primary/20 blur-3xl" />
         <div className="absolute -bottom-12 right-12 h-32 w-32 rounded-full bg-[var(--ouro)]/10 blur-2xl" />
       </div>
@@ -112,9 +120,6 @@ export function OverviewPanel({ user, projects, blogPosts, members, setActive }:
                 <Clock className="h-4 w-4 text-primary" />
                 Últimas Atualizações
               </h3>
-              <Button variant="ghost" size="sm" className="h-8 text-xs font-semibold" onClick={() => setActive("projects")}>
-                Ver histórico completo <ArrowRight className="ml-1.5 h-3 w-3" />
-              </Button>
             </div>
             <div className="divide-y divide-border">
               {recentActivity.length > 0 ? (
@@ -123,31 +128,31 @@ export function OverviewPanel({ user, projects, blogPosts, members, setActive }:
                     <div className={cn(
                       "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl",
                       item.type === 'project' ? "bg-blue-500/10 text-blue-500" :
-                      item.type === 'blog' ? "bg-amber-500/10 text-amber-500" :
-                      "bg-emerald-500/10 text-emerald-500"
+                        item.type === 'blog' ? "bg-amber-500/10 text-amber-500" :
+                          "bg-emerald-500/10 text-emerald-500"
                     )}>
                       {item.type === 'project' ? <FolderKanban className="h-5 w-5" /> :
-                       item.type === 'blog' ? <FileText className="h-5 w-5" /> :
-                       <Users className="h-5 w-5" />}
+                        item.type === 'blog' ? <FileText className="h-5 w-5" /> :
+                          <Users className="h-5 w-5" />}
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="font-medium truncate text-sm text-foreground">
                         {item.title || item.name}
                       </p>
                       <p className="text-xs text-foreground/50">
-                        {item.type === 'project' ? 'Projeto' : item.type === 'blog' ? 'Blog' : 'Membro'} • 
+                        {item.type === 'project' ? 'Projeto' : item.type === 'blog' ? 'Blog' : 'Membro'} •
                         {getItemDate(item).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}
                       </p>
                     </div>
                     <div className="hidden sm:block">
-                       <span className={cn(
-                         "px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide uppercase",
-                         item.status === 'Publicado' ? "bg-emerald-500/10 text-emerald-600" : 
-                         item.status === 'Em revisão' ? "bg-orange-500/10 text-orange-600" :
-                         "bg-muted text-muted-foreground"
-                       )}>
-                         {item.status || 'Ativo'}
-                       </span>
+                      <span className={cn(
+                        "px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide uppercase",
+                        item.status === 'Publicado' ? "bg-emerald-500/10 text-emerald-600" :
+                          item.status === 'Em revisão' ? "bg-orange-500/10 text-orange-600" :
+                            "bg-muted text-muted-foreground"
+                      )}>
+                        {item.status || 'Ativo'}
+                      </span>
                     </div>
                   </div>
                 ))
@@ -185,13 +190,13 @@ export function OverviewPanel({ user, projects, blogPosts, members, setActive }:
                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                       ))}
                     </Pie>
-                    <RechartsTooltip 
-                      contentStyle={{ 
-                        backgroundColor: "var(--card)", 
+                    <RechartsTooltip
+                      contentStyle={{
+                        backgroundColor: "var(--card)",
                         borderColor: "var(--border)",
                         borderRadius: "8px",
                         fontSize: "12px"
-                      }} 
+                      }}
                     />
                   </PieChart>
                 </ResponsiveContainer>
@@ -219,7 +224,7 @@ export function OverviewPanel({ user, projects, blogPosts, members, setActive }:
             <div className="p-2 space-y-1">
               {pendingItems.length > 0 ? (
                 pendingItems.map((item) => (
-                  <button 
+                  <button
                     key={`pending-${item.id}`}
                     className="w-full text-left p-3 rounded-xl hover:bg-muted/50 transition-colors flex items-center justify-between group"
                     onClick={() => setActive(item.type === 'project' ? 'projects' : 'blog')}
@@ -249,7 +254,7 @@ export function OverviewPanel({ user, projects, blogPosts, members, setActive }:
                 Dica Pro
               </h4>
               <p className="text-xs text-primary/80 leading-relaxed">
-                Use <kbd className="px-1.5 py-0.5 rounded bg-primary/10 border border-primary/20 font-mono text-[10px] text-primary font-bold">Cmd+K</kbd> para buscar ou mudar de aba instantaneamente.
+                Use <kbd className="px-1.5 py-0.5 rounded bg-primary/10 border border-primary/20 font-mono text-[10px] text-primary font-bold">{isMac ? "Cmd+K" : "Ctrl+K"}</kbd> para buscar ou mudar de aba instantaneamente.
               </p>
             </div>
             <div className="absolute -right-4 -bottom-4 opacity-10 group-hover:opacity-20 transition-opacity">
