@@ -46,7 +46,14 @@ Visão técnica do projeto **Atravessamentos** (Next.js App Router + Supabase).
 
 ---
 
-## Fluxo de dados
+### 4. Integrações Externas
+
+#### 📧 Resend (E-mail Marketing)
+- **Audiences**: Gerenciamento de contatos e assinaturas.
+- **Broadcast**: Disparo em lote (`batch.send`) via Server Actions.
+- **React Email**: Utilizado para renderizar templates HTML seguros e responsivos com Tailwind CSS.
+
+### 5. Fluxos de Dados Críticos
 
 1. **Leitura**: via Server Components que chamam funções em `lib/actions/*.ts`. Implementamos **Paginação Server-Side** nestas ações usando o método `.range()` do Supabase, retornando sempre `{ data, count }` para permitir cálculos de UI no frontend.
 2. **Interatividade**: dados hidratados em componentes `"use client"` (filtros, formulários, animações). O componente `<Pagination />` gerencia a navegação sincronizada com a URL.

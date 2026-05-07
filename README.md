@@ -15,6 +15,7 @@ O Atravessamentos é uma plataforma digital dedicada a preservar e difundir a me
 - ⌨️ **Centro de Comando (Cmd+K / Ctrl+K)**: Navegação ultra-rápida entre todas as seções do admin.
 - 🔄 **UX Premium**: Transições de página fluidas, esqueletos de carregamento (Skeletons) e animações motion.
 - 🔍 **SEO de Elite**: Sitemap dinâmico, metadados automáticos e OpenGraph para compartilhamento social.
+- 📧 **Newsletter e Broadcast**: Disparo automático de e-mails com identidade visual ao publicar novas notícias.
 - 🧹 **Testes E2E com Limpeza**: Infraestrutura robusta com limpeza automática no Supabase.
 
 ## 🛠️ Tecnologias
@@ -24,6 +25,7 @@ O Atravessamentos é uma plataforma digital dedicada a preservar e difundir a me
 - **Visualização**: Recharts para o dashboard administrativo.
 - **Testes**: Playwright (E2E) e Vitest (Unitários).
 - **SEO**: Metadados dinâmicos, Sitemap.xml e Robots.txt integrados.
+- **E-mail**: Resend (Delivery), React Email (Templates), Resend Audiences (Gestão).
 - **Editor**: Tiptap Rich Text Editor customizado.
 
 ## 📦 Estrutura de Pastas

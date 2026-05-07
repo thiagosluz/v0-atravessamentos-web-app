@@ -105,5 +105,12 @@
   },
   "overrides": {
     "postcss": "^8.5.13"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "sharp",
+      "@react-email/render",
+      "esbuild"
+    ]
   }
 }
