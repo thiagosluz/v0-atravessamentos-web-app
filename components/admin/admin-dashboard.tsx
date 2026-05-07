@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
 import { motion } from "motion/react"
 import {
   ArrowUpRight,
@@ -17,6 +18,7 @@ import {
   TrendingUp,
   Users,
   UserCircle,
+  ExternalLink,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -57,6 +59,7 @@ import { MemberFormDialog } from "@/components/admin/member-form-dialog"
 import { BlogFormDialog } from "@/components/admin/blog-form-dialog"
 import { SettingsPanel } from "@/components/admin/settings-panel"
 import { ProfilePanel } from "@/components/admin/profile-panel"
+import { OverviewPanel } from "@/components/admin/overview-panel"
 import { type Category } from "@/lib/actions/categories"
 import { type SiteSettings } from "@/lib/actions/settings"
 import { AdminCommandMenu } from "@/components/admin/admin-command-menu"
@@ -212,14 +215,14 @@ export function AdminDashboard({
         {/* Sidebar */}
         <aside className="hidden w-64 shrink-0 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground md:flex">
           <div className="flex h-16 items-center justify-between border-b border-sidebar-border px-5">
-            <a href="#" className="flex items-center gap-2">
+            <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
               <span className="flex h-8 w-8 items-center justify-center bg-sidebar-primary text-sidebar-primary-foreground border-organic">
                 <span className="font-display text-base font-bold leading-none">A</span>
               </span>
               <span className="font-display text-sm font-bold tracking-tight">
                 atravessamentos
               </span>
-            </a>
+            </Link>
           </div>
 
           <div className="px-3 py-3">
@@ -312,6 +315,17 @@ export function AdminDashboard({
               <Button
                 variant="ghost"
                 size="sm"
+                asChild
+                className="hidden gap-2 text-muted-foreground hover:text-foreground lg:flex"
+              >
+                <Link href="/">
+                  <ExternalLink className="h-4 w-4" />
+                  Ver site
+                </Link>
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={() => signOut()}
                 className="rounded-full"
               >
@@ -332,6 +346,7 @@ export function AdminDashboard({
                   trend={`${localProjects.length} totais no banco`}
                   icon={FolderKanban}
                   accent="bg-primary/10 text-primary"
+                  variation={`+${localProjects.filter(p => new Date(p.updatedAt).getTime() > Date.now() - 30 * 24 * 60 * 60 * 1000).length}`}
                 />
                 <StatCard
                   label="Pessoas no coletivo"
@@ -346,6 +361,7 @@ export function AdminDashboard({
                   trend={`${localBlogPosts.length} rascunhos e publicados`}
                   icon={BookOpen}
                   accent="bg-[var(--ouro)]/25 text-foreground"
+                  variation={`+${localBlogPosts.filter(p => new Date(p.date).getTime() > Date.now() - 30 * 24 * 60 * 60 * 1000).length}`}
                 />
                 <StatCard
                   label="Categorias & Tags"
@@ -638,7 +654,17 @@ export function AdminDashboard({
                   <ProfilePanel user={user} />
                 )}
 
-                {active !== "projects" && active !== "members" && active !== "blog" && active !== "settings" && active !== "profile" && (
+                {active === "overview" && (
+                  <OverviewPanel 
+                    user={user}
+                    projects={localProjects} 
+                    blogPosts={localBlogPosts} 
+                    members={localMembers}
+                    setActive={setActive}
+                  />
+                )}
+
+                {active !== "overview" && active !== "projects" && active !== "members" && active !== "blog" && active !== "settings" && active !== "profile" && (
                   <div className="p-12 text-center text-foreground/60">
                     Esta seção estará disponível em breve.
                   </div>
@@ -712,9 +738,10 @@ interface StatCardProps {
   trend: string
   icon: React.ComponentType<{ className?: string }>
   accent: string
+  variation?: string
 }
 
-function StatCard({ label, value, trend, icon: Icon, accent }: StatCardProps) {
+function StatCard({ label, value, trend, icon: Icon, accent, variation }: StatCardProps) {
   return (
     <div className="rounded-2xl border border-border bg-card p-5">
       <div className="flex items-start justify-between">
@@ -723,7 +750,14 @@ function StatCard({ label, value, trend, icon: Icon, accent }: StatCardProps) {
           <Icon className="h-4 w-4" />
         </span>
       </div>
-      <p className="mt-3 font-display text-3xl font-bold tracking-tight">{value}</p>
+      <p className="mt-3 font-display text-3xl font-bold tracking-tight">
+        {value}
+        {variation && (
+          <span className="ml-2 text-xs font-semibold text-emerald-600 bg-emerald-500/10 px-1.5 py-0.5 rounded">
+            {variation}
+          </span>
+        )}
+      </p>
       <p className="mt-1 text-xs text-foreground/60">{trend}</p>
     </div>
   )

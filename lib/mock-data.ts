@@ -27,6 +27,7 @@ export interface Member {
   linkedin?: string | null
   email?: string | null
   phone?: string | null
+  createdAt?: string
 }
 
 export interface BlogPost {

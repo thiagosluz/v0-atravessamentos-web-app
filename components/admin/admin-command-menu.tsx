@@ -9,6 +9,7 @@ import {
   Settings,
   Users,
   UserCircle,
+  ExternalLink,
 } from "lucide-react"
 import { useDebounce } from "../../lib/hooks/use-debounce"
 import { globalSearch, type SearchResult } from "@/lib/actions/search"
@@ -124,6 +125,10 @@ export function AdminCommandMenu({ setActive, onEditItem }: AdminCommandMenuProp
               <CommandItem onSelect={() => runCommand(() => setActive("profile"))}>
                 <UserCircle className="mr-2 h-4 w-4" />
                 <span>Meu Perfil</span>
+              </CommandItem>
+              <CommandItem onSelect={() => runCommand(() => window.location.href = "/")}>
+                <ExternalLink className="mr-2 h-4 w-4" />
+                <span>Ver Site Público</span>
               </CommandItem>
             </CommandGroup>
           )}

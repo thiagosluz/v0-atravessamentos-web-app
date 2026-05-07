@@ -31,6 +31,7 @@ export async function getMembers(page: number = 1, limit: number = 10) {
       linkedin: m.linkedin,
       email: m.email,
       phone: m.phone,
+      createdAt: m.created_at,
     })) as Member[],
     count: count || 0
   }
