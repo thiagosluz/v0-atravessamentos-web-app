@@ -34,7 +34,7 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1 }}
-            className="relative z-20 font-display text-[clamp(3.2rem,11.5vw,9.5rem)] font-bold leading-[0.85] tracking-[-0.04em] md:-mr-48 lg:-mr-64"
+            className="relative z-20 font-display text-[clamp(2.2rem,11.5vw,9.5rem)] font-bold leading-[0.85] tracking-[-0.04em] md:-mr-48 lg:-mr-64"
           >
             <span className="block">COLETIVO</span>
             <span className="block italic font-light text-primary mt-2">
