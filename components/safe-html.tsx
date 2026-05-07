@@ -1,5 +1,5 @@
 import React from "react"
-import DOMPurify from "isomorphic-dompurify"
+import sanitizeHtml from "sanitize-html"
 
 interface SafeHTMLProps {
   content: string | null | undefined
@@ -14,10 +14,15 @@ interface SafeHTMLProps {
 export function SafeHTML({ content, className, as: Component = "div" }: SafeHTMLProps) {
   if (!content) return null
 
-  // Configuração rigorosa para o DOMPurify
-  const sanitizedContent = DOMPurify.sanitize(content, {
-    ADD_TAGS: ["iframe"], // Permite iframes para vídeos do YouTube se necessário
-    ADD_ATTR: ["allow", "allowfullscreen", "frameborder", "scrolling"],
+  // Configuração para o sanitize-html
+  const sanitizedContent = sanitizeHtml(content, {
+    allowedTags: sanitizeHtml.defaults.allowedTags.concat(["iframe"]),
+    allowedAttributes: {
+      ...sanitizeHtml.defaults.allowedAttributes,
+      iframe: ["src", "allow", "allowfullscreen", "frameborder", "scrolling", "class"],
+      "*": ["class", "style", "id"], // Permite classes e estilos básicos se necessário
+    },
+    allowedIframeHostnames: ["www.youtube.com", "youtube.com", "player.vimeo.com"],
   })
 
   return (
