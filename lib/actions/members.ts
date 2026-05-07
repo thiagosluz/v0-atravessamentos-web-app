@@ -11,7 +11,7 @@ export async function getMembers(page: number = 1, limit: number = 10) {
   const { data, error, count } = await supabase
     .from("members")
     .select("*", { count: "exact" })
-    .order("created_at", { ascending: true })
+    .order("created_at", { ascending: false })
     .range(from, to)
 
   if (error) {

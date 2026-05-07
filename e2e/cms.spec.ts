@@ -39,15 +39,19 @@ test.describe('CMS - Fluxo de Conteúdo', () => {
       await page.click(`button:has-text("${categoryName}")`);
       
       await page.click('button:has-text("Adicionar membro")');
+      
+      // Aguardar o modal sumir completamente para evitar race conditions
+      await expect(page.locator('text=Adicione alguém ao coletivo')).not.toBeVisible();
 
-      // Verificar se apareceu na tabela de membros
-      await expect(page.locator('table')).toContainText(memberName);
-      await expect(page.locator('table')).toContainText(categoryName);
+      // Verificar se apareceu na tabela de membros (primeira página devido à ordenação DESC)
+      const table = page.locator('table');
+      await expect(table).toContainText(memberName);
+      await expect(table).toContainText(categoryName);
     });
 
     await test.step('Excluir o membro criado', async () => {
-      // Clicar no botão de lixo da linha do membro
-      const memberRow = page.locator('tr', { hasText: memberName });
+      // Garantir que a linha está visível e capturar a correta
+      const memberRow = page.locator('tr').filter({ hasText: memberName }).first();
       await memberRow.getByLabel('Excluir membro').click();
       
       await page.click('button:has-text("Excluir")'); // Botão do AlertDialog

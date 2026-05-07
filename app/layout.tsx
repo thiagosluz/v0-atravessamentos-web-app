@@ -54,7 +54,7 @@ export default function RootLayout({
       className={`${inter.variable} ${bricolage.variable} bg-background`}
     >
       <body className="font-sans antialiased">
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+        <ThemeProvider attribute="class" defaultTheme="light" disableTransitionOnChange>
           {children}
           <Toaster />
         </ThemeProvider>

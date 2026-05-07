@@ -2,7 +2,6 @@
 
 import { useEditor, EditorContent } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
-import Link from "@tiptap/extension-link"
 import Youtube from "@tiptap/extension-youtube"
 import Image from "@tiptap/extension-image"
 import Placeholder from "@tiptap/extension-placeholder"
@@ -394,11 +393,12 @@ const MenuBar = ({ editor }: { editor: any }) => {
 
 // Extensões estáticas otimizadas para legendas
 const extensions = [
-  StarterKit,
-  Link.configure({
-    openOnClick: false,
-    HTMLAttributes: {
-      class: "text-primary underline underline-offset-4 cursor-pointer",
+  StarterKit.configure({
+    link: {
+      openOnClick: false,
+      HTMLAttributes: {
+        class: "text-primary underline underline-offset-4 cursor-pointer",
+      },
     },
   }),
   Youtube.configure({

@@ -4,6 +4,7 @@ import * as React from "react"
 import { Instagram, Mail, MapPin, Youtube } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { ClientOnly } from "@/components/client-only"
 
 import { type SiteSettings } from "@/lib/actions/settings"
  
@@ -59,33 +60,35 @@ export function SiteFooter({ settings }: SiteFooterProps) {
               afeto.
             </p>
           </div>
-          <form
-            onSubmit={(e) => e.preventDefault()}
-            className="flex flex-col justify-end gap-3 md:col-span-5"
-          >
-            <label htmlFor="newsletter-email" className="sr-only">
-              E-mail
-            </label>
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <Input
-                id="newsletter-email"
-                type="email"
-                required
-                placeholder="seu@email.com"
-                className="h-12 flex-1 rounded-full border-background/20 bg-background/5 text-background placeholder:text-background/50 focus-visible:ring-primary"
-              />
-              <Button
-                type="submit"
-                size="lg"
-                className="h-12 rounded-full bg-primary px-7 font-semibold text-primary-foreground hover:bg-primary/90"
-              >
-                Assinar
-              </Button>
-            </div>
-            <p className="text-xs text-background/55">
-              Ao assinar, você concorda com nossa política de privacidade.
-            </p>
-          </form>
+          <ClientOnly fallback={<div className="flex flex-col justify-end gap-3 md:col-span-5 h-[120px] animate-pulse bg-background/5 rounded-2xl" />}>
+            <form
+              onSubmit={(e) => e.preventDefault()}
+              className="flex flex-col justify-end gap-3 md:col-span-5"
+            >
+              <label htmlFor="newsletter-email" className="sr-only">
+                E-mail
+              </label>
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <Input
+                  id="newsletter-email"
+                  type="email"
+                  required
+                  placeholder="seu@email.com"
+                  className="h-12 flex-1 rounded-full border-background/20 bg-background/5 text-background placeholder:text-background/50 focus-visible:ring-primary"
+                />
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="h-12 rounded-full bg-primary px-7 font-semibold text-primary-foreground hover:bg-primary/90"
+                >
+                  Assinar
+                </Button>
+              </div>
+              <p className="text-xs text-background/55">
+                Ao assinar, você concorda com nossa política de privacidade.
+              </p>
+            </form>
+          </ClientOnly>
         </div>
 
         {/* Middle: links + brand */}
