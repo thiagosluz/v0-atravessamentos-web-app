@@ -20,6 +20,7 @@ interface NewsEmailProps {
   category: string
   slug: string
   imageUrl?: string
+  recipientEmail?: string
 }
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || ""
@@ -30,6 +31,7 @@ export const NewsEmail = ({
   category = "Notícia",
   slug = "",
   imageUrl,
+  recipientEmail = "",
 }: NewsEmailProps) => (
   <Html>
     <Head />
@@ -72,7 +74,7 @@ export const NewsEmail = ({
           <Text style={footerText}>
             Você recebeu este e-mail porque assinou nossa newsletter.
             <br />
-            <Link href={`${baseUrl}/unsubscribe`} style={link}>
+            <Link href={`${baseUrl}/unsubscribe?email=${recipientEmail}`} style={link}>
               Descadastrar
             </Link>
           </Text>

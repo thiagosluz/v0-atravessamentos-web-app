@@ -56,3 +56,32 @@ export async function subscribeToNewsletter(formData: FormData) {
     return { error: err?.message || "Ocorreu um erro inesperado no servidor." }
   }
 }
+export async function unsubscribeFromNewsletter(email: string) {
+  if (!audienceId) {
+    return { error: "Configuração de audiência ausente." }
+  }
+
+  try {
+    // 1. Validar e-mail básico
+    if (!email || !email.includes("@")) {
+      return { error: "E-mail inválido." }
+    }
+
+    // 2. Remover contato do Resend Audience
+    // Nota: O Resend usa o ID ou o e-mail para remoção
+    const { error } = await resend.contacts.remove({
+      email: email,
+      audienceId: audienceId,
+    })
+
+    if (error) {
+      console.error("Erro ao remover contato do Resend:", error)
+      return { error: "Não foi possível processar o descadastramento." }
+    }
+
+    return { success: true }
+  } catch (error: any) {
+    console.error("Erro fatal no unsubscribe:", error)
+    return { error: "Ocorreu um erro inesperado." }
+  }
+}

@@ -39,32 +39,30 @@ export async function broadcastNews(props: BroadcastNewsProps) {
 
     // 2. Preparar o e-mail (React Email para HTML)
     // Nota: O render é assíncrono no @react-email/components v3+
-    const html = await render(NewsEmail(props))
-
-    // 3. Disparo em Lote (Batch)
-    // O Resend permite até 100 e-mails por batch. 
-    // Para simplificar no início, faremos um batch único. 
-    // Se a lista crescer muito, precisaremos de um loop com delay.
-    
     const FROM_EMAIL = "Coletivo Atravessamentos <onboarding@resend.dev>"
     
-    const emails = subscribers
-      .map((contact) => ({
-        from: FROM_EMAIL,
-        to: contact.email,
-        subject: `✨ Nova publicação: ${props.title}`,
-        html: html,
-      }))
-      // Durante testes com onboarding@resend.dev, o Resend só permite enviar para o seu próprio e-mail.
-      // Vamos filtrar para evitar que a Action quebre se houver outros e-mails na lista.
-      .filter(email => {
+    // Gerar e-mails personalizados para cada destinatário (para ter o link de unsubscribe correto)
+    const emails = await Promise.all(subscribers
+      .filter(contact => {
+        // Filtro de segurança para o modo onboarding
         if (FROM_EMAIL.includes("onboarding@resend.dev")) {
-          // Só permite se for para o e-mail que você usa no Resend (ou se for o seu e-mail de teste)
-          // Aqui você pode colocar o seu e-mail fixo de teste se quiser
-          return email.to === "coletivoatravessamentosapp@gmail.com" || email.to === "filhodaluz8@gmail.com"
+          return contact.email === "coletivoatravessamentosapp@gmail.com"
         }
         return true
       })
+      .map(async (contact) => {
+        const html = await render(NewsEmail({ 
+          ...props, 
+          recipientEmail: contact.email 
+        }))
+        
+        return {
+          from: FROM_EMAIL,
+          to: contact.email,
+          subject: `✨ Nova publicação: ${props.title}`,
+          html: html,
+        }
+      }))
 
     if (emails.length === 0) {
       return { success: true, message: "Nenhum destinatário autorizado para o domínio de teste." }
