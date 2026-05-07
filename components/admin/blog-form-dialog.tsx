@@ -18,10 +18,20 @@ interface BlogFormDialogProps {
   initialData?: any
   categories: Category[]
   onSuccess: (post: any, isEdit: boolean) => void
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
 }
 
-export function BlogFormDialog({ initialData, categories, onSuccess }: BlogFormDialogProps) {
-  const [open, setOpen] = React.useState(false)
+export function BlogFormDialog({ 
+  initialData, 
+  categories, 
+  onSuccess,
+  open: controlledOpen,
+  onOpenChange: setControlledOpen
+}: BlogFormDialogProps) {
+  const [internalOpen, setInternalOpen] = React.useState(false)
+  const open = controlledOpen !== undefined ? controlledOpen : internalOpen
+  const setOpen = setControlledOpen !== undefined ? setControlledOpen : setInternalOpen
   const [pending, setPending] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
   const [status, setStatus] = React.useState<string>(initialData?.status || "Rascunho")
@@ -84,7 +94,7 @@ export function BlogFormDialog({ initialData, categories, onSuccess }: BlogFormD
     }
 
     const optimistic = {
-      id: isEdit ? initialData.id : (result.id || `temp-${Date.now()}`),
+      id: isEdit ? initialData.id : ((result as any).id || `temp-${Date.now()}`),
       title: formData.get("title") as string,
       category: formData.get("category") as string,
       excerpt: formData.get("excerpt") as string,

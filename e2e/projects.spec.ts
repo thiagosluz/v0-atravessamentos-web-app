@@ -11,7 +11,7 @@ test.describe('CMS - Ciclo de Vida de Projetos', () => {
   });
 
   test('deve gerenciar o ciclo de vida de um projeto', async ({ page }) => {
-    const projectTitle = `Projeto E2E ${Date.now()}`;
+    const projectTitle = `[E2E] Projeto E2E ${Date.now()}`;
     
     await test.step('Criar projeto como rascunho', async () => {
       // Ir para aba de projetos

@@ -18,10 +18,20 @@ interface ProjectFormDialogProps {
   initialData?: any
   categories: Category[]
   onSuccess: (project: any, isEdit: boolean) => void
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
 }
 
-export function ProjectFormDialog({ initialData, categories, onSuccess }: ProjectFormDialogProps) {
-  const [open, setOpen] = React.useState(false)
+export function ProjectFormDialog({ 
+  initialData, 
+  categories, 
+  onSuccess,
+  open: controlledOpen,
+  onOpenChange: setControlledOpen
+}: ProjectFormDialogProps) {
+  const [internalOpen, setInternalOpen] = React.useState(false)
+  const open = controlledOpen !== undefined ? controlledOpen : internalOpen
+  const setOpen = setControlledOpen !== undefined ? setControlledOpen : setInternalOpen
   const [pending, setPending] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
   const [status, setStatus] = React.useState<string>(initialData?.status || "Rascunho")
@@ -66,7 +76,7 @@ export function ProjectFormDialog({ initialData, categories, onSuccess }: Projec
 
     // Build a temporary project object for optimistic UI update
     const optimistic = {
-      id: isEdit ? initialData.id : (result.id || `temp-${Date.now()}`),
+      id: isEdit ? initialData.id : ((result as any).id || `temp-${Date.now()}`),
       title: formData.get("title") as string,
       category: formData.get("category") as string,
       description: formData.get("description") as string,

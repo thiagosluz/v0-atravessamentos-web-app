@@ -2,12 +2,13 @@
 
 import * as React from "react"
 import { motion } from "motion/react"
-import { Lock, Menu, X } from "lucide-react"
+import { Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { CommandMenu } from "@/components/search/command-menu"
 
 const navItems = [
   { label: "Sobre", href: "/#sobre" },
@@ -80,17 +81,8 @@ export function SiteHeader({ onOpenAdmin }: SiteHeaderProps) {
           })}
         </nav>
 
-        {/* Actions */}
         <div className="flex items-center gap-2">
-          <Button
-            onClick={handleOpenAdmin}
-            variant="outline"
-            size="sm"
-            className="hidden border-foreground/20 bg-transparent font-medium md:inline-flex"
-          >
-            <Lock className="mr-2 h-4 w-4" />
-            Área Restrita
-          </Button>
+          <CommandMenu />
           <ThemeToggle />
           <Button
             variant="outline"
@@ -123,17 +115,6 @@ export function SiteHeader({ onOpenAdmin }: SiteHeaderProps) {
                 {item.label}
               </Link>
             ))}
-            <Button
-              onClick={() => {
-                setOpen(false)
-                handleOpenAdmin()
-              }}
-              variant="outline"
-              className="mt-2 border-foreground/20 bg-transparent"
-            >
-              <Lock className="mr-2 h-4 w-4" />
-              Área Restrita
-            </Button>
           </nav>
         </motion.div>
       )}

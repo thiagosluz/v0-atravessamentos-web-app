@@ -59,6 +59,7 @@ import { SettingsPanel } from "@/components/admin/settings-panel"
 import { ProfilePanel } from "@/components/admin/profile-panel"
 import { type Category } from "@/lib/actions/categories"
 import { type SiteSettings } from "@/lib/actions/settings"
+import { AdminCommandMenu } from "@/components/admin/admin-command-menu"
 
 const navigation = [
   { id: "overview", label: "Visão Geral", icon: LayoutDashboard },
@@ -102,6 +103,7 @@ export function AdminDashboard({
 }: AdminDashboardProps) {
   const [active, setActive] = React.useState("overview")
   const [query, setQuery] = React.useState("")
+  const [searchEditItem, setSearchEditItem] = React.useState<{type: "project" | "member" | "blog", id: string} | null>(null)
   const [deleteConfirm, setDeleteConfirm] = React.useState<{type: "project" | "member" | "blog", id: string} | null>(null)
   const { toast } = useToast()
   
@@ -188,6 +190,14 @@ export function AdminDashboard({
         description: "O item foi removido permanentemente do sistema.",
       })
     }
+  }
+
+  function handleEditItem(type: "project" | "member" | "blog", id: string) {
+    if (type === "project") setActive("projects")
+    if (type === "member") setActive("members")
+    if (type === "blog") setActive("blog")
+    
+    setSearchEditItem({ type, id })
   }
 
   return (
@@ -296,14 +306,8 @@ export function AdminDashboard({
               </h1>
             </div>
             <div className="flex items-center gap-2">
-              <div className="relative hidden sm:block">
-                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground/50" />
-                <Input
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Buscar projetos…"
-                  className="h-9 w-56 rounded-full pl-9"
-                />
+              <div className="hidden sm:block">
+                <AdminCommandMenu setActive={setActive} onEditItem={handleEditItem} />
               </div>
               <Button
                 variant="ghost"
@@ -650,6 +654,37 @@ export function AdminDashboard({
           </div>
         </main>
       </div>
+
+      {/* Global Edit Dialogs (from Search) */}
+      {searchEditItem?.type === "project" && (
+        <ProjectFormDialog
+          open={!!searchEditItem}
+          onOpenChange={(open) => !open && setSearchEditItem(null)}
+          initialData={localProjects.find(p => p.id === searchEditItem.id)}
+          categories={initialCategories.filter(c => c.type === "project")}
+          onSuccess={handleProjectSuccess}
+        />
+      )}
+
+      {searchEditItem?.type === "member" && (
+        <MemberFormDialog
+          open={!!searchEditItem}
+          onOpenChange={(open) => !open && setSearchEditItem(null)}
+          initialData={localMembers.find(m => m.id === searchEditItem.id)}
+          categories={initialCategories}
+          onSuccess={handleMemberSuccess}
+        />
+      )}
+
+      {searchEditItem?.type === "blog" && (
+        <BlogFormDialog
+          open={!!searchEditItem}
+          onOpenChange={(open) => !open && setSearchEditItem(null)}
+          initialData={localBlogPosts.find(p => p.id === searchEditItem.id)}
+          categories={initialCategories.filter(c => c.type === "post")}
+          onSuccess={handleBlogPostSuccess}
+        />
+      )}
 
       <AlertDialog open={!!deleteConfirm} onOpenChange={(open) => !open && setDeleteConfirm(null)}>
         <AlertDialogContent>

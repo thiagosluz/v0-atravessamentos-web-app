@@ -166,6 +166,9 @@ export function SiteFooter({ settings }: SiteFooterProps) {
             <a href={settings.accessibility_url} className="hover:text-background">
               Acessibilidade
             </a>
+            <a href="/admin" className="hover:text-background">
+              Área Restrita
+            </a>
           </div>
         </div>
       </div>

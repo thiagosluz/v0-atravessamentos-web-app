@@ -15,10 +15,20 @@ interface MemberFormDialogProps {
   initialData?: Member
   onSuccess: (member: any, isEdit: boolean) => void
   categories: Category[]
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
 }
 
-export function MemberFormDialog({ initialData, onSuccess, categories }: MemberFormDialogProps) {
-  const [open, setOpen] = React.useState(false)
+export function MemberFormDialog({ 
+  initialData, 
+  onSuccess, 
+  categories,
+  open: controlledOpen,
+  onOpenChange: setControlledOpen
+}: MemberFormDialogProps) {
+  const [internalOpen, setInternalOpen] = React.useState(false)
+  const open = controlledOpen !== undefined ? controlledOpen : internalOpen
+  const setOpen = setControlledOpen !== undefined ? setControlledOpen : setInternalOpen
   const [pending, setPending] = React.useState(false)
   const { toast } = useToast()
   const [error, setError] = React.useState<string | null>(null)

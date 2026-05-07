@@ -11,8 +11,8 @@ test.describe('CMS - Fluxo de Conteúdo', () => {
   });
 
   test('deve criar uma nova categoria e depois um membro com essa categoria', async ({ page }) => {
-    const categoryName = `Tag Teste ${Date.now()}`;
-    const memberName = `Membro Teste ${Date.now()}`;
+    const categoryName = `[E2E] Tag Teste ${Date.now()}`;
+    const memberName = `[E2E] Membro Teste ${Date.now()}`;
 
     await test.step('Criar nova categoria de membro', async () => {
       await page.click('aside button:has-text("Configurações")');
@@ -60,7 +60,7 @@ test.describe('CMS - Fluxo de Conteúdo', () => {
   });
 
   test('deve gerenciar o ciclo de vida de um post do blog', async ({ page }) => {
-    const postTitle = `Post E2E ${Date.now()}`;
+    const postTitle = `[E2E] Post E2E ${Date.now()}`;
     
     await test.step('Criar post como rascunho', async () => {
       await page.click('aside button:has-text("Blog")');
