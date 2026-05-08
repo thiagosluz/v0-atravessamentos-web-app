@@ -1,14 +1,20 @@
 "use client"
 
 import * as React from "react"
+import Image from "next/image"
 import { cn } from "@/lib/utils"
 
-interface OrganicImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
+interface OrganicImageProps {
+  src?: string | null
+  alt?: string
   shape?: "organic" | "organic-2" | "organic-3" | "rounded-3xl" | "rounded-custom"
   overlayColor?: "primary" | "accent" | "ouro" | "foreground" | "none"
   overlayOpacity?: number
   containerClassName?: string
+  className?: string
   fallbackSrc: string
+  priority?: boolean
+  sizes?: string
 }
 
 export function OrganicImage({
@@ -19,11 +25,12 @@ export function OrganicImage({
   overlayOpacity = 0.15,
   className,
   containerClassName,
-  alt,
-  ...props
+  alt = "Imagem do Coletivo",
+  priority = false,
+  sizes = "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw",
 }: OrganicImageProps) {
   const [imageError, setImageError] = React.useState(false)
-  const displaySrc = imageError || !src ? fallbackSrc : src
+  const displaySrc = (imageError || !src ? fallbackSrc : src) as string
 
   const shapeClasses = {
     "organic": "border-organic",
@@ -47,12 +54,14 @@ export function OrganicImage({
       shapeClasses[shape],
       containerClassName
     )}>
-      <img
+      <Image
         src={displaySrc}
         alt={alt}
-        className={cn("h-full w-full object-cover transition-opacity duration-500", className)}
+        fill
+        priority={priority}
+        sizes={sizes}
+        className={cn("object-cover transition-opacity duration-500", className)}
         onError={() => setImageError(true)}
-        {...props}
       />
       
       {/* Overlay translúcido de identidade visual */}

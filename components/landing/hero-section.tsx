@@ -112,6 +112,7 @@ export function HeroSection({ settings }: { settings?: SiteSettings }) {
                 fallbackSrc="/placeholder.svg?width=800&height=1000&query=abstract-collage-brazilian-women-faces-painted-textures"
                 alt="Colagem artística representando o coletivo Atravessamentos"
                 shape="organic"
+                priority={true}
               />
               {/* Video placeholder badge */}
               <div className="absolute bottom-4 left-4 inline-flex items-center gap-2 rounded-full bg-background/85 px-3 py-1.5 text-xs font-medium backdrop-blur">

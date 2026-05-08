@@ -79,6 +79,7 @@ export function AboutSection({ settings }: { settings?: SiteSettings }) {
                 alt="Encontro do coletivo em roda"
                 shape="organic"
                 overlayColor="primary"
+                sizes="(max-width: 768px) 66vw, 40vw"
               />
             </div>
             <div className="col-span-2">
@@ -89,6 +90,7 @@ export function AboutSection({ settings }: { settings?: SiteSettings }) {
                 shape="rounded-3xl"
                 overlayColor="accent"
                 overlayOpacity={0.2}
+                sizes="(max-width: 768px) 33vw, 20vw"
               />
             </div>
             <div className="col-span-2">
@@ -99,6 +101,7 @@ export function AboutSection({ settings }: { settings?: SiteSettings }) {
                 shape="rounded-custom"
                 overlayColor="ouro"
                 overlayOpacity={0.3}
+                sizes="(max-width: 768px) 33vw, 20vw"
               />
             </div>
             <div className="col-span-3">
@@ -109,6 +112,7 @@ export function AboutSection({ settings }: { settings?: SiteSettings }) {
                 shape="organic-3"
                 overlayColor="primary"
                 overlayOpacity={0.1}
+                sizes="(max-width: 768px) 50vw, 25vw"
               />
             </div>
             <div className="col-span-3">
@@ -119,6 +123,7 @@ export function AboutSection({ settings }: { settings?: SiteSettings }) {
                 shape="rounded-3xl"
                 overlayColor="foreground"
                 overlayOpacity={0.05}
+                sizes="(max-width: 768px) 50vw, 25vw"
               />
             </div>
           </div>
