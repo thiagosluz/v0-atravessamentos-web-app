@@ -1,6 +1,9 @@
-# Banco de dados (Supabase)
+PostgreSQL no **Supabase**, consumido pelo app via **Supabase JS** e **Server Actions**. 
 
-PostgreSQL no **Supabase**, consumido pelo app via **Supabase JS** e **Server Actions**. Os nomes de colunas abaixo seguem o que o código usa ao ler/gravar (`snake_case` no Postgres, mapeado para `camelCase` em alguns retornos).
+> [!IMPORTANT]
+> O esquema oficial e as definições de tabela (DDL) residem em [supabase/migrations](file:///home/thiago/Projetos/v0-atravessamentos-web-app/supabase/migrations). Use esses arquivos como fonte da verdade para o banco de dados.
+
+Os nomes de colunas abaixo seguem o que o código usa ao ler/gravar (`snake_case` no Postgres, mapeado para `camelCase` em alguns retornos).
 
 ---
 

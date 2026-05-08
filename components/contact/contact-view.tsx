@@ -44,7 +44,7 @@ export function ContactView({ settings }: ContactViewProps) {
         />
       </div>
 
-      <div className="container mx-auto max-w-7xl px-4 md:px-8">
+      <div className="container mx-auto max-w-7xl px-6 md:px-8">
 
         {/* Header Editorial */}
         <header className="max-w-3xl mb-16 md:mb-20">
@@ -86,7 +86,7 @@ export function ContactView({ settings }: ContactViewProps) {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="group relative bg-background/60 backdrop-blur-md p-8 rounded-[2.5rem] border border-foreground/5 shadow-sm transition-all hover:border-primary/20 hover:shadow-md"
+                className="group relative bg-background/60 backdrop-blur-md p-6 md:p-8 rounded-[2.5rem] border border-foreground/5 shadow-sm transition-all hover:border-primary/20 hover:shadow-md"
               >
                 <div className="absolute top-4 right-6 w-12 h-12 bg-[var(--ouro)]/15 border-organic blur-md opacity-40" />
                 <h3 className="font-display text-xs font-bold text-foreground/40 uppercase tracking-[0.2em] mb-6">Redes sociais</h3>
@@ -103,16 +103,16 @@ export function ContactView({ settings }: ContactViewProps) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.1 }}
-                className="group relative bg-background/60 backdrop-blur-md p-8 rounded-[2.5rem] border border-foreground/5 shadow-sm transition-all hover:border-primary/20 hover:shadow-md"
+                className="group relative bg-background/60 backdrop-blur-md p-6 md:p-8 rounded-[2.5rem] border border-foreground/5 shadow-sm transition-all hover:border-primary/20 hover:shadow-md"
               >
                 <div className="absolute bottom-4 right-6 w-12 h-12 bg-accent/15 border-organic-2 blur-md opacity-40" />
                 <h3 className="font-display text-xs font-bold text-foreground/40 uppercase tracking-[0.2em] mb-6">Contato direto</h3>
                 <div className="space-y-4 relative z-10">
                   <a href={`mailto:${settings.contact_email}`} className="flex items-center gap-3 text-lg text-foreground/80 hover:text-primary transition-colors group/link">
-                    <div className="size-10 rounded-full bg-foreground/5 flex items-center justify-center transition-colors group-hover/link:bg-primary/10">
+                    <div className="size-10 rounded-full bg-foreground/5 flex items-center justify-center shrink-0 transition-colors group-hover/link:bg-primary/10">
                       <Mail className="size-5" />
                     </div>
-                    <span className="truncate font-medium">{settings.contact_email}</span>
+                    <span className="break-all font-medium leading-tight">{settings.contact_email}</span>
                   </a>
                   <a href={settings.location_url} target="_blank" rel="noopener" className="flex items-start gap-3 text-lg text-foreground/80 hover:text-primary transition-colors group/link">
                     <div className="size-10 rounded-full bg-foreground/5 flex items-center justify-center shrink-0 transition-colors group-hover/link:bg-primary/10">
@@ -129,7 +129,7 @@ export function ContactView({ settings }: ContactViewProps) {
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              className="p-8 border-l-2 border-primary/20 italic text-foreground/60 leading-relaxed bg-primary/5 rounded-r-[2rem]"
+              className="p-6 md:p-8 border-l-2 border-primary/20 italic text-foreground/60 leading-relaxed bg-primary/5 rounded-r-[2rem]"
             >
               <p className="text-lg">
                 "Atravessar é um gesto político. Respondemos a todas as mensagens com a calma que o encontro humano exige."
@@ -144,7 +144,7 @@ export function ContactView({ settings }: ContactViewProps) {
             viewport={{ once: true }}
             className="lg:col-span-7"
           >
-            <div className="relative bg-background p-8 md:p-14 rounded-[3rem] border border-foreground/5 shadow-2xl shadow-foreground/5 overflow-hidden">
+            <div className="relative bg-background p-6 md:p-14 rounded-[3rem] border border-foreground/5 shadow-2xl shadow-foreground/5 overflow-hidden">
               {/* Elementos decorativos internos sutis */}
               <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] -mr-32 -mt-32 pointer-events-none" />
               <div className="absolute bottom-0 left-0 w-48 h-48 bg-accent/5 rounded-full blur-[60px] -ml-24 -mb-24 pointer-events-none" />
