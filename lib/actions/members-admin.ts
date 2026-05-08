@@ -3,6 +3,7 @@
 import { createAdminClient } from "@/lib/supabase/admin"
 import { revalidatePath } from "next/cache"
 import { v4 as uuidv4 } from "uuid"
+import { ensureAdmin } from "@/lib/utils/auth-guard"
 
 // Helper para fazer upload da imagem
 async function uploadAvatar(file: File | null): Promise<string | null> {
@@ -45,6 +46,7 @@ function parseMemberData(formData: FormData) {
 }
 
 export async function createMember(formData: FormData) {
+  await ensureAdmin()
   const supabase = createAdminClient()
 
   const data = parseMemberData(formData)
@@ -71,6 +73,7 @@ export async function createMember(formData: FormData) {
 }
 
 export async function updateMember(id: string, formData: FormData) {
+  await ensureAdmin()
   const supabase = createAdminClient()
 
   const data = parseMemberData(formData)
@@ -100,6 +103,7 @@ export async function updateMember(id: string, formData: FormData) {
 }
 
 export async function deleteMember(id: string) {
+  await ensureAdmin()
   const supabase = createAdminClient()
 
   // Buscar o membro para obter a URL do avatar
