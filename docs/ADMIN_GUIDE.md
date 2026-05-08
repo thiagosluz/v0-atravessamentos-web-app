@@ -20,7 +20,7 @@ O painel detecta automaticamente o seu sistema operacional para oferecer os melh
 
 Ao abrir o **Centro de Comando**, você pode:
 1. Buscar qualquer conteúdo pelo título.
-2. Navegar entre as abas do painel (Projetos, Membros, Blog, Configurações).
+2. Navegar entre as abas do painel (Projetos, Membros, Blog, Identidade Visual, Configurações).
 3. **Ver Site Público:** Retornar para a visualização dos visitantes.
 
 ## 🔄 Navegação entre Contextos
@@ -46,6 +46,22 @@ O sistema de e-mails é automatizado para facilitar a comunicação com seus ass
 ### Recomendações:
 - Certifique-se de que a imagem de capa da notícia seja de alta qualidade, pois ela será o destaque do e-mail.
 - Teste o layout criando uma notícia de teste e apagando-a em seguida, se desejar.
+
+## 🎨 Identidade Visual e Assets
+
+A aba **Identidade Visual** permite gerenciar a alma estética do site sem precisar de conhecimentos técnicos em edição de imagem.
+
+### Gestão de Imagens (Hero e Sobre)
+- **Recorte Orgânico Automático**: Qualquer imagem enviada para o Hero ou para a colagem da seção Sobre receberá automaticamente as bordas irregulares e os filtros de cor do Coletivo.
+- **Restauração de Padrão**: Caso queira remover uma imagem personalizada e voltar para a ilustração artística original, basta clicar no botão **"X"** (vermelho) sobre a imagem e salvar as alterações.
+
+### Estatísticas de Impacto
+No final da página de Identidade Visual, você pode atualizar os números que contam a história do coletivo:
+- **Exibição Inteligente**: Se um campo (Anos, Projetos ou Cidades) for deixado em branco, ele será automaticamente ocultado na landing page. Isso permite que você mostre apenas os dados que possui no momento.
+
+## ⚙️ Configurações Gerais
+
+Nesta aba, você gerencia informações institucionais, links de redes sociais e textos legais (Privacidade e Termos).
 
 ---
 *Dúvidas técnicas ou erros? Entre em contato com a equipe de desenvolvimento.*

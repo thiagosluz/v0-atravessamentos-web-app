@@ -25,6 +25,11 @@ export interface SiteSettings {
   privacy_policy_content?: string
   terms_of_use_content?: string
   accessibility_content?: string
+  hero_image_url?: string | null
+  about_images?: string[] | null
+  stats_years?: string | null
+  stats_projects?: string | null
+  stats_cities?: string | null
   updated_at?: string
 }
 
@@ -58,6 +63,11 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       privacy_policy_content: "",
       terms_of_use_content: "",
       accessibility_content: "",
+      hero_image_url: null,
+      about_images: [],
+      stats_years: "12",
+      stats_projects: "40+",
+      stats_cities: "6",
       updated_at: new Date().toISOString(),
     }
   }

@@ -19,6 +19,7 @@ import {
   Users,
   UserCircle,
   ExternalLink,
+  Palette,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -60,6 +61,7 @@ import { BlogFormDialog } from "@/components/admin/blog-form-dialog"
 import { SettingsPanel } from "@/components/admin/settings-panel"
 import { ProfilePanel } from "@/components/admin/profile-panel"
 import { OverviewPanel } from "@/components/admin/overview-panel"
+import { VisualSettingsPanel } from "@/components/admin/visual-settings-panel"
 import { type Category } from "@/lib/actions/categories"
 import { type SiteSettings } from "@/lib/actions/settings"
 import { AdminCommandMenu } from "@/components/admin/admin-command-menu"
@@ -71,6 +73,7 @@ const navigation = [
   { id: "projects", label: "Projetos", icon: FolderKanban },
   { id: "members", label: "Membros", icon: Users },
   { id: "blog", label: "Blog", icon: BookOpen },
+  { id: "visual", label: "Identidade Visual", icon: Palette },
   { id: "settings", label: "Configurações", icon: Settings },
   { id: "profile", label: "Meu Perfil", icon: UserCircle },
 ]
@@ -615,6 +618,10 @@ export function AdminDashboard({
                 {active === "profile" && (
                   <ProfilePanel user={user} />
                 )}
+                
+                {active === "visual" && (
+                  <VisualSettingsPanel siteSettings={siteSettings} />
+                )}
 
                 {active === "overview" && (
                   <OverviewPanel 
@@ -626,7 +633,7 @@ export function AdminDashboard({
                   />
                 )}
 
-                {active !== "overview" && active !== "projects" && active !== "members" && active !== "blog" && active !== "settings" && active !== "profile" && (
+                {active !== "overview" && active !== "projects" && active !== "members" && active !== "blog" && active !== "settings" && active !== "profile" && active !== "visual" && (
                   <div className="p-12 text-center text-foreground/60">
                     Esta seção estará disponível em breve.
                   </div>

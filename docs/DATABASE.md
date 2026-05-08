@@ -90,11 +90,28 @@ Integrantes.
 
 ### `site_settings`
 
-Configurações únicas do rodapé e contatos (o código assume registro com `id = 1` no `update`).
+Configurações globais e identidade visual. Assume-se um registro único com `id = 1`.
 
-Campos usados em `lib/actions/settings.ts`, entre outros: `footer_description`, `location_text`, `location_url`, `instagram_url`, `youtube_url`, `contact_email`, `whatsapp_number`, `privacy_policy_url`, `terms_url`, `accessibility_url`, `updated_at`.
+| Coluna | Tipo | Notas |
+|--------|------|--------|
+| `footer_description` | text | |
+| `location_text` | text | |
+| `location_url` | text | |
+| `contact_email` | text | |
+| `whatsapp_number` | text | |
+| `hero_image_url` | text | URL da imagem principal do topo |
+| `about_images` | jsonb | Array de URLs para a colagem (seção Sobre) |
+| `stats_years` | text | Anos de travessia (ex: "12") |
+| `stats_projects` | text | Projetos realizados (ex: "40+") |
+| `stats_cities` | text | Cidades alcançadas (ex: "6") |
+| `instagram_url` | text | |
+| `youtube_url` | text | |
+| `privacy_policy_url`| text | |
+| `terms_url` | text | |
+| `accessibility_url` | text | |
+| `updated_at` | timestamptz | |
 
-Se a tabela estiver vazia ou houver erro na leitura, a action devolve **valores padrão** em código.
+Se a tabela estiver vazia ou houver erro na leitura, a action em `lib/actions/settings.ts` devolve **valores padrão** definidos em código.
 
 ---
 

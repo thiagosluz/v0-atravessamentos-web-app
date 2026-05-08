@@ -2,8 +2,10 @@
 
 import { motion } from "motion/react"
 import { Quote } from "lucide-react"
+import { OrganicImage } from "@/components/ui/organic-image"
+import { type SiteSettings } from "@/lib/actions/settings"
 
-export function AboutSection() {
+export function AboutSection({ settings }: { settings?: SiteSettings }) {
   return (
     <section id="sobre" className="relative scroll-mt-24 py-20 md:py-32">
       <div className="mx-auto grid max-w-7xl gap-12 px-4 md:grid-cols-12 md:gap-16 md:px-8">
@@ -49,9 +51,15 @@ export function AboutSection() {
           </div>
 
           <div className="mt-10 grid grid-cols-3 gap-4 max-w-md">
-            <Stat number="12" label="anos de travessia" />
-            <Stat number="40+" label="projetos realizados" />
-            <Stat number="6" label="cidades alcançadas" />
+            {settings?.stats_years && (
+              <Stat number={settings.stats_years} label="anos de travessia" />
+            )}
+            {settings?.stats_projects && (
+              <Stat number={settings.stats_projects} label="projetos realizados" />
+            )}
+            {settings?.stats_cities && (
+              <Stat number={settings.stats_cities} label="cidades alcançadas" />
+            )}
           </div>
         </motion.div>
 
@@ -64,39 +72,53 @@ export function AboutSection() {
           className="md:col-span-5"
         >
           <div className="grid h-full grid-cols-6 gap-3 md:gap-4">
-            <div className="col-span-4 row-span-2 overflow-hidden border-organic bg-primary/15">
-              <img
-                src="/placeholder.svg?width=900&height=900&query=community-gathering-people-in-circle-warm-light"
+            <div className="col-span-4 row-span-2">
+              <OrganicImage
+                src={settings?.about_images?.[0] || ""}
+                fallbackSrc="/placeholder.svg?width=900&height=900&query=community-gathering-people-in-circle-warm-light"
                 alt="Encontro do coletivo em roda"
-                className="h-full w-full object-cover"
+                shape="organic"
+                overlayColor="primary"
               />
             </div>
-            <div className="col-span-2 overflow-hidden rounded-3xl bg-accent/20">
-              <img
-                src="/placeholder.svg?width=400&height=400&query=hands-painting-bright-colors-close-up-texture"
+            <div className="col-span-2">
+              <OrganicImage
+                src={settings?.about_images?.[1] || ""}
+                fallbackSrc="/placeholder.svg?width=400&height=400&query=hands-painting-bright-colors-close-up-texture"
                 alt="Mãos pintando uma obra coletiva"
-                className="h-full w-full object-cover"
+                shape="rounded-3xl"
+                overlayColor="accent"
+                overlayOpacity={0.2}
               />
             </div>
-            <div className="col-span-2 overflow-hidden rounded-tl-[3rem] rounded-br-[3rem] bg-[var(--ouro)]/30">
-              <img
-                src="/placeholder.svg?width=400&height=400&query=typewriter-text-on-paper-vintage-warm-tones"
+            <div className="col-span-2">
+              <OrganicImage
+                src={settings?.about_images?.[2] || ""}
+                fallbackSrc="/placeholder.svg?width=400&height=400&query=typewriter-text-on-paper-vintage-warm-tones"
                 alt="Máquina de escrever com texto manifestário"
-                className="h-full w-full object-cover"
+                shape="rounded-custom"
+                overlayColor="ouro"
+                overlayOpacity={0.3}
               />
             </div>
-            <div className="col-span-3 overflow-hidden border-organic-3 bg-primary/10">
-              <img
-                src="/placeholder.svg?width=600&height=400&query=protest-march-banners-flags-people-walking"
+            <div className="col-span-3">
+              <OrganicImage
+                src={settings?.about_images?.[3] || ""}
+                fallbackSrc="/placeholder.svg?width=600&height=400&query=protest-march-banners-flags-people-walking"
                 alt="Marcha de protesto com cartazes"
-                className="h-full w-full object-cover"
+                shape="organic-3"
+                overlayColor="primary"
+                overlayOpacity={0.1}
               />
             </div>
-            <div className="col-span-3 overflow-hidden rounded-3xl bg-foreground/5">
-              <img
-                src="/placeholder.svg?width=600&height=400&query=film-camera-clapper-on-set-cinematic-lighting"
+            <div className="col-span-3">
+              <OrganicImage
+                src={settings?.about_images?.[4] || ""}
+                fallbackSrc="/placeholder.svg?width=600&height=400&query=film-camera-clapper-on-set-cinematic-lighting"
                 alt="Câmera de cinema em set de filmagem"
-                className="h-full w-full object-cover"
+                shape="rounded-3xl"
+                overlayColor="foreground"
+                overlayOpacity={0.05}
               />
             </div>
           </div>

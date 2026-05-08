@@ -12,6 +12,11 @@ export const siteSettingsSchema = z.object({
   youtube_url: z.string().url().optional().or(z.literal("")).or(z.null()),
   whatsapp_number: z.string().optional().or(z.null()),
   og_image_url: z.string().url().optional().or(z.literal("")).or(z.null()),
+  hero_image_url: z.string().url().optional().or(z.literal("")).or(z.null()),
+  about_images: z.array(z.string().url().optional().or(z.literal("")).or(z.null())).optional().or(z.null()),
+  stats_years: z.string().optional().or(z.null()),
+  stats_projects: z.string().optional().or(z.null()),
+  stats_cities: z.string().optional().or(z.null()),
 })
 
 // Esquema para Posts do Blog

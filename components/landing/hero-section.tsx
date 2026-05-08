@@ -3,8 +3,10 @@
 import { motion } from "motion/react"
 import { ArrowDown, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { OrganicImage } from "@/components/ui/organic-image"
+import { type SiteSettings } from "@/lib/actions/settings"
 
-export function HeroSection() {
+export function HeroSection({ settings }: { settings?: SiteSettings }) {
   return (
     <section
       id="topo"
@@ -104,12 +106,12 @@ export function HeroSection() {
           className="relative md:col-span-5 z-10"
         >
           <div className="relative mx-auto aspect-[4/5] w-full max-w-md md:max-w-none">
-            {/* Main organic image card */}
-            <div className="relative h-full w-full overflow-hidden border-organic bg-primary/10 shadow-2xl shadow-foreground/10">
-              <img
-                src="/placeholder.svg?width=800&height=1000&query=abstract-collage-brazilian-women-faces-painted-textures"
+            <div className="relative h-full w-full">
+              <OrganicImage
+                src={settings?.hero_image_url || ""}
+                fallbackSrc="/placeholder.svg?width=800&height=1000&query=abstract-collage-brazilian-women-faces-painted-textures"
                 alt="Colagem artística representando o coletivo Atravessamentos"
-                className="h-full w-full object-cover"
+                shape="organic"
               />
               {/* Video placeholder badge */}
               <div className="absolute bottom-4 left-4 inline-flex items-center gap-2 rounded-full bg-background/85 px-3 py-1.5 text-xs font-medium backdrop-blur">

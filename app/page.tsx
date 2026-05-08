@@ -26,8 +26,8 @@ export default async function HomePage() {
     <>
       <AdminWrapper initialProjects={projects} />
       <main>
-        <HeroSection />
-        <AboutSection />
+        <HeroSection settings={settings} />
+        <AboutSection settings={settings} />
         <ProjectsSection initialProjects={projects} categories={categories} />
         <MembersSection initialMembers={members} categories={categories} />
         <BlogSection initialPosts={blogPosts} categories={categories} />
