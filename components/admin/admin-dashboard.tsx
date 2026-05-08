@@ -63,6 +63,8 @@ import { OverviewPanel } from "@/components/admin/overview-panel"
 import { type Category } from "@/lib/actions/categories"
 import { type SiteSettings } from "@/lib/actions/settings"
 import { AdminCommandMenu } from "@/components/admin/admin-command-menu"
+import { AdminDataTable, type Column } from "@/components/admin/admin-data-table"
+import { exportToCSV, exportToPDF } from "@/lib/utils/export"
 
 const navigation = [
   { id: "overview", label: "Visão Geral", icon: LayoutDashboard },
@@ -163,6 +165,44 @@ export function AdminDashboard({
     setDeleteConfirm({ type, id })
   }
 
+  async function handleDeleteBulk(type: "project" | "member" | "blog", ids: string[]) {
+    let result: { success?: boolean, error?: string } = { success: true }
+    
+    // Atualização otimista
+    if (type === "project") {
+      setLocalProjects((prev) => prev.filter((p) => !ids.includes(p.id)))
+      for (const id of ids) {
+        const res = await deleteProject(id)
+        if (res.error) result = res
+      }
+    } else if (type === "member") {
+      setLocalMembers((prev) => prev.filter((m) => !ids.includes(m.id)))
+      for (const id of ids) {
+        const res = await deleteMember(id)
+        if (res.error) result = res
+      }
+    } else if (type === "blog") {
+      setLocalBlogPosts((prev) => prev.filter((b) => !ids.includes(b.id)))
+      for (const id of ids) {
+        const res = await deleteBlogPost(id)
+        if (res.error) result = res
+      }
+    }
+
+    if (result.error) {
+      toast({
+        title: "Erro ao excluir alguns itens",
+        description: result.error,
+        variant: "destructive",
+      })
+    } else {
+      toast({
+        title: "Exclusão em massa concluída",
+        description: `${ids.length} itens foram removidos com sucesso.`,
+      })
+    }
+  }
+
   async function confirmDelete() {
     if (!deleteConfirm) return
     const { type, id } = deleteConfirm
@@ -194,6 +234,106 @@ export function AdminDashboard({
       })
     }
   }
+
+  // Definições de Colunas
+  const projectColumns: Column<Project>[] = [
+    {
+      id: "status",
+      label: "Status",
+      sortable: true,
+      render: (p) => (
+        <span className={cn("inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium", statusStyles[p.status])}>
+          <span className="h-1.5 w-1.5 rounded-full bg-current" />
+          {p.status}
+        </span>
+      )
+    },
+    {
+      id: "title",
+      label: "Título",
+      sortable: true,
+      render: (p) => (
+        <div className="flex items-center gap-3">
+          <div className="hidden h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-muted sm:block">
+            <img src={p.coverImage || "/placeholder.svg"} alt="" className="h-full w-full object-cover" />
+          </div>
+          <div className="min-w-0">
+            <p className="truncate font-medium">{p.title}</p>
+            <p className="truncate text-xs text-foreground/60 md:hidden">{p.category} · {p.year}</p>
+          </div>
+        </div>
+      )
+    },
+    { id: "category", label: "Categoria", sortable: true },
+    {
+      id: "updatedAt",
+      label: "Atualizado",
+      sortable: true,
+      render: (p) => <span className="text-sm text-foreground/65">{new Date(p.updatedAt).toLocaleDateString("pt-BR")}</span>
+    }
+  ]
+
+  const memberColumns: Column<Member>[] = [
+    {
+      id: "name",
+      label: "Membro",
+      sortable: true,
+      render: (m) => (
+        <div className="flex items-center gap-3">
+          <div className="hidden h-10 w-10 shrink-0 overflow-hidden rounded-full bg-muted sm:block">
+            <img src={m.avatar || "/placeholder.svg"} alt="" className="h-full w-full object-cover" />
+          </div>
+          <p className="truncate font-medium">{m.name}</p>
+        </div>
+      )
+    },
+    { id: "role", label: "Papel", sortable: true },
+    {
+      id: "tags",
+      label: "Tags",
+      render: (m) => (
+        <div className="flex flex-wrap gap-1">
+          {m.tags.map((tag) => (
+            <span key={tag} className="rounded-full border border-border px-2 py-0.5 text-[10px] text-foreground/60">
+              {tag}
+            </span>
+          ))}
+        </div>
+      )
+    }
+  ]
+
+  const blogColumns: Column<BlogPost>[] = [
+    {
+      id: "status",
+      label: "Status",
+      sortable: true,
+      render: (post) => (
+        <span className={cn("inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium", statusStyles[post.status as keyof typeof statusStyles] || statusStyles.Publicado)}>
+          <span className="h-1.5 w-1.5 rounded-full bg-current" />
+          {post.status || "Publicado"}
+        </span>
+      )
+    },
+    {
+      id: "title",
+      label: "Título",
+      sortable: true,
+      render: (post) => (
+        <div className="min-w-0">
+          <p className="truncate font-medium">{post.title}</p>
+          <p className="truncate text-xs text-foreground/50">Por {post.author}</p>
+        </div>
+      )
+    },
+    { id: "category", label: "Categoria", sortable: true },
+    {
+      id: "date",
+      label: "Data",
+      sortable: true,
+      render: (post) => <span className="text-sm text-foreground/65">{new Date(post.date).toLocaleDateString("pt-BR")}</span>
+    }
+  ]
 
   function handleEditItem(type: "project" | "member" | "blog", id: string) {
     if (type === "project") setActive("projects")
@@ -302,7 +442,7 @@ export function AdminDashboard({
         {/* Main content */}
         <main className="flex flex-1 flex-col overflow-hidden">
           {/* Topbar */}
-          <header className="flex h-16 items-center justify-between gap-4 border-b border-border bg-card px-4 md:px-8">
+          <header className="flex h-16 items-center justify-between gap-4 border-b border-border bg-card px-4 md:px-8 no-print">
             <div className="flex items-center gap-3">
               <h1 className="font-display text-xl font-bold tracking-tight md:text-2xl">
                 {navigation.find((n) => n.id === active)?.label}
@@ -338,8 +478,8 @@ export function AdminDashboard({
           {/* Scrollable area */}
           <div className="flex-1 overflow-y-auto bg-background">
             <div className="mx-auto max-w-7xl space-y-8 p-4 md:p-8">
-              {/* Stats */}
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {/* Stats - Ocultos no PDF */}
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 admin-stats-grid">
                 <StatCard
                   label="Projetos publicados"
                   value={localProjects.filter(p => p.status === "Publicado").length.toString()}
@@ -388,85 +528,15 @@ export function AdminDashboard({
                       <ProjectFormDialog categories={initialCategories.filter(c => c.type === "project")} onSuccess={handleProjectSuccess} />
                     </div>
 
-                    <div className="overflow-x-auto">
-                      <Table>
-                        <TableHeader>
-                          <TableRow className="border-border hover:bg-transparent">
-                            <TableHead className="w-[120px]">Status</TableHead>
-                            <TableHead>Título</TableHead>
-                            <TableHead className="hidden md:table-cell">Categoria</TableHead>
-                            <TableHead className="hidden md:table-cell">Atualizado</TableHead>
-                            <TableHead className="w-[60px] text-right">Ações</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {filteredProjects.length === 0 ? (
-                            <TableRow>
-                              <TableCell colSpan={5} className="py-12 text-center text-foreground/60">
-                                Nenhum projeto encontrado para “{query}”.
-                              </TableCell>
-                            </TableRow>
-                          ) : (
-                            filteredProjects.map((project) => (
-                              <TableRow key={project.id} className="border-border">
-                                <TableCell>
-                                  <span
-                                    className={cn(
-                                      "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium",
-                                      statusStyles[project.status],
-                                    )}
-                                  >
-                                    <span className="h-1.5 w-1.5 rounded-full bg-current" />
-                                    {project.status}
-                                  </span>
-                                </TableCell>
-                                <TableCell>
-                                  <div className="flex items-center gap-3">
-                                    <div className="hidden h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-muted sm:block">
-                                      <img
-                                        src={project.coverImage || "/placeholder.svg"}
-                                        alt=""
-                                        className="h-full w-full object-cover"
-                                      />
-                                    </div>
-                                    <div className="min-w-0">
-                                      <p className="truncate font-medium">{project.title}</p>
-                                      <p className="truncate text-xs text-foreground/60 md:hidden">
-                                        {project.category} · {project.year}
-                                      </p>
-                                    </div>
-                                  </div>
-                                </TableCell>
-                                <TableCell className="hidden md:table-cell">
-                                  <span className="text-sm text-foreground/75">
-                                    {project.category}
-                                  </span>
-                                </TableCell>
-                                <TableCell className="hidden md:table-cell">
-                                  <span className="text-sm text-foreground/65">
-                                    {new Date(project.updatedAt).toLocaleDateString("pt-BR")}
-                                  </span>
-                                </TableCell>
-                                <TableCell className="text-right">
-                                  <div className="flex items-center justify-end gap-2">
-                                    <ProjectFormDialog initialData={project} categories={initialCategories.filter(c => c.type === "project")} onSuccess={handleProjectSuccess} />
-                                    <Button
-                                      variant="ghost"
-                                      size="icon"
-                                      className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
-                                      aria-label="Excluir projeto"
-                                      onClick={() => handleDelete("project", project.id)}
-                                    >
-                                      <Trash2 className="h-4 w-4" />
-                                    </Button>
-                                  </div>
-                                </TableCell>
-                              </TableRow>
-                            ))
-                          )}
-                        </TableBody>
-                      </Table>
-                    </div>
+                    <AdminDataTable
+                      data={filteredProjects}
+                      columns={projectColumns}
+                      entityName="projetos"
+                      onEdit={(id) => handleEditItem("project", id)}
+                      onDelete={(id) => handleDelete("project", id)}
+                      onDeleteBulk={(ids) => handleDeleteBulk("project", ids)}
+                      labels={{ edit: "Editar projeto", delete: "Excluir projeto" }}
+                    />
                     <Pagination 
                       totalCount={projectsData.count} 
                       pageSize={10} 
@@ -489,68 +559,15 @@ export function AdminDashboard({
                       </div>
                       <MemberFormDialog onSuccess={handleMemberSuccess} categories={initialCategories} />
                     </div>
-                    <div className="overflow-x-auto">
-                      <Table>
-                        <TableHeader>
-                          <TableRow className="border-border hover:bg-transparent">
-                            <TableHead>Membro</TableHead>
-                            <TableHead className="hidden md:table-cell">Papel</TableHead>
-                            <TableHead className="hidden md:table-cell">Tags</TableHead>
-                            <TableHead className="w-[60px] text-right">Ações</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {filteredMembers.length === 0 ? (
-                            <TableRow>
-                              <TableCell colSpan={4} className="py-12 text-center text-foreground/60">
-                                Nenhum membro encontrado.
-                              </TableCell>
-                            </TableRow>
-                          ) : (
-                            filteredMembers.map((member) => (
-                              <TableRow key={member.id} className="border-border">
-                                <TableCell>
-                                  <div className="flex items-center gap-3">
-                                    <div className="hidden h-10 w-10 shrink-0 overflow-hidden rounded-full bg-muted sm:block">
-                                      <img src={member.avatar || "/placeholder.svg"} alt="" className="h-full w-full object-cover" />
-                                    </div>
-                                    <div className="min-w-0">
-                                      <p className="truncate font-medium">{member.name}</p>
-                                    </div>
-                                  </div>
-                                </TableCell>
-                                <TableCell className="hidden md:table-cell">
-                                  <span className="text-sm text-foreground/75">{member.role}</span>
-                                </TableCell>
-                                <TableCell className="hidden md:table-cell">
-                                  <div className="flex flex-wrap gap-1">
-                                    {member.tags.map((tag) => (
-                                      <span key={tag} className="rounded-full border border-border px-2 py-0.5 text-[10px] text-foreground/60">
-                                        {tag}
-                                      </span>
-                                    ))}
-                                  </div>
-                                </TableCell>
-                                <TableCell className="text-right">
-                                  <div className="flex items-center justify-end gap-2">
-                                    <MemberFormDialog initialData={member} onSuccess={handleMemberSuccess} categories={initialCategories} />
-                                    <Button
-                                      variant="ghost"
-                                      size="icon"
-                                      className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
-                                      aria-label="Excluir membro"
-                                      onClick={() => handleDelete("member", member.id)}
-                                    >
-                                      <Trash2 className="h-4 w-4" />
-                                    </Button>
-                                  </div>
-                                </TableCell>
-                              </TableRow>
-                            ))
-                          )}
-                        </TableBody>
-                      </Table>
-                    </div>
+                    <AdminDataTable
+                      data={filteredMembers}
+                      columns={memberColumns}
+                      entityName="membros"
+                      onEdit={(id) => handleEditItem("member", id)}
+                      onDelete={(id) => handleDelete("member", id)}
+                      onDeleteBulk={(ids) => handleDeleteBulk("member", ids)}
+                      labels={{ edit: "Editar membro", delete: "Excluir membro" }}
+                    />
                     <Pagination 
                       totalCount={membersData.count} 
                       pageSize={10} 
@@ -573,70 +590,15 @@ export function AdminDashboard({
                       </div>
                       <BlogFormDialog categories={initialCategories.filter(c => c.type === "post")} onSuccess={handleBlogPostSuccess} />
                     </div>
-                    <div className="overflow-x-auto">
-                      <Table>
-                        <TableHeader>
-                          <TableRow className="border-border hover:bg-transparent">
-                            <TableHead className="w-[120px]">Status</TableHead>
-                            <TableHead>Título</TableHead>
-                            <TableHead className="hidden md:table-cell">Categoria</TableHead>
-                            <TableHead className="hidden md:table-cell">Data</TableHead>
-                            <TableHead className="w-[60px] text-right">Ações</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {filteredBlogPosts.length === 0 ? (
-                            <TableRow>
-                              <TableCell colSpan={5} className="py-12 text-center text-foreground/60">
-                                Nenhum post encontrado.
-                              </TableCell>
-                            </TableRow>
-                          ) : (
-                            filteredBlogPosts.map((post) => (
-                              <TableRow key={post.id} className="border-border">
-                                <TableCell>
-                                  <span
-                                    className={cn(
-                                      "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium",
-                                      statusStyles[post.status as keyof typeof statusStyles] || statusStyles.Publicado
-                                    )}
-                                  >
-                                    <span className="h-1.5 w-1.5 rounded-full bg-current" />
-                                    {post.status || "Publicado"}
-                                  </span>
-                                </TableCell>
-                                <TableCell>
-                                  <div className="min-w-0">
-                                    <p className="truncate font-medium">{post.title}</p>
-                                    <p className="truncate text-xs text-foreground/50">Por {post.author}</p>
-                                  </div>
-                                </TableCell>
-                                <TableCell className="hidden md:table-cell">
-                                  <span className="text-sm text-foreground/75">{post.category}</span>
-                                </TableCell>
-                                <TableCell className="hidden md:table-cell">
-                                  <span className="text-sm text-foreground/65">{new Date(post.date).toLocaleDateString("pt-BR")}</span>
-                                </TableCell>
-                                <TableCell className="text-right">
-                                  <div className="flex items-center justify-end gap-2">
-                                    <BlogFormDialog initialData={post} categories={initialCategories.filter(c => c.type === "post")} onSuccess={handleBlogPostSuccess} />
-                                    <Button
-                                      variant="ghost"
-                                      size="icon"
-                                      className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
-                                      aria-label="Excluir post"
-                                      onClick={() => handleDelete("blog", post.id)}
-                                    >
-                                      <Trash2 className="h-4 w-4" />
-                                    </Button>
-                                  </div>
-                                </TableCell>
-                              </TableRow>
-                            ))
-                          )}
-                        </TableBody>
-                      </Table>
-                    </div>
+                    <AdminDataTable
+                      data={filteredBlogPosts}
+                      columns={blogColumns}
+                      entityName="blog"
+                      onEdit={(id) => handleEditItem("blog", id)}
+                      onDelete={(id) => handleDelete("blog", id)}
+                      onDeleteBulk={(ids) => handleDeleteBulk("blog", ids)}
+                      labels={{ edit: "Editar post", delete: "Excluir post" }}
+                    />
                     <Pagination 
                       totalCount={blogPostsData.count} 
                       pageSize={10} 
