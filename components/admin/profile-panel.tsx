@@ -31,7 +31,7 @@ export function ProfilePanel({ user }: { user: any }) {
     if (password) finalFormData.append("password", password)
 
     // Only make request if there's something to update
-    let result = { error: undefined as string | undefined, success: false }
+    let result: { error?: string; success?: boolean } = { success: false }
     if (Array.from(finalFormData.keys()).length > 0) {
       result = await updateProfile(finalFormData)
     } else {

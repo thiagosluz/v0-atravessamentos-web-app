@@ -1,36 +1,38 @@
-# Plano de Documentação - Atualização Estrutural
+# Verification and Documentation Plan
 
-Este plano descreve as etapas para atualizar a documentação do projeto **Atravessamentos** para refletir as novas funcionalidades de SEO, Gestão de Conteúdo e Processamento de Imagens.
+This plan outlines the steps to verify the recent UI/UX standardizations and ensure all documentation and tests are up to date.
 
-## 📝 Tarefas de Documentação
+## User Review Required
 
-### 1. Atualização do README.md
-- **Responsável**: `documentation-writer`
-- **Foco**: 
-  - Adicionar as novas funcionalidades na seção "Recursos".
-  - Atualizar a stack tecnológica (adicionando `date-fns`, `isomorphic-dompurify`).
-  - Incluir guia rápido de configuração do Supabase Storage (bucket `site-assets`).
+> [!IMPORTANT]
+> This plan focuses on verifying the visual and structural reforms made to the internal pages and the admin dashboard. No functional logic changes are expected, but regressions in navigation and layout will be checked.
 
-### 2. Guia de SEO e Identidade Digital
-- **Responsável**: `seo-specialist`
-- **Foco**:
-  - Explicar como funciona o sistema híbrido de SEO (Global vs Granular).
-  - Documentar o utilitário `constructMetadata` para futuros desenvolvedores.
-  - Guia de melhores práticas para preenchimento de metadados no Admin.
+## Proposed Changes
 
-### 3. Documentação de Componentes Admin (Smart Upload & Preview)
-- **Responsável**: `frontend-specialist`
-- **Foco**:
-  - Documentar o funcionamento técnico do `SmartImageUpload` (Canvas API).
-  - Explicar o simulador `SEOPreview`.
-  - Instruções de manutenção para as abas de conteúdo dinâmico.
+### 1. Documentation Updates
+#### [MODIFY] [COMPONENTS.md](file:///home/thiago/Projetos/v0-atravessamentos-web-app/docs/COMPONENTS.md)
+- Add documentation for `PageHeader` component.
+- Add documentation for `BackgroundBlobs` component.
+- Update `BackButton` documentation with usage examples in internal pages.
 
-## 🛠️ Verificação Final
-- Executar `security_scan.py` para garantir que as novas URLs de imagem e sanitização HTML estão seguras.
-- Validar links internos na documentação.
+#### [MODIFY] [ADMIN_GUIDE.md](file:///home/thiago/Projetos/v0-atravessamentos-web-app/docs/ADMIN_GUIDE.md)
+- Update descriptions of the Gallery and Exhibitions admin panels with the new standardized layout.
 
----
-## 🏁 Cronograma de Implementação
-1. **Fase 2.1**: Atualização do README.md
-2. **Fase 2.2**: Criação de `docs/SEO.md`
-3. **Fase 2.3**: Criação de `docs/COMPONENTS.md`
+### 2. Test Verification
+#### [NEW] [ui_standardization.spec.ts](file:///home/thiago/Projetos/v0-atravessamentos-web-app/e2e/ui_standardization.spec.ts)
+- Create a new Playwright test to verify that internal pages (`/acervo`, `/exposicoes`, `/diario`, `/projetos`) contain the `PageHeader` and `BackButton`.
+
+#### [MODIFY] [cms.spec.ts](file:///home/thiago/Projetos/v0-atravessamentos-web-app/e2e/cms.spec.ts)
+- Ensure admin dashboard tests still pass with the new spacing and header structure.
+
+## Verification Plan
+
+### Automated Tests
+- Run `pnpm test` (Vitest) to ensure no regressions in business logic.
+- Run `pnpm test:e2e` (Playwright) to verify navigation and the new UI structure.
+- Run `pnpm lint` to ensure code quality.
+- Run `pnpm build` to verify no compilation errors.
+
+### Manual Verification
+- Visual check of the internal pages to ensure the "Editorial" theme is consistent.
+- Visual check of the admin dashboard to verify the "respiro" (spacing) in Gallery and Exhibitions.

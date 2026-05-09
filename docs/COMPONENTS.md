@@ -52,5 +52,36 @@ O componente utiliza `date-fns/locale/pt-BR` para formatar a data de atualizaç�
 
 ---
 
+## 📰 PageHeader (Editorial)
+
+O `PageHeader` é o componente central da nova identidade editorial das páginas internas do site. Ele padroniza a apresentação de títulos e descrições.
+
+### Estrutura:
+- **Etiqueta superior (Badge)**: Uma linha poética precedida por `---` (ex: `--- MEMÓRIA VIVA`).
+- **Título Monumental**: Utiliza a fonte `font-display` com suporte a elementos HTML como `em` para itálicos poéticos.
+- **Descrição**: Um parágrafo descritivo com tipografia refinada e espaçamento padrão.
+
+### Localização:
+`components/ui/page-header.tsx`. Deve ser utilizado como o primeiro elemento dentro do `<main>` nas páginas internas.
+
+---
+
+## 🌫️ BackgroundBlobs
+
+O `BackgroundBlobs` é responsável pela atmosfera imersiva e orgânica das páginas internas.
+
+### Recursos:
+- **Formas Orgânicas**: Utiliza gradientes suaves com filtros de desfoque (`blur-3xl`) que se movem ou flutuam sutilmente.
+- **Efeito Isolate**: Utiliza a classe `isolate` e `z-index` negativos para garantir que o conteúdo textual permaneça legível e acima dos efeitos visuais.
+- **Textura de Papel**: Geralmente acompanhado por um overlay de textura de papel (`/paper-texture.png`) com baixa opacidade para um feeling tátil/analógico.
+
+### Localização:
+`components/ui/background-blobs.tsx`.
+
+---
+
 ## 💡 Instruções para Desenvolvedores
-Ao criar novas abas de configurações que exijam previews ou uploads, siga o padrão de **Processamento no Cliente** (Client-side processing) estabelecido nestes componentes para manter a performance do servidor e o feedback instantâneo para o usuário.
+Ao criar novas páginas internas, siga o padrão:
+1. `BackButton` no topo.
+2. `PageHeader` para o título.
+3. `BackgroundBlobs` no fundo para manter a atmosfera unificada.

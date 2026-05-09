@@ -17,6 +17,14 @@ Manutenção e evolução do projeto Atravessamentos.
 - **Componentes**: prefira componentes pequenos; estado e efeitos complexos vão para arquivos `"use client"` dedicados.
 - **Dados**: App Router — priorize Server Components; utilize os parâmetros de busca da URL para gerir estados como a paginação.
 
+### UI/UX e Padronização
+
+- **Páginas Internas**: Todas as páginas de conteúdo (Acervo, Diário, Projetos, etc.) devem seguir o padrão editorial:
+  1.  **Navegação**: Incluir `<BackButton />` no topo.
+  2.  **Cabeçalho**: Utilizar `<PageHeader />` para títulos e descrições, mantendo a consistência tipográfica.
+  3.  **Atmosfera**: Envolver o conteúdo em um container `relative isolate` e incluir `<BackgroundBlobs />` para profundidade visual.
+- **Admin**: As seções administrativas devem possuir cabeçalhos claros (`border-b`, `p-4 md:p-6`) e áreas de conteúdo com "respiro" (`p-6 md:p-10`).
+
 ### Tipos e domínio
 
 - Tipos compartilhados do site em `lib/mock-data.ts` (nomes legados; em essência espelham colunas e enums usados nas telas).

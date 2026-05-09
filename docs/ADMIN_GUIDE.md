@@ -59,6 +59,22 @@ A aba **Identidade Visual** permite gerenciar a alma estética do site sem preci
 No final da página de Identidade Visual, você pode atualizar os números que contam a história do coletivo:
 - **Exibição Inteligente**: Se um campo (Anos, Projetos ou Cidades) for deixado em branco, ele será automaticamente ocultado na landing page. Isso permite que você mostre apenas os dados que possui no momento.
 
+## 🖼️ Acervo (Galeria de Mídias)
+
+O painel de **Acervo** foi projetado para ser um repositório centralizado de todas as memórias visuais do coletivo.
+
+- **Upload em Lote**: Você pode enviar até 20 fotos simultaneamente. Basta arrastar os arquivos para a zona tracejada.
+- **Hashtags Conceituais**: Gerencie tags globais que ajudam a organizar o acervo por temas (ex: #cerrado, #performance).
+- **Curadoria Sequencial**: Ao clicar em uma imagem do acervo, você abre um modal de edição que permite navegar rapidamente para a próxima foto, facilitando a catalogação em massa.
+
+## 🏛️ Exposições (Salas de Curadoria)
+
+Nesta seção, você cria as narrativas visuais do site. Uma exposição é uma coleção curada de ativos do seu acervo.
+
+- **Layout Padronizado**: Assim como o restante do dashboard, este painel utiliza um cabeçalho claro e amplo espaçamento para facilitar a gestão das salas.
+- **Mesa de Curadoria**: Ao criar ou editar uma exposição, você verá um mural com todas as fotos do seu acervo. Basta selecionar as que deseja "pendurar" na sala virtual.
+- **Status de Inauguração**: Use o status "Publicado" para tornar a exposição visível no site público ou "Rascunho" para continuar trabalhando na curadoria.
+
 ## ⚙️ Configurações Gerais
 
 Nesta aba, você gerencia informações institucionais, links de redes sociais e textos legais (Privacidade e Termos).
