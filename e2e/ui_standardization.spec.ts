@@ -20,7 +20,7 @@ test.describe('UI Standardization - Internal Pages', () => {
       const heading = p.locator('h1');
       await expect(heading).toBeVisible({ timeout: 10000 });
 
-      const description = p.locator('header p');
+      const description = p.getByTestId('page-header-description');
       await expect(description).toBeVisible();
 
       // 3. Verify Background atmosphere (BackgroundBlobs / Textures)

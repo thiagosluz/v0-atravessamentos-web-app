@@ -1,38 +1,30 @@
-# Verification and Documentation Plan
+# Verification Plan - Debugging & Test Robustness
 
-This plan outlines the steps to verify the recent UI/UX standardizations and ensure all documentation and tests are up to date.
+This plan focuses on fixing the E2E test failures caused by non-unique selectors and ensuring the UI standardization is correctly verified.
 
 ## User Review Required
 
 > [!IMPORTANT]
-> This plan focuses on verifying the visual and structural reforms made to the internal pages and the admin dashboard. No functional logic changes are expected, but regressions in navigation and layout will be checked.
+> We will modify the `PageHeader` component to add `data-testid` attributes. This is a best practice for testing and will not affect the production UI.
 
 ## Proposed Changes
 
-### 1. Documentation Updates
-#### [MODIFY] [COMPONENTS.md](file:///home/thiago/Projetos/v0-atravessamentos-web-app/docs/COMPONENTS.md)
-- Add documentation for `PageHeader` component.
-- Add documentation for `BackgroundBlobs` component.
-- Update `BackButton` documentation with usage examples in internal pages.
+### 1. Component Refinement
+#### [MODIFY] [page-header.tsx](file:///home/thiago/Projetos/v0-atravessamentos-web-app/components/ui/page-header.tsx)
+- Add `data-testid="page-header"` to the main `<header>` tag.
+- Add `data-testid="page-header-description"` to the `<motion.p>` tag.
 
-#### [MODIFY] [ADMIN_GUIDE.md](file:///home/thiago/Projetos/v0-atravessamentos-web-app/docs/ADMIN_GUIDE.md)
-- Update descriptions of the Gallery and Exhibitions admin panels with the new standardized layout.
-
-### 2. Test Verification
-#### [NEW] [ui_standardization.spec.ts](file:///home/thiago/Projetos/v0-atravessamentos-web-app/e2e/ui_standardization.spec.ts)
-- Create a new Playwright test to verify that internal pages (`/acervo`, `/exposicoes`, `/diario`, `/projetos`) contain the `PageHeader` and `BackButton`.
-
-#### [MODIFY] [cms.spec.ts](file:///home/thiago/Projetos/v0-atravessamentos-web-app/e2e/cms.spec.ts)
-- Ensure admin dashboard tests still pass with the new spacing and header structure.
+### 2. Test Refactoring
+#### [MODIFY] [ui_standardization.spec.ts](file:///home/thiago/Projetos/v0-atravessamentos-web-app/e2e/ui_standardization.spec.ts)
+- Update locators to use `data-testid` for the `PageHeader` description.
+- Ensure the tests are resilient to background elements like the Command Menu.
 
 ## Verification Plan
 
 ### Automated Tests
-- Run `pnpm test` (Vitest) to ensure no regressions in business logic.
-- Run `pnpm test:e2e` (Playwright) to verify navigation and the new UI structure.
-- Run `pnpm lint` to ensure code quality.
-- Run `pnpm build` to verify no compilation errors.
+- Run `pnpm test:e2e` specifically for `ui_standardization.spec.ts`.
+- Run all E2E tests to ensure no regressions.
+- Run `pnpm lint` and `pnpm build`.
 
 ### Manual Verification
-- Visual check of the internal pages to ensure the "Editorial" theme is consistent.
-- Visual check of the admin dashboard to verify the "respiro" (spacing) in Gallery and Exhibitions.
+- Verify that the `data-testid` attributes are correctly rendered in the DOM using the browser tool.

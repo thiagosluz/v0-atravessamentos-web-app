@@ -13,7 +13,10 @@ interface PageHeaderProps {
 
 export function PageHeader({ label, title, description, className }: PageHeaderProps) {
   return (
-    <header className={cn("max-w-4xl mb-16 md:mb-24", className)}>
+    <header 
+      className={cn("max-w-4xl mb-16 md:mb-24", className)}
+      data-testid="page-header"
+    >
       <motion.span
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
@@ -38,6 +41,7 @@ export function PageHeader({ label, title, description, className }: PageHeaderP
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.8 }}
           className="text-xl md:text-2xl text-foreground/70 leading-relaxed max-w-2xl text-pretty"
+          data-testid="page-header-description"
         >
           {description}
         </motion.p>
