@@ -20,6 +20,8 @@ import {
   UserCircle,
   ExternalLink,
   Palette,
+  GalleryVertical,
+  Image as ImageIcon,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -62,6 +64,8 @@ import { SettingsPanel } from "@/components/admin/settings-panel"
 import { ProfilePanel } from "@/components/admin/profile-panel"
 import { OverviewPanel } from "@/components/admin/overview-panel"
 import { VisualSettingsPanel } from "@/components/admin/visual-settings-panel"
+import { GalleryAdminPanel } from "@/components/admin/gallery-admin-panel"
+import { ExhibitionsAdminPanel } from "@/components/admin/exhibitions-admin-panel"
 import { type Category } from "@/lib/actions/categories"
 import { type SiteSettings } from "@/lib/actions/settings"
 import { AdminCommandMenu } from "@/components/admin/admin-command-menu"
@@ -73,6 +77,8 @@ const navigation = [
   { id: "projects", label: "Projetos", icon: FolderKanban },
   { id: "members", label: "Membros", icon: Users },
   { id: "blog", label: "Blog", icon: BookOpen },
+  { id: "acervo", label: "Acervo", icon: ImageIcon },
+  { id: "exhibitions", label: "Exposições", icon: GalleryVertical },
   { id: "visual", label: "Identidade Visual", icon: Palette },
   { id: "settings", label: "Configurações", icon: Settings },
   { id: "profile", label: "Meu Perfil", icon: UserCircle },
@@ -100,21 +106,21 @@ interface AdminDashboardProps {
   }
 }
 
-export function AdminDashboard({ 
-  user, 
-  projectsData, 
-  membersData, 
-  blogPostsData, 
-  initialCategories, 
+export function AdminDashboard({
+  user,
+  projectsData,
+  membersData,
+  blogPostsData,
+  initialCategories,
   siteSettings,
   currentPage
 }: AdminDashboardProps) {
   const [active, setActive] = React.useState("overview")
   const [query, setQuery] = React.useState("")
-  const [searchEditItem, setSearchEditItem] = React.useState<{type: "project" | "member" | "blog", id: string} | null>(null)
-  const [deleteConfirm, setDeleteConfirm] = React.useState<{type: "project" | "member" | "blog", id: string} | null>(null)
+  const [searchEditItem, setSearchEditItem] = React.useState<{ type: "project" | "member" | "blog", id: string } | null>(null)
+  const [deleteConfirm, setDeleteConfirm] = React.useState<{ type: "project" | "member" | "blog", id: string } | null>(null)
   const { toast } = useToast()
-  
+
   const [localProjects, setLocalProjects] = React.useState<Project[]>(projectsData.data)
   const [localMembers, setLocalMembers] = React.useState<Member[]>(membersData.data)
   const [localBlogPosts, setLocalBlogPosts] = React.useState<BlogPost[]>(blogPostsData.data)
@@ -170,7 +176,7 @@ export function AdminDashboard({
 
   async function handleDeleteBulk(type: "project" | "member" | "blog", ids: string[]) {
     let result: { success?: boolean, error?: string } = { success: true }
-    
+
     // Atualização otimista
     if (type === "project") {
       setLocalProjects((prev) => prev.filter((p) => !ids.includes(p.id)))
@@ -210,7 +216,7 @@ export function AdminDashboard({
     if (!deleteConfirm) return
     const { type, id } = deleteConfirm
     setDeleteConfirm(null)
-    
+
     let result: { success?: boolean, error?: string } = {}
 
     if (type === "project") {
@@ -342,7 +348,7 @@ export function AdminDashboard({
     if (type === "project") setActive("projects")
     if (type === "member") setActive("members")
     if (type === "blog") setActive("blog")
-    
+
     setSearchEditItem({ type, id })
   }
 
@@ -540,11 +546,11 @@ export function AdminDashboard({
                       onDeleteBulk={(ids) => handleDeleteBulk("project", ids)}
                       labels={{ edit: "Editar projeto", delete: "Excluir projeto" }}
                     />
-                    <Pagination 
-                      totalCount={projectsData.count} 
-                      pageSize={10} 
-                      currentPage={currentPage.projects} 
-                      paramName="p_page" 
+                    <Pagination
+                      totalCount={projectsData.count}
+                      pageSize={10}
+                      currentPage={currentPage.projects}
+                      paramName="p_page"
                     />
                   </>
                 )}
@@ -571,11 +577,11 @@ export function AdminDashboard({
                       onDeleteBulk={(ids) => handleDeleteBulk("member", ids)}
                       labels={{ edit: "Editar membro", delete: "Excluir membro" }}
                     />
-                    <Pagination 
-                      totalCount={membersData.count} 
-                      pageSize={10} 
-                      currentPage={currentPage.members} 
-                      paramName="m_page" 
+                    <Pagination
+                      totalCount={membersData.count}
+                      pageSize={10}
+                      currentPage={currentPage.members}
+                      paramName="m_page"
                     />
                   </>
                 )}
@@ -602,11 +608,11 @@ export function AdminDashboard({
                       onDeleteBulk={(ids) => handleDeleteBulk("blog", ids)}
                       labels={{ edit: "Editar post", delete: "Excluir post" }}
                     />
-                    <Pagination 
-                      totalCount={blogPostsData.count} 
-                      pageSize={10} 
-                      currentPage={currentPage.blog} 
-                      paramName="b_page" 
+                    <Pagination
+                      totalCount={blogPostsData.count}
+                      pageSize={10}
+                      currentPage={currentPage.blog}
+                      paramName="b_page"
                     />
                   </>
                 )}
@@ -614,29 +620,31 @@ export function AdminDashboard({
                 {active === "settings" && (
                   <SettingsPanel categories={initialCategories} siteSettings={siteSettings} />
                 )}
-                
+
                 {active === "profile" && (
                   <ProfilePanel user={user} />
                 )}
-                
+
                 {active === "visual" && (
                   <VisualSettingsPanel siteSettings={siteSettings} />
                 )}
 
+                {active === "acervo" && (
+                  <GalleryAdminPanel />
+                )}
+
+                {active === "exhibitions" && (
+                  <ExhibitionsAdminPanel />
+                )}
+
                 {active === "overview" && (
-                  <OverviewPanel 
+                  <OverviewPanel
                     user={user}
-                    projects={localProjects} 
-                    blogPosts={localBlogPosts} 
+                    projects={localProjects}
+                    blogPosts={localBlogPosts}
                     members={localMembers}
                     setActive={setActive}
                   />
-                )}
-
-                {active !== "overview" && active !== "projects" && active !== "members" && active !== "blog" && active !== "settings" && active !== "profile" && active !== "visual" && (
-                  <div className="p-12 text-center text-foreground/60">
-                    Esta seção estará disponível em breve.
-                  </div>
                 )}
               </div>
 

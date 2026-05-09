@@ -7,8 +7,9 @@ import { SiteFooter } from "@/components/site-footer"
 import { TimelineSection } from "@/components/projects/timeline-section"
 import { ProjectFilters } from "@/components/projects/project-filters"
 import { type Project } from "@/lib/mock-data"
-import Link from "next/link"
-import { ArrowUpRight } from "lucide-react"
+import { BackButton } from "@/components/ui/back-button"
+import { PageHeader } from "@/components/ui/page-header"
+import { BackgroundBlobs } from "@/components/ui/background-blobs"
 
 export const metadata: Metadata = {
   title: "Projetos — Atravessamentos",
@@ -50,7 +51,9 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
     .sort((a, b) => b - a)
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative isolate">
+      <div className="absolute inset-0 -z-10 bg-[url('/paper-texture.png')] opacity-20 pointer-events-none" />
+      <BackgroundBlobs />
       <SiteHeader />
 
       <main className="pt-32 pb-24">
@@ -58,30 +61,15 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
 
           {/* Botão Voltar */}
           <div className="mb-10">
-            <Link
-              href="/#projetos"
-              className="inline-flex items-center gap-2 text-sm text-foreground/50 hover:text-foreground transition-colors group"
-            >
-              <ArrowUpRight className="h-4 w-4 rotate-[225deg] transition-transform group-hover:-translate-x-0.5" />
-              Voltar para o início
-            </Link>
+            <BackButton href="/#projetos" />
           </div>
 
           {/* Cabeçalho editorial */}
-          <header className="max-w-3xl mb-16">
-            <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.25em] text-primary mb-6">
-              <span className="h-px w-8 bg-primary" />
-              Arquivo do Coletivo
-            </span>
-            <h1 className="font-display text-5xl md:text-7xl font-bold tracking-tight text-foreground leading-[1.02] mb-6">
-              Arquivo de{" "}
-              <em className="not-italic text-primary">Travessias</em>.
-            </h1>
-            <p className="text-lg md:text-xl text-foreground/65 leading-relaxed">
-              Nossa história contada através de obras, pesquisas e ações.{" "}
-              <span className="text-foreground/40">{projects.length} {projects.length === 1 ? "projeto" : "projetos"} no arquivo.</span>
-            </p>
-          </header>
+          <PageHeader 
+            label="Arquivo do Coletivo"
+            title={<>Arquivo de <em className="not-italic text-primary italic font-light">Travessias</em>.</>}
+            description={`Nossa história contada através de obras, pesquisas e ações. ${projects.length} ${projects.length === 1 ? "projeto" : "projetos"} no arquivo.`}
+          />
 
           {/* Filtros */}
           <ProjectFilters

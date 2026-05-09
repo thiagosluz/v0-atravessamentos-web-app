@@ -19,6 +19,21 @@ export const siteSettingsSchema = z.object({
   stats_cities: z.string().optional().or(z.null()),
 })
 
+// Esquema para Ativos da Galeria (Acervo)
+export const galleryAssetSchema = z.object({
+  title: z.string().max(100).optional().or(z.literal("")),
+  description: z.string().max(1000).optional().or(z.literal("")),
+  location: z.string().optional().nullable(),
+  project_id: z.string().uuid().optional().nullable().or(z.literal("")).or(z.literal("none")),
+  tags: z.array(z.string()).optional(),
+})
+
+// Esquema para Tags da Galeria
+export const galleryTagSchema = z.object({
+  name: z.string().min(2).max(30),
+  color: z.string().optional().or(z.null()),
+})
+
 // Esquema para Posts do Blog
 export const blogPostSchema = z.object({
   title: z.string().min(5, "Título muito curto").max(200),

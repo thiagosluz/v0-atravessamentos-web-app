@@ -5,6 +5,7 @@ import { ContactForm } from "./contact-form"
 import { Instagram, Mail, MapPin, Youtube, MessageCircle } from "lucide-react"
 import { SiteSettings } from "@/lib/actions/settings"
 import { cn } from "@/lib/utils"
+import { BackButton } from "@/components/ui/back-button"
 
 interface ContactViewProps {
   settings: SiteSettings
@@ -48,6 +49,9 @@ export function ContactView({ settings }: ContactViewProps) {
 
         {/* Header Editorial */}
         <header className="max-w-3xl mb-16 md:mb-20">
+          <div className="mb-8">
+            <BackButton href="/" />
+          </div>
           <motion.span
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}

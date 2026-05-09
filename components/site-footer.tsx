@@ -17,6 +17,8 @@ const footerLinks = [
       { name: "Sobre", href: "/#sobre" },
       { name: "Membros", href: "/#coletivo" },
       { name: "Diário", href: "/diario" },
+      { name: "Acervo", href: "/acervo" },
+      { name: "Exposições", href: "/exposicoes" },
     ],
   },
   {
@@ -56,10 +58,10 @@ export function SiteFooter({ settings }: SiteFooterProps) {
 
     const form = e.currentTarget
     const formData = new FormData(form)
-    
+
     try {
       const result = await subscribeToNewsletter(formData)
-      
+
       if (result?.error) {
         toast({
           title: "Não foi possível assinar",
@@ -69,8 +71,8 @@ export function SiteFooter({ settings }: SiteFooterProps) {
       } else if (result?.success) {
         toast({
           title: "Inscrição confirmada!",
-          description: result.alreadySubscribed 
-            ? "Você já faz parte da nossa travessia!" 
+          description: result.alreadySubscribed
+            ? "Você já faz parte da nossa travessia!"
             : "Bem-vinda à nossa travessia! Em breve você receberá novidades.",
         })
         form.reset()

@@ -6,9 +6,10 @@ import { SiteFooter } from "@/components/site-footer"
 import { DiaryFeed } from "@/components/blog/diary-feed"
 import { DiaryFilters } from "@/components/blog/diary-filters"
 import { DiaryPagination } from "@/components/blog/diary-pagination"
-import Link from "next/link"
-import { ArrowUpRight } from "lucide-react"
 import type { Metadata } from "next"
+import { BackButton } from "@/components/ui/back-button"
+import { PageHeader } from "@/components/ui/page-header"
+import { BackgroundBlobs } from "@/components/ui/background-blobs"
 
 export const metadata: Metadata = {
   title: "Diário de Travessia — Atravessamentos",
@@ -43,7 +44,9 @@ export default async function DiarioPage({ searchParams }: DiarioPageProps) {
   ])
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative isolate">
+      <div className="absolute inset-0 -z-10 bg-[url('/paper-texture.png')] opacity-20 pointer-events-none" />
+      <BackgroundBlobs />
       <SiteHeader />
 
       <main className="pt-32 pb-24">
@@ -51,29 +54,15 @@ export default async function DiarioPage({ searchParams }: DiarioPageProps) {
 
           {/* Botão Voltar */}
           <div className="mb-10">
-            <Link
-              href="/#diario"
-              className="inline-flex items-center gap-2 text-sm text-foreground/50 hover:text-foreground transition-colors group"
-            >
-              <ArrowUpRight className="h-4 w-4 rotate-[225deg] transition-transform group-hover:-translate-x-0.5" />
-              Voltar para o início
-            </Link>
+            <BackButton href="/#diario" />
           </div>
 
           {/* Cabeçalho editorial */}
-          <header className="mb-16">
-            <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.25em] text-primary">
-              <span className="h-px w-8 bg-primary" />
-              Diário de Travessia
-            </span>
-            <h1 className="mt-6 font-display text-5xl md:text-7xl font-bold tracking-tight text-foreground leading-[1.02]">
-              Palavras que<br />atravessam.
-            </h1>
-            <p className="mt-5 text-lg md:text-xl text-foreground/65 max-w-2xl leading-relaxed">
-              Ensaios, manifestos, crônicas e chamadas para os encontros que estão por vir.{" "}
-              <span className="text-foreground/40">{total} entradas no arquivo.</span>
-            </p>
-          </header>
+          <PageHeader 
+            label="Diário de Travessia"
+            title={<>Palavras que<br />atravessam.</>}
+            description={`Ensaios, manifestos, crônicas e chamadas para os encontros que estão por vir. ${total} entradas no arquivo.`}
+          />
 
           {/* Filtros de categoria + busca */}
           <DiaryFilters 
