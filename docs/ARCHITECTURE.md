@@ -56,6 +56,17 @@ Visão técnica do projeto **Atravessamentos** (Next.js App Router + Supabase).
 - **Caching Layer**: Cache de alta performance para o Acervo (Galeria) com invalidação automática em mutações.
 - **Rate Limiting**: Proteção de endpoints de formulários (Contato, Newsletter) usando algoritmo de janela deslizante via `@upstash/ratelimit`.
 
+#### 🔭 Monitoramento (Sentry + Vercel Observability)
+- **Error Tracking (Sentry)**: Captura automática de erros em Client Components, Server Components, Server Actions e Edge Runtime via `@sentry/nextjs`. Ativado apenas em produção.
+  - `sentry.client.config.ts` — Erros do browser (com filtro de ruído: extensões, network errors)
+  - `sentry.server.config.ts` — Erros do Node.js runtime
+  - `sentry.edge.config.ts` — Erros do middleware (Edge Runtime)
+  - `instrumentation.ts` — Hook do Next.js que carrega o config correto por runtime
+  - `app/global-error.tsx` — Error boundary que reporta falhas críticas ao Sentry
+  - `next.config.mjs` — Wrapped com `withSentryConfig` para upload de source maps
+- **Performance (Vercel Speed Insights)**: Web Vitals por rota, integrado no `layout.tsx`.
+- **Analytics (Vercel Web Analytics)**: Pageviews e visitantes, integrado no `layout.tsx`.
+
 ### 5. Fluxos de Dados Críticos
 
 1. **Leitura**: via Server Components que chamam funções em `lib/actions/*.ts`. Implementamos uma **Camada de Cache** (Redis) para ativos da galeria, reduzindo a carga no Supabase e acelerando navegações subsequentes.

@@ -1,7 +1,8 @@
 "use client"
 
+import * as Sentry from "@sentry/nextjs"
+import { useEffect } from "react"
 import { ErrorLayout } from "@/components/ui/error-layout"
-import { RefreshCcw } from "lucide-react"
 
 // global-error.tsx deve ter tags html e body, pois substitui o RootLayout
 export default function GlobalError({
@@ -11,6 +12,10 @@ export default function GlobalError({
   error: Error & { digest?: string }
   reset: () => void
 }) {
+  useEffect(() => {
+    Sentry.captureException(error)
+  }, [error])
+
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <body>

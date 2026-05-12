@@ -27,6 +27,8 @@ O Atravessamentos é uma plataforma digital dedicada a preservar e difundir a me
 - **SEO**: Metadados dinâmicos, Sitemap.xml e Robots.txt integrados.
 - **E-mail**: Resend (Delivery), React Email (Templates), Resend Audiences (Gestão).
 - **Editor**: Tiptap Rich Text Editor customizado.
+- **Monitoramento**: Sentry (Error Tracking), Vercel Speed Insights + Web Analytics.
+- **Cache & Rate Limit**: Upstash Redis (KV) via `@upstash/redis` e `@upstash/ratelimit`.
 
 ## 📦 Estrutura de Pastas
 
@@ -57,6 +59,7 @@ RESEND_API_KEY=re_sua_chave_resend
 RESEND_AUDIENCE_ID=seu_audience_id
 KV_REST_API_URL=sua_url_kv
 KV_REST_API_TOKEN=seu_token_kv
+NEXT_PUBLIC_SENTRY_DSN=seu_dsn_sentry  # Opcional local — injetado pela Vercel em prod
 ```
 
 ### Desenvolvimento
