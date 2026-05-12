@@ -5,11 +5,25 @@ import { Resend } from "resend"
 import { contactSchema } from "@/lib/validations"
 import { getSiteSettings } from "./settings"
 import { createAdminClient } from "@/lib/supabase/admin"
+import { ratelimit } from "@/lib/redis"
+import { headers } from "next/headers"
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function sendContactMessage(formData: FormData) {
   try {
+    // 0. Rate limiting check
+    const ip = (await headers()).get("x-forwarded-for") || "127.0.0.1"
+    const { success: limitSuccess } = await ratelimit.limit(
+      `contact_${ip}`
+    )
+
+    if (!limitSuccess) {
+      return { 
+        error: "Muitas tentativas. Por favor, aguarde alguns instantes antes de enviar uma nova mensagem." 
+      }
+    }
+
     // 1. Honeypot check
     const honeypot = formData.get("website")
     

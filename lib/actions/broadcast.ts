@@ -2,7 +2,7 @@
 
 import { Resend } from "resend"
 import { NewsEmail } from "@/components/emails/news-template"
-import { render } from "@react-email/components"
+import { render } from "react-email"
 
 const resend = new Resend(process.env.RESEND_API_KEY || "re_placeholder")
 const audienceId = process.env.RESEND_AUDIENCE_ID

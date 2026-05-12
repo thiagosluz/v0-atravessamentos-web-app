@@ -1,30 +1,36 @@
-# Verification Plan - Debugging & Test Robustness
+# System Update Plan - Documentation & Testing (Redis Integration)
 
-This plan focuses on fixing the E2E test failures caused by non-unique selectors and ensuring the UI standardization is correctly verified.
+Ensure the project documentation and testing suite are aligned with the new Vercel KV / Redis infrastructure.
 
 ## User Review Required
 
 > [!IMPORTANT]
-> We will modify the `PageHeader` component to add `data-testid` attributes. This is a best practice for testing and will not affect the production UI.
+> The E2E tests might need to be adjusted to handle the new Rate Limiting logic. We will ensure the tests remain deterministic.
 
 ## Proposed Changes
 
-### 1. Component Refinement
-#### [MODIFY] [page-header.tsx](file:///home/thiago/Projetos/v0-atravessamentos-web-app/components/ui/page-header.tsx)
-- Add `data-testid="page-header"` to the main `<header>` tag.
-- Add `data-testid="page-header-description"` to the `<motion.p>` tag.
+### 1. Technical Documentation
+#### [MODIFY] [README.md](file:///home/thiago/Projetos/v0-atravessamentos-web-app/README.md)
+- Add `KV_REST_API_URL` and `KV_REST_API_TOKEN` to the environment variables section.
+- Add a note about Redis/Vercel KV requirement for production stability.
 
-### 2. Test Refactoring
-#### [MODIFY] [ui_standardization.spec.ts](file:///home/thiago/Projetos/v0-atravessamentos-web-app/e2e/ui_standardization.spec.ts)
-- Update locators to use `data-testid` for the `PageHeader` description.
-- Ensure the tests are resilient to background elements like the Command Menu.
+#### [MODIFY] [ARCHITECTURE.md](file:///home/thiago/Projetos/v0-atravessamentos-web-app/ARCHITECTURE.md) (If exists)
+- Update the system diagram to show Vercel KV sitting between the App and Supabase for caching.
+- Document the Rate Limiting strategy (5 req/10s).
+
+### 2. E2E Testing Suite
+#### [MODIFY] [e2e/contact.spec.ts](file:///home/thiago/Projetos/v0-atravessamentos-web-app/e2e/contact.spec.ts)
+- Update contact form tests to account for potential rate limiting.
+- Add a new test case: "should block repeated submissions (Rate Limiting)".
+
+#### [NEW] [e2e/redis_integration.spec.ts](file:///home/thiago/Projetos/v0-atravessamentos-web-app/e2e/redis_integration.spec.ts)
+- Create a dedicated test to verify that the Acervo page loads faster on subsequent hits (visual check or timing).
 
 ## Verification Plan
 
 ### Automated Tests
-- Run `pnpm test:e2e` specifically for `ui_standardization.spec.ts`.
-- Run all E2E tests to ensure no regressions.
-- Run `pnpm lint` and `pnpm build`.
+- Run `pnpm test:e2e` to verify all flows.
+- Run `lint_runner.py` to ensure documentation links are correct.
 
 ### Manual Verification
-- Verify that the `data-testid` attributes are correctly rendered in the DOM using the browser tool.
+- Review the generated documentation files for clarity and completeness.

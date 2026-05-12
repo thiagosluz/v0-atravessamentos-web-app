@@ -55,6 +55,8 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=sua-chave-anon
 SUPABASE_SERVICE_ROLE_KEY=sua-chave-service-role
 RESEND_API_KEY=re_sua_chave_resend
 RESEND_AUDIENCE_ID=seu_audience_id
+KV_REST_API_URL=sua_url_kv
+KV_REST_API_TOKEN=seu_token_kv
 ```
 
 ### Desenvolvimento

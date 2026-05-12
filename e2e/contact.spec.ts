@@ -49,4 +49,41 @@ test.describe('Página de Contato - Fluxo de Mensagem', () => {
     // O honeypot deve retornar sucesso silencioso ou o form deve ser resetado
     await expect(page.locator('[role="status"], [role="alert"]').first()).toBeVisible();
   });
+
+  test('deve bloquear envios excessivos (Rate Limiting)', async ({ page }) => {
+    test.setTimeout(60000);
+    await page.goto('/contato');
+    const contactForm = page.locator('#contact-form');
+
+    // 1. Preencher o formulário uma única vez
+    await contactForm.locator('input[name="name"]').fill('Teste Spam');
+    await contactForm.locator('input[name="email"]').fill('spam@teste.com');
+    await contactForm.locator('button#category').click();
+    await page.getByRole('option', { name: 'Outros Assuntos' }).click();
+    await contactForm.locator('input[name="subject"]').fill('Spam Test');
+    await contactForm.locator('textarea[name="message"]').fill('Mensagem repetitiva para testar rate limit.');
+
+    // 2. Impedir form.reset() de limpar os campos após envio bem-sucedido
+    await page.evaluate(() => {
+      const form = document.getElementById('contact-form') as HTMLFormElement;
+      if (form) form.reset = () => {};
+    });
+
+    // 3. Disparar 7 submits em sequência rápida:
+    //    - Clicamos o botão com force: true para ignorar o estado disabled
+    //    - Após cada clique, re-habilitamos o botão via DOM para permitir o próximo
+    //    - Não esperamos a resposta do servidor entre os cliques
+    for (let i = 0; i < 7; i++) {
+      await contactForm.locator('button[type="submit"]').click({ force: true });
+      await page.waitForTimeout(150);
+      // Re-habilitar o botão para o próximo clique
+      await page.evaluate(() => {
+        const btn = document.querySelector('#contact-form button[type="submit"]') as HTMLButtonElement;
+        if (btn) btn.disabled = false;
+      });
+    }
+
+    // 4. Aguardar o toast de rate limit aparecer
+    await expect(page.getByText('Muitas tentativas').first()).toBeVisible({ timeout: 20000 });
+  });
 });

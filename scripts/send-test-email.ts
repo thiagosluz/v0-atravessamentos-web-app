@@ -1,6 +1,6 @@
 import { Resend } from "resend"
 import { NewsEmail } from "../components/emails/news-template"
-import { render } from "@react-email/components"
+import { render } from "react-email"
 import * as dotenv from "dotenv"
 import * as path from "path"
 

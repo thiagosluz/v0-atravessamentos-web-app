@@ -49,13 +49,16 @@ Visão técnica do projeto **Atravessamentos** (Next.js App Router + Supabase).
 ### 4. Integrações Externas
 
 #### 📧 Resend (E-mail Marketing)
-- **Audiences**: Gerenciamento de contatos e assinaturas.
 - **Broadcast**: Disparo em lote (`batch.send`) via Server Actions.
 - **React Email**: Utilizado para renderizar templates HTML seguros e responsivos com Tailwind CSS.
 
+#### 📦 Vercel KV (Redis)
+- **Caching Layer**: Cache de alta performance para o Acervo (Galeria) com invalidação automática em mutações.
+- **Rate Limiting**: Proteção de endpoints de formulários (Contato, Newsletter) usando algoritmo de janela deslizante via `@upstash/ratelimit`.
+
 ### 5. Fluxos de Dados Críticos
 
-1. **Leitura**: via Server Components que chamam funções em `lib/actions/*.ts`. Implementamos **Paginação Server-Side** nestas ações usando o método `.range()` do Supabase, retornando sempre `{ data, count }` para permitir cálculos de UI no frontend.
+1. **Leitura**: via Server Components que chamam funções em `lib/actions/*.ts`. Implementamos uma **Camada de Cache** (Redis) para ativos da galeria, reduzindo a carga no Supabase e acelerando navegações subsequentes.
 2. **Interatividade**: dados hidratados em componentes `"use client"` (filtros, formulários, animações). O componente `<Pagination />` gerencia a navegação sincronizada com a URL.
 3. **Escrita**: Server Actions em `lib/actions/*-admin.ts`, etc., usando o cliente admin do Supabase. Agora todas as mutações são validadas com **Zod Schemas** antes de qualquer persistência.
 
@@ -110,7 +113,7 @@ A aplicação é otimizada para visibilidade máxima:
 O fluxo de contato utiliza uma arquitetura híbrida para máxima resiliência e segurança:
 - **Fluxo de Dados**: `Formulário (Client)` -> `Server Action (Server)` -> `Supabase (DB)` -> `Resend (Email)`.
 - **Persistência**: Todas as mensagens são salvas na tabela `contact_messages` via **Service Role**, permitindo que o coletivo tenha um backup caso o e-mail não chegue.
-- **Anti-Spam**: Proteção multicamada com **Honeypot** (campo invisível) e **Zod Validation**.
+- **Anti-Spam**: Proteção multicamada com **Honeypot** (campo invisível), **Zod Validation** e **Rate Limiting via Redis** (5 requisições / 10 segundos por IP).
 - **Entrega**: Integração com a API do **Resend** para entrega de e-mails transacionais com templates HTML limpos.
 
 ---

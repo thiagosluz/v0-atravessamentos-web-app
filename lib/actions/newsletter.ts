@@ -2,6 +2,8 @@
 
 import { Resend } from "resend"
 import { z } from "zod"
+import { ratelimit } from "@/lib/redis"
+import { headers } from "next/headers"
 
 const resend = new Resend(process.env.RESEND_API_KEY || "re_placeholder")
 const audienceId = process.env.RESEND_AUDIENCE_ID
@@ -12,6 +14,18 @@ const newsletterSchema = z.object({
 
 export async function subscribeToNewsletter(formData: FormData) {
   try {
+    // 0. Rate limiting check
+    const ip = (await headers()).get("x-forwarded-for") || "127.0.0.1"
+    const { success: limitSuccess } = await ratelimit.limit(
+      `newsletter_${ip}`
+    )
+
+    if (!limitSuccess) {
+      return { 
+        error: "Muitas tentativas. Por favor, aguarde alguns instantes." 
+      }
+    }
+
     // 1. Honeypot check
     const honeypot = formData.get("website")
     if (honeypot) {

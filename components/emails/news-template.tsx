@@ -11,7 +11,7 @@ import {
   Section,
   Text,
   Button,
-} from "@react-email/components"
+} from "react-email"
 import * as React from "react"
 
 interface NewsEmailProps {

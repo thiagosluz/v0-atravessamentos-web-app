@@ -2,6 +2,7 @@
 
 import { createAdminClient } from "@/lib/supabase/admin"
 import { revalidatePath } from "next/cache"
+import { redis } from "@/lib/redis"
 import { ensureAdmin } from "@/lib/utils/auth-guard"
 import { galleryAssetSchema, galleryTagSchema } from "@/lib/validations"
 import { z } from "zod"
@@ -92,6 +93,8 @@ export async function batchUploadGalleryImages(formData: FormData) {
 
     revalidatePath("/acervo")
     revalidatePath("/admin")
+    // Invalidate gallery cache
+    await redis.del("gallery_assets_all")
     return { success: true, count: results.length }
   } catch (error: any) {
     return { error: error.message }
@@ -119,6 +122,8 @@ export async function updateGalleryAsset(id: string, data: any) {
     if (error) throw error
     revalidatePath("/acervo")
     revalidatePath("/admin")
+    // Invalidate gallery cache
+    await redis.del("gallery_assets_all")
     return { success: true }
   } catch (error: any) {
     return { error: error.message }
@@ -141,6 +146,8 @@ export async function deleteGalleryAsset(id: string) {
     
     revalidatePath("/acervo")
     revalidatePath("/admin")
+    // Invalidate gallery cache
+    await redis.del("gallery_assets_all")
     return { success: true }
   } catch (error: any) {
     return { error: error.message }
@@ -149,6 +156,17 @@ export async function deleteGalleryAsset(id: string) {
 
 // Obter ativos do acervo (com filtro opcional de tag)
 export async function getGalleryAssets(tag?: string) {
+  // 1. Try cache first (only for "all" to keep it simple, or based on tag)
+  const cacheKey = `gallery_assets_${tag || "all"}`
+  try {
+    const cached = await redis.get(cacheKey)
+    if (cached) {
+      return cached as any[]
+    }
+  } catch (err) {
+    console.warn("Redis cache error:", err)
+  }
+
   const supabase = createAdminClient()
   
   let query = supabase
@@ -166,6 +184,16 @@ export async function getGalleryAssets(tag?: string) {
     console.error("Erro ao buscar ativos:", error)
     return []
   }
+
+  // 2. Save to cache (TTL: 1 hour)
+  if (data) {
+    try {
+      await redis.set(cacheKey, data, { ex: 3600 })
+    } catch (err) {
+      console.warn("Redis set error:", err)
+    }
+  }
+
   return data
 }
 
