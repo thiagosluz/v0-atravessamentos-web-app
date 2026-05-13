@@ -101,3 +101,24 @@ export async function unsubscribeFromNewsletter(email: string): Promise<ActionRe
     return { error: "Ocorreu um erro inesperado." }
   }
 }
+export async function getNewsletterSubscribers() {
+  if (!audienceId) {
+    return { error: "Configuração de audiência ausente." }
+  }
+
+  try {
+    const { data, error } = await resend.contacts.list({
+      audienceId: audienceId,
+    })
+
+    if (error) {
+      console.error("Erro ao buscar inscritos:", error)
+      return { error: "Não foi possível carregar a lista de inscritos." }
+    }
+
+    return { success: true, subscribers: data?.data || [] }
+  } catch (error: any) {
+    console.error("Erro fatal ao buscar inscritos:", error)
+    return { error: "Ocorreu um erro inesperado." }
+  }
+}

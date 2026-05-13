@@ -18,6 +18,7 @@ import {
   Palette,
   GalleryVertical,
   Image as ImageIcon,
+  Mail,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -54,6 +55,7 @@ import { OverviewPanel } from "@/components/admin/overview-panel"
 import { VisualSettingsPanel } from "@/components/admin/visual-settings-panel"
 import { GalleryAdminPanel } from "@/components/admin/gallery-admin-panel"
 import { ExhibitionsAdminPanel } from "@/components/admin/exhibitions-admin-panel"
+import { NewsletterAdminPanel } from "@/components/admin/newsletter-admin-panel"
 import { type Category } from "@/lib/actions/categories"
 import { type SiteSettings } from "@/lib/actions/settings"
 import { AdminCommandMenu } from "@/components/admin/admin-command-menu"
@@ -72,6 +74,7 @@ const navigation = [
   { id: "projects", label: "Projetos", icon: FolderKanban },
   { id: "members", label: "Membros", icon: Users },
   { id: "blog", label: "Blog", icon: BookOpen },
+  { id: "newsletter", label: "Newsletter", icon: Mail },
   { id: "acervo", label: "Acervo", icon: ImageIcon },
   { id: "exhibitions", label: "Exposições", icon: GalleryVertical },
   { id: "visual", label: "Identidade Visual", icon: Palette },
@@ -357,6 +360,10 @@ export function AdminDashboard({
 
                 {active === "exhibitions" && (
                   <ExhibitionsAdminPanel />
+                )}
+
+                {active === "newsletter" && (
+                  <NewsletterAdminPanel />
                 )}
 
                 {active === "overview" && (
