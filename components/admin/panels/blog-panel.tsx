@@ -3,9 +3,9 @@
 import * as React from "react"
 import { type BlogPost } from "@/lib/mock-data"
 import { type Category } from "@/lib/actions/categories"
-import { AdminDataTable, type Column } from "@/components/admin/admin-data-table"
-import { BlogFormDialog } from "@/components/admin/blog-form-dialog"
-import { Pagination } from "@/components/admin/pagination"
+import { AdminDataTable, type Column } from "../table/admin-data-table"
+import { BlogFormDialog } from "../forms/blog-form-dialog"
+import { Pagination } from "../shared/pagination"
 import { cn } from "@/lib/utils"
 
 interface BlogPanelProps {

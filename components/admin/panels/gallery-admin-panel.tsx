@@ -9,13 +9,13 @@ import {
   getGalleryAssets,
   getProjectsForSelect
 } from "@/lib/actions/gallery"
-import { EditAssetModal } from "./edit-asset-modal"
+import { EditAssetModal } from "../shared/edit-asset-modal"
 import { type GalleryAsset, type GalleryTag, type ProjectOption } from "@/types/admin"
 
-import { GalleryHeader } from "./panels/gallery/gallery-header"
-import { UploadSection } from "./panels/gallery/upload-section"
-import { TagManagement } from "./panels/gallery/tag-management"
-import { AssetGrid } from "./panels/gallery/asset-grid"
+import { GalleryHeader } from "./gallery/gallery-header"
+import { UploadSection } from "./gallery/upload-section"
+import { TagManagement } from "./gallery/tag-management"
+import { AssetGrid } from "./gallery/asset-grid"
 
 export function GalleryAdminPanel() {
   const [isUploading, setIsUploading] = React.useState(false)

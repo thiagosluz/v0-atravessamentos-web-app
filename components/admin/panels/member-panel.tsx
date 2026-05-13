@@ -3,9 +3,9 @@
 import * as React from "react"
 import { type Member } from "@/lib/mock-data"
 import { type Category } from "@/lib/actions/categories"
-import { AdminDataTable, type Column } from "@/components/admin/admin-data-table"
-import { MemberFormDialog } from "@/components/admin/member-form-dialog"
-import { Pagination } from "@/components/admin/pagination"
+import { AdminDataTable, type Column } from "../table/admin-data-table"
+import { MemberFormDialog } from "../forms/member-form-dialog"
+import { Pagination } from "../shared/pagination"
 
 interface MemberPanelProps {
   members: Member[]

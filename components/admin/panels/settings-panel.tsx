@@ -16,9 +16,9 @@ import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
 import { type Category, deleteCategory } from "@/lib/actions/categories"
-import { CategoryFormDialog } from "@/components/admin/category-form-dialog"
+import { CategoryFormDialog } from "@/components/admin/forms/category-form-dialog"
 import { type SiteSettings } from "@/lib/actions/settings"
-import { GeneralSettingsManager } from "@/components/admin/general-settings-manager"
+import { GeneralSettingsManager } from "@/components/admin/shared/general-settings-manager"
 import {
   AlertDialog,
   AlertDialogAction,

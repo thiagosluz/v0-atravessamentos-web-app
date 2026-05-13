@@ -5,8 +5,8 @@ import { Globe } from "lucide-react"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { SmartImageUpload } from "@/components/admin/smart-image-upload"
-import { SEOPreview } from "@/components/admin/seo-preview"
+import { SmartImageUpload } from "../shared/smart-image-upload"
+import { SEOPreview } from "../shared/seo-preview"
 import { type SiteSettings } from "@/lib/actions/settings"
 
 interface InstitutionalSettingsProps {

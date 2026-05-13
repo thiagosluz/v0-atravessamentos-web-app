@@ -4,7 +4,7 @@ import * as React from "react"
 import Link from "next/link"
 import { ExternalLink, LogOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { AdminCommandMenu } from "@/components/admin/admin-command-menu"
+import { AdminCommandMenu } from "@/components/admin/shared/admin-command-menu"
 import { signOut } from "@/lib/actions/auth"
 
 interface AdminTopbarProps {

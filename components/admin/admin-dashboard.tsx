@@ -20,19 +20,19 @@ import { type AdminDashboardProps, type Project, type Member, type BlogPost } fr
 import { signOut } from "@/lib/actions/auth"
 
 // Painéis
-import { OverviewPanel } from "./overview-panel"
+import { OverviewPanel } from "./panels/overview-panel"
 import { ProjectPanel } from "./panels/project-panel"
 import { BlogPanel } from "./panels/blog-panel"
 import { MemberPanel } from "./panels/member-panel"
-import { ProjectFormDialog } from "./project-form-dialog"
-import { BlogFormDialog } from "./blog-form-dialog"
-import { MemberFormDialog } from "./member-form-dialog"
-import { SettingsPanel } from "./settings-panel"
-import { ProfilePanel } from "./profile-panel"
-import { VisualSettingsPanel } from "./visual-settings-panel"
-import { GalleryAdminPanel } from "./gallery-admin-panel"
-import { ExhibitionsAdminPanel } from "./exhibitions-admin-panel"
-import { NewsletterAdminPanel } from "./newsletter-admin-panel"
+import { ProjectFormDialog } from "./forms/project-form-dialog"
+import { BlogFormDialog } from "./forms/blog-form-dialog"
+import { MemberFormDialog } from "./forms/member-form-dialog"
+import { SettingsPanel } from "./panels/settings-panel"
+import { ProfilePanel } from "./panels/profile-panel"
+import { VisualSettingsPanel } from "./panels/visual-settings-panel"
+import { GalleryAdminPanel } from "./panels/gallery-admin-panel"
+import { ExhibitionsAdminPanel } from "./panels/exhibitions-admin-panel"
+import { NewsletterAdminPanel } from "./panels/newsletter-admin-panel"
 
 // Actions
 import { deleteProject } from "@/lib/actions/projects-admin"
@@ -41,7 +41,7 @@ import { deleteBlogPost } from "@/lib/actions/blog-admin"
 
 // Componentes UI
 import { Button } from "@/components/ui/button"
-import { AdminCommandMenu } from "./admin-command-menu"
+import { AdminCommandMenu } from "./shared/admin-command-menu"
 import {
   AlertDialog,
   AlertDialogAction,

@@ -6,7 +6,7 @@ import Youtube from "@tiptap/extension-youtube"
 import Image from "@tiptap/extension-image"
 import Placeholder from "@tiptap/extension-placeholder"
 import { useMemo, useEffect } from "react"
-import { EditorToolbar } from "./editor/editor-toolbar"
+import { EditorToolbar } from "../editor/editor-toolbar"
 
 interface RichTextEditorProps {
   content: string

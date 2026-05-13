@@ -5,10 +5,10 @@ import { Save } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast"
 import { type SiteSettings, updateSiteSettings } from "@/lib/actions/settings"
-import { InstitutionalSettings } from "./settings/institutional-settings"
-import { SocialSettings } from "./settings/social-settings"
-import { LegalSettings } from "./settings/legal-settings"
-import { EditorialSettings } from "./settings/editorial-settings"
+import { InstitutionalSettings } from "../settings/institutional-settings"
+import { SocialSettings } from "../settings/social-settings"
+import { LegalSettings } from "../settings/legal-settings"
+import { EditorialSettings } from "../settings/editorial-settings"
 
 interface GeneralSettingsManagerProps {
   initialSettings: SiteSettings

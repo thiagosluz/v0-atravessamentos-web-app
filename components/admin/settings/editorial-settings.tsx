@@ -5,7 +5,7 @@ import { FileText } from "lucide-react"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { RichTextEditor } from "@/components/admin/rich-text-editor"
+import { RichTextEditor } from "../shared/rich-text-editor"
 import { type SiteSettings } from "@/lib/actions/settings"
 
 interface EditorialSettingsProps {

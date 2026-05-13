@@ -1,4 +1,4 @@
-import { OverviewSkeleton } from "@/components/admin/overview-skeleton"
+import { OverviewSkeleton } from "@/components/admin/shared/overview-skeleton"
 
 export default function AdminLoading() {
   return (

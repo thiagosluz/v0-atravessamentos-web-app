@@ -19,7 +19,7 @@ import {
   CommandList,
 } from "@/components/ui/command"
 import { globalSearch, type SearchResult } from "@/lib/actions/search"
-import { useDebounce } from "../../lib/hooks/use-debounce"
+import { useDebounce } from "@/hooks/use-debounce"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 export function CommandMenu() {

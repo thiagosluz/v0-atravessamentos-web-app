@@ -11,7 +11,7 @@ import {
   UserCircle,
   ExternalLink,
 } from "lucide-react"
-import { useDebounce } from "../../lib/hooks/use-debounce"
+import { useDebounce } from "@/hooks/use-debounce"
 import { globalSearch, type SearchResult } from "@/lib/actions/search"
 import {
   CommandDialog,

@@ -23,9 +23,9 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 
-import { ExhibitionsHeader } from "./panels/exhibitions/exhibitions-header"
-import { ExhibitionsGrid } from "./panels/exhibitions/exhibitions-grid"
-import { ExhibitionFormDialog } from "./panels/exhibitions/exhibition-form-dialog"
+import { ExhibitionsHeader } from "./exhibitions/exhibitions-header"
+import { ExhibitionsGrid } from "./exhibitions/exhibitions-grid"
+import { ExhibitionFormDialog } from "./exhibitions/exhibition-form-dialog"
 
 export function ExhibitionsAdminPanel() {
   const [exhibitions, setExhibitions] = React.useState<Exhibition[]>([])

@@ -3,9 +3,9 @@
 import * as React from "react"
 import { type Project } from "@/lib/mock-data"
 import { type Category } from "@/lib/actions/categories"
-import { AdminDataTable, type Column } from "@/components/admin/admin-data-table"
-import { ProjectFormDialog } from "@/components/admin/project-form-dialog"
-import { Pagination } from "@/components/admin/pagination"
+import { AdminDataTable, type Column } from "../table/admin-data-table"
+import { ProjectFormDialog } from "../forms/project-form-dialog"
+import { Pagination } from "../shared/pagination"
 import { cn } from "@/lib/utils"
 
 interface ProjectPanelProps {
