@@ -33,7 +33,12 @@ test.describe('CMS - Fluxo de Conteúdo', () => {
 
       await page.fill('#mem-name', memberName);
       await page.fill('#mem-role', 'Testador E2E');
-      await page.fill('#mem-bio', 'Esta é uma biografia de teste gerada automaticamente.');
+      
+      // Preencher o Tiptap editor
+      await page.locator('.ProseMirror').fill('Esta é uma biografia de teste gerada automaticamente.');
+      
+      // Preencher o Lattes
+      await page.fill('#mem-lattes', 'http://lattes.cnpq.br/0000000000000000');
       
       // Selecionar a tag que acabamos de criar
       await page.click(`button:has-text("${categoryName}")`);

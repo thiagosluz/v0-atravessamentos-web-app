@@ -75,6 +75,14 @@ Nesta seção, você cria as narrativas visuais do site. Uma exposição é uma 
 - **Mesa de Curadoria**: Ao criar ou editar uma exposição, você verá um mural com todas as fotos do seu acervo. Basta selecionar as que deseja "pendurar" na sala virtual.
 - **Status de Inauguração**: Use o status "Publicado" para tornar a exposição visível no site público ou "Rascunho" para continuar trabalhando na curadoria.
 
+## 👥 Gestão de Membros
+
+A aba **Membros** permite gerenciar a equipe e os integrantes do coletivo, mantendo o histórico de suas trajetórias sempre atualizado.
+
+- **Minibio Rica (Editor Tiptap):** O campo de biografia utiliza o mesmo editor de texto avançado do Diário. Isso significa que você pode adicionar formatação, listas, itálico e negrito na biografia de cada integrante para criar narrativas mais imersivas.
+- **Currículo Lattes:** Na aba de contatos, é possível fornecer o link oficial do Currículo Lattes do membro. Caso preenchido, um ícone de livro aberto (📖) aparecerá automaticamente na página de perfil público do membro no site.
+- **Categorização:** Assim como no Diário, os membros recebem "tags" (Ex: Educadoras, Artistas) que influenciam na cor do badge exibido no portal.
+
 ## ⚙️ Configurações Gerais
 
 Nesta aba, você gerencia informações institucionais, links de redes sociais e textos legais (Privacidade e Termos).

@@ -77,11 +77,12 @@ Integrantes.
 | `id` | uuid | PK |
 | `name` | text | Também usado para achar posts do diário onde `author` = nome |
 | `role` | text | |
-| `bio` | text | |
+| `bio` | text | Pode conter HTML (editor rico Tiptap) |
 | `avatar` | text | URL |
 | `tags` | text[] | Nomes alinhados a categorias `type = 'member'` |
 | `instagram` | text | Opcional |
 | `linkedin` | text | Opcional |
+| `lattes_url` | text | Opcional (URL do Currículo Lattes) |
 | `email` | text | Opcional |
 | `phone` | text | Opcional |
 | `created_at` | timestamptz | Ordenação em `getMembers` |

@@ -62,7 +62,8 @@ O projeto utiliza paginação baseada em URL para as listagens administrativas e
 1. Branch por funcionalidade ou correção.
 2. `pnpm dev` local com `.env.local` preenchido.
 3. Alterações no Supabase: migrations, RLS e **buckets de Storage** (`blog-media`, `avatars`) alinhados ao que as actions esperam.
-4. Pull request com testes e lint passando quando possível.
+4. Alterações Sensíveis: Variáveis de ambiente relacionadas ao Redis/KV (Rate Limit) e Sentry (Monitoramento) devem estar sincronizadas.
+5. Pull request com testes e lint passando quando possível.
 
 ---
 
@@ -78,6 +79,16 @@ O projeto utiliza paginação baseada em URL para as listagens administrativas e
 | `date-fns` | Formatação de datas |
 | `@tiptap/*` | Editor rico no admin |
 | `react-hook-form`, `zod` | Formulários e validação |
+| `@sentry/nextjs` | Monitoramento de erros e captura de falhas |
+| `@upstash/ratelimit` | Prevenção de abusos de API e formulários (Rate Limiting) |
+
+---
+
+## 🔭 Observabilidade e Monitoramento
+
+A infraestrutura do projeto conta com os seguintes serviços configurados para ambiente de produção:
+- **Sentry**: Integrado via `sentry.*.config.ts` para capturar exceções críticas do lado do cliente, servidor e Edge (middleware). O `app/global-error.tsx` se encarrega de repassar falhas graves antes da UI de fallback.
+- **Vercel Web Analytics & Speed Insights**: Coleta de pageviews e Web Vitals diretamente conectados na conta Vercel do coletivo.
 
 ---
 
@@ -108,6 +119,5 @@ pnpm lint         # ESLint
 
 ## Melhorias opcionais (backlog técnico)
 
-- Monitoramento de erros em produção (ex.: Sentry).
 - CI (GitHub Actions ou similar) rodando `lint`, `test` e `build`.
 - Melhoria na cobertura de testes para os novos componentes de UI.

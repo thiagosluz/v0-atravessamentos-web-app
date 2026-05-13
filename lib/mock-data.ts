@@ -25,6 +25,7 @@ export interface Member {
   bio: string
   instagram?: string | null
   linkedin?: string | null
+  lattes_url?: string | null
   email?: string | null
   phone?: string | null
   createdAt?: string

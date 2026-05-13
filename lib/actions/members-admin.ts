@@ -39,10 +39,11 @@ function parseMemberData(formData: FormData) {
   
   const instagram = formData.get("instagram") as string || null
   const linkedin = formData.get("linkedin") as string || null
+  const lattes_url = formData.get("lattes_url") as string || null
   const email = formData.get("email") as string || null
   const phone = formData.get("phone") as string || null
 
-  return { name, role, bio, tags, instagram, linkedin, email, phone }
+  return { name, role, bio, tags, instagram, linkedin, lattes_url, email, phone }
 }
 
 export async function createMember(formData: FormData) {

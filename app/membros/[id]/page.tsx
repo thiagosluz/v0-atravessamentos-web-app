@@ -4,7 +4,7 @@ import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { getSiteSettings } from "@/lib/actions/settings"
 import Link from "next/link"
-import { ArrowLeft, Instagram, Linkedin, Mail, Phone } from "lucide-react"
+import { ArrowLeft, Instagram, Linkedin, Mail, Phone, BookOpen } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { formatDate } from "@/lib/mock-data"
 
@@ -81,6 +81,12 @@ export default async function MemberPage({ params }: { params: Promise<{ id: str
                       LinkedIn
                     </a>
                   )}
+                  {member.lattes_url && (
+                    <a href={member.lattes_url} target="_blank" rel="noreferrer" className="inline-flex items-center text-sm font-medium text-foreground/80 hover:text-foreground">
+                      <BookOpen className="mr-2 h-4 w-4" />
+                      Currículo Lattes
+                    </a>
+                  )}
                   {member.email && (
                     <a href={`mailto:${member.email}`} className="inline-flex items-center text-sm font-medium text-foreground/80 hover:text-foreground">
                       <Mail className="mr-2 h-4 w-4" />
@@ -93,7 +99,7 @@ export default async function MemberPage({ params }: { params: Promise<{ id: str
                       {member.phone}
                     </a>
                   )}
-                  {!member.instagram && !member.linkedin && !member.email && !member.phone && (
+                  {!member.instagram && !member.linkedin && !member.lattes_url && !member.email && !member.phone && (
                     <p className="text-sm text-foreground/50">Nenhum contato público disponível.</p>
                   )}
                 </div>
@@ -123,9 +129,10 @@ export default async function MemberPage({ params }: { params: Promise<{ id: str
                 {member.role}
               </p>
 
-              <div className="mt-8 prose prose-neutral max-w-none text-foreground/80 leading-relaxed md:prose-lg">
-                <p>{member.bio}</p>
-              </div>
+              <div 
+                className="mt-8 prose prose-neutral max-w-none text-foreground/80 leading-relaxed md:prose-lg"
+                dangerouslySetInnerHTML={{ __html: member.bio }}
+              />
 
               {/* Related Posts */}
               {relatedPosts.length > 0 && (

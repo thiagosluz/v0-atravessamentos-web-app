@@ -9,6 +9,7 @@ import { createMember, updateMember } from "@/lib/actions/members-admin"
 import { type Member } from "@/lib/mock-data"
 import { useToast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
+import { RichTextEditor } from "@/components/admin/rich-text-editor"
 import { type Category } from "@/lib/actions/categories"
 
 interface MemberFormDialogProps {
@@ -34,6 +35,20 @@ export function MemberFormDialog({
   const [error, setError] = React.useState<string | null>(null)
   const [preview, setPreview] = React.useState<string | null>(initialData?.avatar || null)
   const [selectedTags, setSelectedTags] = React.useState<string[]>(initialData?.tags || [])
+  const [editorContent, setEditorContent] = React.useState<string>(initialData?.bio || "")
+
+  // Resetar formulário quando abrir
+  React.useEffect(() => {
+    if (open && !initialData) {
+      setEditorContent("")
+      setSelectedTags([])
+      setPreview(null)
+    } else if (open && initialData) {
+      setEditorContent(initialData.bio || "")
+      setSelectedTags(initialData.tags || [])
+      setPreview(initialData.avatar || null)
+    }
+  }, [open, initialData])
 
   const isEdit = !!initialData
   const memberCategories = categories.filter(c => c.type === "member")
@@ -93,6 +108,7 @@ export function MemberFormDialog({
       bio: formData.get("bio") as string,
       instagram: formData.get("instagram") as string,
       linkedin: formData.get("linkedin") as string,
+      lattes_url: formData.get("lattes_url") as string,
       email: formData.get("email") as string,
       phone: formData.get("phone") as string,
       tags: selectedTags,
@@ -244,14 +260,12 @@ export function MemberFormDialog({
                   <label htmlFor="mem-bio" className="text-xs font-semibold uppercase tracking-widest text-foreground/50">
                     Minibio
                   </label>
-                  <textarea
-                    id="mem-bio"
-                    name="bio"
-                    defaultValue={initialData?.bio}
-                    rows={3}
-                    disabled={pending}
-                    className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring resize-none"
+                  <RichTextEditor 
+                    content={editorContent} 
+                    onChange={setEditorContent} 
+                    placeholder="Escreva sobre a trajetória, formação e áreas de atuação..." 
                   />
+                  <input type="hidden" name="bio" value={editorContent} />
                 </div>
 
                 {/* Social Links */}
@@ -265,6 +279,10 @@ export function MemberFormDialog({
                     <div className="space-y-1.5">
                       <label htmlFor="mem-linkedin" className="text-xs font-semibold text-foreground/50">LinkedIn</label>
                       <Input id="mem-linkedin" name="linkedin" defaultValue={initialData?.linkedin || ""} disabled={pending} placeholder="URL do perfil" className="h-10" />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label htmlFor="mem-lattes" className="text-xs font-semibold text-foreground/50">Currículo Lattes</label>
+                      <Input id="mem-lattes" name="lattes_url" defaultValue={initialData?.lattes_url || ""} disabled={pending} placeholder="URL do Lattes" className="h-10" />
                     </div>
                     <div className="space-y-1.5">
                       <label htmlFor="mem-email" className="text-xs font-semibold text-foreground/50">E-mail</label>

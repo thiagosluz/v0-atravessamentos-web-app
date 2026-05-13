@@ -115,7 +115,7 @@ const overlayPatterns = [
                       <div className="absolute inset-0 z-20 bg-gradient-to-t from-foreground/85 via-foreground/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
                       <div className="absolute inset-x-3 bottom-3 z-30 translate-y-2 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
                         <p className="text-xs leading-snug text-background line-clamp-3">
-                          {member.bio}
+                          {member.bio?.replace(/<[^>]*>?/gm, '')}
                         </p>
                       </div>
                     </div>

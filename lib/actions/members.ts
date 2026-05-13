@@ -29,6 +29,7 @@ export async function getMembers(page: number = 1, limit: number = 10) {
       bio: m.bio,
       instagram: m.instagram,
       linkedin: m.linkedin,
+      lattes_url: m.lattes_url,
       email: m.email,
       phone: m.phone,
       createdAt: m.created_at,
@@ -71,6 +72,7 @@ export async function getMemberById(id: string) {
     bio: data.bio,
     instagram: data.instagram,
     linkedin: data.linkedin,
+    lattes_url: data.lattes_url,
     email: data.email,
     phone: data.phone,
   }
