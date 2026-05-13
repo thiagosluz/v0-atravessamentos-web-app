@@ -21,74 +21,31 @@ import {
   Tooltip as RechartsTooltip
 } from "recharts"
 
+import { useOverviewData } from "@/hooks/admin/use-overview-data"
+
 interface OverviewPanelProps {
   user: any
   projects: any[]
   blogPosts: any[]
   members: any[]
+  categories: any[]
   setActive: (id: string) => void
 }
 
 const COLORS = ["#8B9D83", "#C5A059", "#D97D54", "#4A5D4E", "#7D6B4A"]
 
-export function OverviewPanel({ user, projects, blogPosts, members, setActive }: OverviewPanelProps) {
-  const [isMac, setIsMac] = React.useState(true)
-
-  React.useEffect(() => {
-    // Detecta se o SO é Mac para ajustar a exibição do atalho
-    if (typeof window !== "undefined" && navigator) {
-      setIsMac(navigator.platform.toUpperCase().indexOf('MAC') >= 0)
-    }
-  }, [])
+export function OverviewPanel({ user, projects, blogPosts, members, categories, setActive }: OverviewPanelProps) {
+  const {
+    isMac,
+    recentActivity,
+    pendingItems,
+    chartData,
+    newItemsCount,
+    getItemDate,
+    stats
+  } = useOverviewData({ projects, blogPosts, members })
 
   const userName = user?.user_metadata?.full_name?.split(" ")[0] || user?.email?.split("@")[0] || "Administrador"
-
-  // Função auxiliar para normalizar a data de cada tipo de item
-  const getItemDate = (item: any) => {
-    const dateStr = item.updatedAt || item.date || item.createdAt || item.updated_at || item.created_at
-    const date = new Date(dateStr)
-    return isNaN(date.getTime()) ? new Date(0) : date
-  }
-
-  // Combinar e ordenar atividades recentes
-  const recentActivity = React.useMemo(() => {
-    const p = projects.map(item => ({ ...item, type: 'project' }))
-    const b = blogPosts.map(item => ({ ...item, type: 'blog' }))
-    const m = members.map(item => ({ ...item, type: 'member' }))
-
-    return [...p, ...b, ...m]
-      .sort((a, b) => getItemDate(b).getTime() - getItemDate(a).getTime())
-      .slice(0, 5)
-  }, [projects, blogPosts, members])
-
-  // Itens que precisam de atenção (Rascunhos ou Em Revisão)
-  const pendingItems = React.useMemo(() => {
-    const p = projects.filter(item => item.status !== 'Publicado').map(item => ({ ...item, type: 'project' }))
-    const b = blogPosts.filter(item => item.status !== 'Publicado').map(item => ({ ...item, type: 'blog' }))
-
-    return [...p, ...b]
-      .sort((a, b) => getItemDate(b).getTime() - getItemDate(a).getTime())
-      .slice(0, 4)
-  }, [projects, blogPosts])
-
-  // Dados para o gráfico de rosca (Distribuição por categoria de projeto)
-  const chartData = React.useMemo(() => {
-    const counts: Record<string, number> = {}
-    projects.forEach(p => {
-      counts[p.category] = (counts[p.category] || 0) + 1
-    })
-    return Object.entries(counts).map(([name, value]) => ({ name, value }))
-  }, [projects])
-
-  const newItemsCount = React.useMemo(() => {
-    const thirtyDaysAgo = new Date()
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
-
-    const newProjects = projects.filter(p => getItemDate(p) > thirtyDaysAgo).length
-    const newPosts = blogPosts.filter(b => getItemDate(b) > thirtyDaysAgo).length
-
-    return newProjects + newPosts
-  }, [projects, blogPosts])
 
   return (
     <div className="space-y-8 p-4 md:p-6">
@@ -109,6 +66,40 @@ export function OverviewPanel({ user, projects, blogPosts, members, setActive }:
         {/* Elementos decorativos */}
         <div className="absolute -right-8 -top-8 h-48 w-48 rounded-full bg-primary/20 blur-3xl" />
         <div className="absolute -bottom-12 right-12 h-32 w-32 rounded-full bg-[var(--ouro)]/10 blur-2xl" />
+      </div>
+
+      {/* Stats Grid */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <StatsCard 
+          title="Projetos publicados"
+          value={stats.projects.published}
+          trend={stats.projects.trend}
+          description={`${stats.projects.total} totais no banco`}
+          icon={<FolderKanban className="h-4 w-4" />}
+          color="bg-orange-500/10 text-orange-600"
+        />
+        <StatsCard 
+          title="Pessoas no coletivo"
+          value={stats.members.total}
+          description="Membros cadastrados"
+          icon={<Users className="h-4 w-4" />}
+          color="bg-emerald-500/10 text-emerald-600"
+        />
+        <StatsCard 
+          title="Posts no diário"
+          value={stats.blog.published}
+          trend={stats.blog.total - stats.blog.published}
+          description={`${stats.blog.total} rascunhos e publicados`}
+          icon={<FileText className="h-4 w-4" />}
+          color="bg-amber-500/10 text-amber-600"
+        />
+        <StatsCard 
+          title="Categorias & Tags"
+          value={categories.length}
+          description="Filtros globais do sistema"
+          icon={<PieChartIcon className="h-4 w-4" />}
+          color="bg-blue-500/10 text-blue-500"
+        />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
@@ -137,7 +128,7 @@ export function OverviewPanel({ user, projects, blogPosts, members, setActive }:
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="font-medium truncate text-sm text-foreground">
-                        {item.title || item.name}
+                        {'title' in item ? item.title : item.name}
                       </p>
                       <p className="text-xs text-foreground/50">
                         {item.type === 'project' ? 'Projeto' : item.type === 'blog' ? 'Blog' : 'Membro'} •
@@ -147,11 +138,11 @@ export function OverviewPanel({ user, projects, blogPosts, members, setActive }:
                     <div className="hidden sm:block">
                       <span className={cn(
                         "px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide uppercase",
-                        item.status === 'Publicado' ? "bg-emerald-500/10 text-emerald-600" :
-                          item.status === 'Em revisão' ? "bg-orange-500/10 text-orange-600" :
-                            "bg-muted text-muted-foreground"
+                        item.type !== 'member' && item.status === 'Publicado' ? "bg-emerald-500/10 text-emerald-600" :
+                        item.type !== 'member' && item.status === 'Em revisão' ? "bg-orange-500/10 text-orange-600" :
+                        "bg-muted text-muted-foreground"
                       )}>
-                        {item.status || 'Ativo'}
+                        {item.type !== 'member' ? item.status : 'Ativo'}
                       </span>
                     </div>
                   </div>
@@ -230,7 +221,9 @@ export function OverviewPanel({ user, projects, blogPosts, members, setActive }:
                     onClick={() => setActive(item.type === 'project' ? 'projects' : 'blog')}
                   >
                     <div className="min-w-0">
-                      <p className="text-sm font-medium truncate text-foreground">{item.title}</p>
+                      <p className="text-sm font-medium truncate text-foreground">
+                        {'title' in item ? item.title : ''}
+                      </p>
                       <p className="text-[10px] text-orange-600 font-bold uppercase tracking-wider mt-0.5">
                         {item.status === 'Rascunho' ? 'Rascunho' : 'Em Revisão'}
                       </p>
@@ -262,6 +255,37 @@ export function OverviewPanel({ user, projects, blogPosts, members, setActive }:
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  )
+}
+
+function StatsCard({ title, value, trend, description, icon, color }: { 
+  title: string, 
+  value: number, 
+  trend?: number, 
+  description: string, 
+  icon: React.ReactNode,
+  color: string
+}) {
+  return (
+    <div className="rounded-2xl border border-border bg-card p-6 flex flex-col justify-between hover:border-primary/20 transition-colors group">
+      <div className="flex items-center justify-between mb-4">
+        <h4 className="text-xs font-bold text-foreground/40 uppercase tracking-widest">{title}</h4>
+        <div className={cn("h-8 w-8 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110", color)}>
+          {icon}
+        </div>
+      </div>
+      <div>
+        <div className="flex items-baseline gap-2">
+          <span className="text-3xl font-black font-display tracking-tight text-foreground">{value}</span>
+          {trend !== undefined && trend > 0 && (
+            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 flex items-center gap-0.5">
+              +{trend}
+            </span>
+          )}
+        </div>
+        <p className="text-[10px] text-foreground/30 font-medium mt-1">{description}</p>
       </div>
     </div>
   )

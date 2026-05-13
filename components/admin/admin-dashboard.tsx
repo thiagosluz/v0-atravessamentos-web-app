@@ -62,129 +62,30 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Trash2 } from "lucide-react"
 
-export function AdminDashboard({
-  user,
-  projectsData,
-  membersData,
-  blogPostsData,
-  initialCategories,
-  siteSettings,
-  currentPage,
-}: AdminDashboardProps) {
+import { useAdminState } from "@/hooks/admin/use-admin-state"
 
-  const [active, setActive] = React.useState("overview")
-  const [query, setQuery] = React.useState("")
-  const [searchEditItem, setSearchEditItem] = React.useState<{ type: "project" | "member" | "blog", id: string } | null>(null)
-  const [deleteConfirmation, setDeleteConfirmation] = React.useState<{ type: "project" | "member" | "blog", id: string } | null>(null)
-  const { toast } = useToast()
+export function AdminDashboard(props: AdminDashboardProps) {
+  const {
+    active,
+    setActive,
+    localProjects,
+    localMembers,
+    localBlogPosts,
+    projectToEdit,
+    memberToEdit,
+    blogToEdit,
+    deleteConfirmation,
+    setDeleteConfirmation,
+    handleProjectSuccess,
+    handleMemberSuccess,
+    handleBlogSuccess,
+    handleEditItem,
+    handleDeleteTrigger,
+    confirmDelete,
+    setSearchEditItem
+  } = useAdminState(props)
 
-  // Estado Local para permitir atualizações otimistas
-  const [localProjects, setLocalProjects] = React.useState<Project[]>(projectsData.data)
-  const [localMembers, setLocalMembers] = React.useState<Member[]>(membersData.data)
-  const [localBlogPosts, setLocalBlogPosts] = React.useState<BlogPost[]>(blogPostsData.data)
-
-  // Sincroniza estado local quando as props mudam
-  React.useEffect(() => {
-    setLocalProjects(projectsData.data)
-    setLocalMembers(membersData.data)
-    setLocalBlogPosts(blogPostsData.data)
-  }, [projectsData.data, membersData.data, blogPostsData.data])
-
-  // Handlers estabilizados
-  const handleProjectSuccess = React.useCallback((project: Project, isEdit: boolean) => {
-    if (isEdit) {
-      setLocalProjects(prev => prev.map(p => p.id === project.id ? project : p))
-    } else {
-      setLocalProjects(prev => [project, ...prev])
-    }
-  }, [])
-
-  const handleMemberSuccess = React.useCallback((member: Member, isEdit: boolean) => {
-    if (isEdit) {
-      setLocalMembers(prev => prev.map(m => m.id === member.id ? member : m))
-    } else {
-      setLocalMembers(prev => [member, ...prev])
-    }
-  }, [])
-
-  const handleBlogSuccess = React.useCallback((post: BlogPost, isEdit: boolean) => {
-    if (isEdit) {
-      setLocalBlogPosts(prev => prev.map(p => p.id === post.id ? post : p))
-    } else {
-      setLocalBlogPosts(prev => [post, ...prev])
-    }
-  }, [])
-
-  const handleEditItem = React.useCallback((type: "project" | "member" | "blog", id: string) => {
-    setSearchEditItem({ type, id })
-  }, [])
-
-  const handleDeleteProject = async (id: string) => {
-    setDeleteConfirmation({ type: "project", id })
-  }
-
-  const handleDeleteMember = async (id: string) => {
-    setDeleteConfirmation({ type: "member", id })
-  }
-
-  const handleDeleteBlog = async (id: string) => {
-    setDeleteConfirmation({ type: "blog", id })
-  }
-
-  const confirmDelete = async () => {
-    if (!deleteConfirmation) return
-
-    const { type, id } = deleteConfirmation
-    let success = false
-
-    try {
-      if (type === "project") {
-        const res = await deleteProject(id)
-        if (res.success) {
-          setLocalProjects(prev => prev.filter(p => p.id !== id))
-          success = true
-        }
-      } else if (type === "member") {
-        const res = await deleteMember(id)
-        if (res.success) {
-          setLocalMembers(prev => prev.filter(m => m.id !== id))
-          success = true
-        }
-      } else if (type === "blog") {
-        const res = await deleteBlogPost(id)
-        if (res.success) {
-          setLocalBlogPosts(prev => prev.filter(p => p.id !== id))
-          success = true
-        }
-      }
-
-      if (success) {
-        toast({ title: "Item excluído com sucesso" })
-      } else {
-        toast({ title: "Erro ao excluir item", variant: "destructive" })
-      }
-    } catch (err) {
-      toast({ title: "Erro na operação", variant: "destructive" })
-    } finally {
-      setDeleteConfirmation(null)
-    }
-  }
-
-  // Encontrar itens para edição
-  const projectToEdit = React.useMemo(() => 
-    searchEditItem?.type === "project" ? localProjects.find(p => p.id === searchEditItem.id) : null,
-    [searchEditItem, localProjects]
-  )
-
-  const memberToEdit = React.useMemo(() => 
-    searchEditItem?.type === "member" ? localMembers.find(m => m.id === searchEditItem.id) : null,
-    [searchEditItem, localMembers]
-  )
-
-  const blogToEdit = React.useMemo(() => 
-    searchEditItem?.type === "blog" ? localBlogPosts.find(p => p.id === searchEditItem.id) : null,
-    [searchEditItem, localBlogPosts]
-  )
+  const { user, projectsData, membersData, blogPostsData, initialCategories, siteSettings, currentPage } = props
 
   return (
     <div className="flex min-h-screen bg-[#F9F6F1] text-foreground selection:bg-primary selection:text-white">
@@ -356,6 +257,7 @@ export function AdminDashboard({
                   projects={localProjects}
                   blogPosts={localBlogPosts}
                   members={localMembers}
+                  categories={initialCategories}
                   setActive={setActive}
                 />
               )}
@@ -368,7 +270,7 @@ export function AdminDashboard({
                   categories={initialCategories}
                   onSuccess={handleProjectSuccess}
                   onEdit={(id) => handleEditItem("project", id)}
-                  onDelete={handleDeleteProject}
+                  onDelete={(id) => handleDeleteTrigger("project", id)}
                   onDeleteBulk={async () => {}}
                 />
               )}
@@ -381,7 +283,7 @@ export function AdminDashboard({
                   categories={initialCategories}
                   onSuccess={handleBlogSuccess}
                   onEdit={(id) => handleEditItem("blog", id)}
-                  onDelete={handleDeleteBlog}
+                  onDelete={(id) => handleDeleteTrigger("blog", id)}
                   onDeleteBulk={async () => {}}
                 />
               )}
@@ -394,7 +296,7 @@ export function AdminDashboard({
                   categories={initialCategories}
                   onSuccess={handleMemberSuccess}
                   onEdit={(id) => handleEditItem("member", id)}
-                  onDelete={handleDeleteMember}
+                  onDelete={(id) => handleDeleteTrigger("member", id)}
                   onDeleteBulk={async () => {}}
                 />
               )}
