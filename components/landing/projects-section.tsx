@@ -11,7 +11,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel"
 import { type Project } from "@/lib/mock-data"
-import { cn, getCategoryStyle } from "@/lib/utils"
+import { cn, getCategoryStyle, stripHtml } from "@/lib/utils"
 
 import { type Category } from "@/lib/actions/categories"
 
@@ -129,7 +129,7 @@ function ProjectCard({ project, index, categories }: { project: Project; index: 
               {project.title}
             </h3>
             <p className="mt-2 text-sm text-background/80 line-clamp-2 text-pretty">
-              {project.description}
+              {project.excerpt}
             </p>
             <div className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold opacity-0 transition-opacity group-hover:opacity-100">
               Ver projeto

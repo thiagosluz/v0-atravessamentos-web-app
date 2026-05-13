@@ -67,6 +67,7 @@ describe('Server Actions - Business Logic Coverage', () => {
     fd.append('category', 'Cineclube'); 
     fd.append('year', '2024'); 
     fd.append('status', 'Publicado');
+    fd.append('excerpt', 'Resumo do projeto para testes unitários.');
     fd.append('description', 'Esta é uma descrição de teste para o projeto.');
     return fd;
   };

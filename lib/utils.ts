@@ -27,3 +27,11 @@ export function getCategoryStyle(catName: string, categories: Category[], varian
       return `bg-${color}-500/10 text-${color}-600 dark:text-${color}-400 border border-${color}-500/20`
   }
 }
+
+/**
+ * Remove tags HTML de uma string para exibição como texto puro (ex excerpts)
+ */
+export function stripHtml(html: string) {
+  if (!html) return ""
+  return html.replace(/<[^>]*>?/gm, "").trim()
+}

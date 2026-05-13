@@ -80,6 +80,26 @@ Este documento consolida as recomendações de arquitetura, performance e tratam
 
 ---
 
+## 6. 🚀 Novas Funcionalidades e Expansão
+**Objetivo:** Evoluir o sistema de um portfólio/CMS para uma plataforma viva, interativa e de alcance global.
+
+### A. Interatividade e Engajamento (Camada Social)
+- **Sistema de Comentários**: Implementar discussões moderadas no Diário e Projetos para fomentar o diálogo com o público.
+- **Portfólios de Membros**: Expandir as páginas de membros para mini-sites integrados, permitindo que cada artista gerencie sua própria galeria e currículo dentro do ecossistema.
+- **Feed Social Integrado**: Trazer conteúdos dinâmicos (Instagram/YouTube) para a home para aumentar a sensação de atualização constante.
+
+### B. Curadoria e Gestão Avançada (CMS Pro)
+- **Mapa Cultural Interativo**: Visualização baseada em geolocalização para mapear os territórios onde o coletivo atua ou atuou.
+- **Busca Semântica com IA**: Integrar um sistema de busca que entenda o contexto artístico e conceitual dos projetos.
+- **Agenda e Eventos**: Calendário público integrado para divulgar oficinas, exposições e encontros futuros.
+
+### C. Acessibilidade Radical e Internacionalização
+- **Multi-idiomas (i18n)**: Tradução completa (Português/Inglês/Espanhol) para expansão internacional do coletivo.
+- **Acessibilidade Assistiva Nativa**: Campos dedicados para audiodescrição em todas as obras da galeria (Acervo) e suporte a widgets de acessibilidade (Libras).
+- **Sistema de Apoio e Sustentabilidade**: Integração de botões de doação, assinaturas (Newsletter Premium) ou pequena loja de merchandising.
+
+---
+
 ## 📅 Próximos Passos Sugeridos
 1. **Qualidade de Testes:** Refatorar `actions.test.ts` para incluir asserções reais (Base da pirâmide).
 2. Migração para `next/image` na Timeline Pública (Alto impacto visual).
@@ -88,4 +108,4 @@ Este documento consolida as recomendações de arquitetura, performance e tratam
 5. Adição de Error Boundaries nos gráficos do Overview (Resiliência).
 
 ---
-*Documento atualizado em 13/05/2026 com diretrizes de qualidade e testes.*
+*Documento atualizado em 13/05/2026 com sugestões de expansão e funcionalidades sociais.*

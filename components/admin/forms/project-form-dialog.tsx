@@ -61,6 +61,7 @@ export function ProjectFormDialog({
         id: isEdit ? initialData.id : (result.id || `temp-${Date.now()}`),
         title: formData.get("title") as string,
         category: formData.get("category") as string,
+        excerpt: formData.get("excerpt") as string,
         description: formData.get("description") as string,
         year: parseInt(formData.get("year") as string),
         status: status,
@@ -197,10 +198,26 @@ export function ProjectFormDialog({
                   </div>
                 </div>
 
+                {/* Excerpt */}
+                <div className="space-y-1.5">
+                  <label htmlFor="proj-excerpt" className="text-xs font-semibold uppercase tracking-widest text-foreground/50">
+                    Resumo (Excerpt) *
+                  </label>
+                  <textarea
+                    id="proj-excerpt"
+                    name="excerpt"
+                    required
+                    defaultValue={initialData?.excerpt}
+                    placeholder="Um breve resumo para os cards e o topo da página..."
+                    disabled={pending}
+                    className="flex min-h-[80px] w-full rounded-md border border-border bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  />
+                </div>
+
                 {/* Description */}
                 <div className="space-y-1.5">
                   <label htmlFor="proj-desc" className="text-xs font-semibold uppercase tracking-widest text-foreground/50">
-                    Descrição do Projeto
+                    Conteúdo Completo (Rich Text)
                   </label>
                   <RichTextEditor 
                     content={editorContent} 

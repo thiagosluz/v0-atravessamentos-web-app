@@ -13,6 +13,7 @@ export async function createProject(formData: FormData) {
     const rawData = {
       title: formData.get("title") as string,
       category: formData.get("category") as string,
+      excerpt: formData.get("excerpt") as string,
       description: formData.get("description") as string,
       year: formData.get("year") as string,
       status: formData.get("status") as any,
@@ -51,6 +52,7 @@ export async function updateProject(id: string, formData: FormData) {
     const rawData = {
       title: formData.get("title") as string,
       category: formData.get("category") as string,
+      excerpt: formData.get("excerpt") as string,
       description: formData.get("description") as string,
       year: formData.get("year") as string,
       status: formData.get("status") as any,

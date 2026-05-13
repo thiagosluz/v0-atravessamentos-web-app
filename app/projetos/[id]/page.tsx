@@ -7,6 +7,7 @@ import { getCategories } from "@/lib/actions/categories"
 import { getSiteSettings } from "@/lib/actions/settings"
 import { SiteFooter } from "@/components/site-footer"
 import { ProjectsSection } from "@/components/landing/projects-section"
+import { SafeHTML } from "@/components/safe-html"
 import Link from "next/link"
 
 interface Props {
@@ -113,7 +114,7 @@ export default async function ProjectPage({ params }: Props) {
             {project.title}
           </h1>
           <p className="mt-6 max-w-2xl text-xl text-background/75 leading-relaxed md:text-2xl">
-            {project.description}
+            {project.excerpt}
           </p>
         </div>
 
@@ -127,17 +128,19 @@ export default async function ProjectPage({ params }: Props) {
 
       {/* Content area */}
       <div className="mx-auto max-w-4xl px-4 py-16 md:px-8 md:py-24">
-        <div className="prose prose-lg max-w-none">
-          <p className="lead text-xl text-foreground/75 leading-relaxed">
-            {project.description}
-          </p>
-
-          {/* Placeholder for future rich content */}
-          <div className="mt-12 rounded-2xl border border-dashed border-border bg-muted/40 p-8 text-center">
-            <p className="text-sm text-foreground/50">
-              ✏️ O conteúdo completo deste projeto pode ser editado pelo painel administrativo.
-            </p>
-          </div>
+        <div className="space-y-12">
+          {project.description ? (
+            <SafeHTML 
+              content={project.description} 
+              className="prose prose-lg max-w-none text-foreground/80 leading-relaxed prose-headings:font-display prose-headings:font-bold prose-headings:tracking-tight prose-a:text-primary prose-img:rounded-3xl"
+            />
+          ) : (
+            <div className="rounded-2xl border border-dashed border-border bg-muted/40 p-8 text-center">
+              <p className="text-sm text-foreground/50">
+                ✏️ O conteúdo completo deste projeto pode ser editado pelo painel administrativo.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Actions */}

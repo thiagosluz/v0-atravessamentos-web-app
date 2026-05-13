@@ -99,7 +99,6 @@ O painel central (`OverviewPanel`) utiliza uma arquitetura de agregação de dad
 - **Visualização**: Utiliza `recharts` para o gráfico de rosca de distribuição de categorias de projeto.
 - **Normalização**: Uma camada de normalização de datas lida com campos disparatados (`updated_at`, `created_at`, `published_at`) para garantir a ordem cronológica correta.
 - **UX Adaptativa**: O componente detecta o SO do usuário para exibir atalhos apropriados (`Cmd+K` vs `Ctrl+K`).
-
 ---
 
 ## Autenticação e proteção de rotas
@@ -143,6 +142,12 @@ O fluxo de contato utiliza uma arquitetura híbrida para máxima resiliência e 
 - **Persistência**: Todas as mensagens são salvas na tabela `contact_messages` via **Service Role**, permitindo que o coletivo tenha um backup caso o e-mail não chegue.
 - **Anti-Spam**: Proteção multicamada com **Honeypot** (campo invisível), **Zod Validation** e **Rate Limiting via Redis** (5 requisições / 10 segundos por IP).
 - **Entrega**: Integração com a API do **Resend** para entrega de e-mails transacionais com templates HTML limpos.
+
+#### 📝 Estrutura de Conteúdo (Pattern: Excerpt vs Content)
+Tanto no **Blog (Diário)** quanto em **Projetos**, utilizamos um padrão de separação de dados:
+- **Resumo (Excerpt)**: Texto puro limitado (Zod: 10-500 chars). Usado em metadados SEO, cards de listagem e no cabeçalho ("lead") da página.
+- **Conteúdo (Content/Description)**: Rich Text (HTML) gerado via Tiptap. Renderizado exclusivamente no corpo da página através do componente `<SafeHTML />`.
+- **Benefício**: Evita que tags HTML quebrem o layout de componentes menores e garante controle editorial total sobre o que aparece nos compartilhamentos sociais.
 
 ---
 

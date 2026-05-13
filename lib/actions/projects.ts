@@ -8,6 +8,7 @@ function mapProject(p: any): Project {
     id: p.id,
     title: p.title,
     category: p.category,
+    excerpt: p.excerpt,
     description: p.description,
     coverImage: p.cover_image,
     year: p.year,

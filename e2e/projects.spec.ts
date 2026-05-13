@@ -20,6 +20,7 @@ test.describe('CMS - Ciclo de Vida de Projetos', () => {
       await page.click('button:has-text("Novo projeto")');
       
       await page.fill('#proj-title', projectTitle);
+      await page.fill('#proj-excerpt', 'Este é o resumo do projeto para o teste E2E.');
       await page.fill('#proj-year', '2025');
       
       // Escrever no editor RichText

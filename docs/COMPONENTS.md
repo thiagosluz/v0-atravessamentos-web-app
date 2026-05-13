@@ -52,6 +52,21 @@ O componente utiliza `date-fns/locale/pt-BR` para formatar a data de atualizaç�
 
 ---
 
+## 🛡️ SafeHTML
+
+O `SafeHTML` é o componente padrão para renderização de conteúdos ricos (Rich Text) vindos do CMS (Blog e Projetos).
+
+### Funcionalidades:
+- **Sanitização**: Utiliza `sanitize-html` para limpar o conteúdo contra ataques XSS.
+- **Iframe Support**: Configurado para permitir embeds seguros de YouTube e Vimeo.
+- **Tailwind Typography**: Utiliza o plugin `@tailwindcss/typography` (classe `prose`) para garantir que o conteúdo dinâmico siga o design system do coletivo.
+
+### Uso:
+- **Projetos**: Renderiza o campo `description` (que agora é Rich Text).
+- **Blog**: Renderiza o campo `content`.
+
+---
+
 ## 📰 PageHeader (Editorial)
 
 O `PageHeader` é o componente central da nova identidade editorial das páginas internas do site. Ele padroniza a apresentação de títulos e descrições.

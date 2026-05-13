@@ -9,6 +9,7 @@ export interface Project {
   id: string
   title: string
   category: ProjectCategory
+  excerpt: string
   description: string
   coverImage: string
   year: number
