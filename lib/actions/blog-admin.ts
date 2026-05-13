@@ -220,42 +220,4 @@ export async function deleteBlogPost(id: string) {
   }
 }
 
-export async function updateBlogPostStatus(id: string, status: "Publicado" | "Rascunho") {
-  try {
-    await ensureAdmin()
-    const supabase = createAdminClient()
 
-    const { data: updatedPost, error } = await supabase
-      .from("blog_posts")
-      .update({ status, published_at: status === "Publicado" ? new Date().toISOString() : null })
-      .eq("id", id)
-      .select("*")
-      .single()
-
-    if (error) return { error: "Erro ao atualizar status." }
-
-    // Disparar Newsletter se mudar para Publicado e nunca enviado
-    if (status === "Publicado" && !updatedPost.newsletter_sent_at) {
-      broadcastNews({
-        title: updatedPost.title,
-        excerpt: updatedPost.excerpt,
-        category: updatedPost.category,
-        slug: updatedPost.slug,
-        imageUrl: updatedPost.cover_image || undefined,
-      }).then(async (res) => {
-        if (res.success) {
-          await supabase
-            .from("blog_posts")
-            .update({ newsletter_sent_at: new Date().toISOString() })
-            .eq("id", id)
-        }
-      }).catch(err => console.error("Falha no broadcast:", err))
-    }
-
-    revalidatePath("/")
-    revalidatePath("/admin")
-    return { success: true }
-  } catch (error: any) {
-    return { error: error.message }
-  }
-}

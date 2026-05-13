@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { createProject, updateProject, deleteProject, updateProjectStatus } from '@/lib/actions/projects-admin';
-import { createBlogPost, updateBlogPost, deleteBlogPost, updateBlogPostStatus, uploadBlogImage } from '@/lib/actions/blog-admin';
+import { createProject, updateProject, deleteProject } from '@/lib/actions/projects-admin';
+import { createBlogPost, updateBlogPost, deleteBlogPost, uploadBlogImage } from '@/lib/actions/blog-admin';
 import { upsertCategory, deleteCategory, getCategories } from '@/lib/actions/categories';
 import { createMember, updateMember, deleteMember } from '@/lib/actions/members-admin';
 import { createAdminClient } from '@/lib/supabase/admin';
@@ -76,13 +76,12 @@ describe('Server Actions - Business Logic Coverage', () => {
     await createProject(validFDProject());
     await updateProject('id', validFDProject());
     await deleteProject('id');
-    await updateProjectStatus('id', 'Publicado');
     
     mockError = { message: 'Err' };
     await createProject(validFDProject());
     await updateProject('id', validFDProject());
     await deleteProject('id');
-    await updateProjectStatus('id', 'Publicado');
+    
     
     await createProject(new FormData());
     await updateProject('temp-1', validFDProject());
@@ -94,7 +93,6 @@ describe('Server Actions - Business Logic Coverage', () => {
     await createBlogPost(validFDBlog());
     await updateBlogPost('id', validFDBlog());
     await deleteBlogPost('id');
-    await updateBlogPostStatus('id', 'Publicado');
     
     mockError = { code: '23505' };
     await createBlogPost(validFDBlog());
@@ -103,7 +101,7 @@ describe('Server Actions - Business Logic Coverage', () => {
     await createBlogPost(validFDBlog());
     await updateBlogPost('id', validFDBlog());
     await deleteBlogPost('id');
-    await updateBlogPostStatus('id', 'Publicado');
+    
 
     await uploadBlogImage(new FormData());
     

@@ -102,22 +102,4 @@ export async function deleteProject(id: string) {
   }
 }
 
-export async function updateProjectStatus(id: string, status: any) {
-  try {
-    await ensureAdmin()
-    const supabase = createAdminClient()
 
-    const { error } = await supabase
-      .from("projects")
-      .update({ status, updated_at: new Date().toISOString() })
-      .eq("id", id)
-
-    if (error) return { error: "Não foi possível atualizar o status." }
-
-    revalidatePath("/")
-    revalidatePath("/admin")
-    return { success: true }
-  } catch (error: any) {
-    return { error: error.message }
-  }
-}

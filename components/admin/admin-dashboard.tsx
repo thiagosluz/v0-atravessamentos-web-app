@@ -6,16 +6,12 @@ import { motion } from "motion/react"
 import {
   ArrowUpRight,
   BookOpen,
-  FileText,
   FolderKanban,
   LayoutDashboard,
   LogOut,
-  MoreHorizontal,
   Pencil,
-  Search,
   Settings,
   Trash2,
-  TrendingUp,
   Users,
   UserCircle,
   ExternalLink,
@@ -43,14 +39,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
 import { type Project, type ProjectStatus, type Member, type BlogPost } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
 import { signOut } from "@/lib/actions/auth"
@@ -70,7 +58,6 @@ import { type Category } from "@/lib/actions/categories"
 import { type SiteSettings } from "@/lib/actions/settings"
 import { AdminCommandMenu } from "@/components/admin/admin-command-menu"
 import { AdminDataTable, type Column } from "@/components/admin/admin-data-table"
-import { exportToCSV, exportToPDF } from "@/lib/utils/export"
 
 const navigation = [
   { id: "overview", label: "Visão Geral", icon: LayoutDashboard },

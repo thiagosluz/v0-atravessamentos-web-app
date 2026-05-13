@@ -15,8 +15,8 @@ export function ContactView({ settings }: ContactViewProps) {
   return (
     <div className="relative isolate">
 
-      {/* Background Blobs (Opção B - Floating Blobs) */}
       <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden="true">
+
         <motion.div
           animate={{
             x: [0, 30, -20, 0],
