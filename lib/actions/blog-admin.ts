@@ -89,6 +89,9 @@ export async function createBlogPost(formData: FormData) {
 
     if (error) {
       console.error("Erro ao criar post:", error)
+      if (error.code === "23505") {
+        return { error: "Já existe um post com este título. Por favor, use um título diferente." }
+      }
       return { error: "Erro ao salvar no banco de dados." }
     }
 
