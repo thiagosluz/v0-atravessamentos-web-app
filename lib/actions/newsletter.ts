@@ -4,6 +4,8 @@ import { Resend } from "resend"
 import { z } from "zod"
 import { ratelimit } from "@/lib/redis"
 import { headers } from "next/headers"
+import { type ActionResponse } from "@/types/admin"
+
 
 const resend = new Resend(process.env.RESEND_API_KEY || "re_placeholder")
 const audienceId = process.env.RESEND_AUDIENCE_ID
@@ -12,7 +14,7 @@ const newsletterSchema = z.object({
   email: z.string().email("E-mail inválido"),
 })
 
-export async function subscribeToNewsletter(formData: FormData) {
+export async function subscribeToNewsletter(formData: FormData): Promise<ActionResponse> {
   try {
     // 0. Rate limiting check
     const ip = (await headers()).get("x-forwarded-for") || "127.0.0.1"
@@ -70,7 +72,7 @@ export async function subscribeToNewsletter(formData: FormData) {
     return { error: err?.message || "Ocorreu um erro inesperado no servidor." }
   }
 }
-export async function unsubscribeFromNewsletter(email: string) {
+export async function unsubscribeFromNewsletter(email: string): Promise<ActionResponse> {
   if (!audienceId) {
     return { error: "Configuração de audiência ausente." }
   }

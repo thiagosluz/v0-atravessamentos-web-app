@@ -79,19 +79,8 @@ const statusStyles = {
 
 import { Pagination } from "@/components/admin/pagination"
 
-interface AdminDashboardProps {
-  user: any
-  projectsData: { data: Project[], count: number }
-  membersData: { data: Member[], count: number }
-  blogPostsData: { data: BlogPost[], count: number }
-  initialCategories: Category[]
-  siteSettings: SiteSettings
-  currentPage: {
-    projects: number
-    members: number
-    blog: number
-  }
-}
+import { type AdminDashboardProps, type User } from "@/types/admin"
+
 
 export function AdminDashboard({
   user,

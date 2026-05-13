@@ -8,9 +8,12 @@ import { getGalleryAssets } from "@/lib/actions/gallery"
 import { Loader2 } from "lucide-react"
 import { ArtisticLightbox } from "@/components/gallery/artistic-lightbox"
 
+import { type GalleryAsset } from "@/types/admin"
+
 export function ClientAcervo() {
   const [filter, setFilter] = React.useState<string | null>(null)
-  const [assets, setAssets] = React.useState<any[]>([])
+  const [assets, setAssets] = React.useState<GalleryAsset[]>([])
+
   const [isLoading, setIsLoading] = React.useState(true)
   const [selectedAssetIndex, setSelectedAssetIndex] = React.useState<number | null>(null)
   

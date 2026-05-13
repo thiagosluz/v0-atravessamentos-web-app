@@ -33,12 +33,15 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog"
 
+import { type Exhibition, type GalleryAsset } from "@/types/admin"
+
 export function ExhibitionsAdminPanel() {
-  const [exhibitions, setExhibitions] = React.useState<any[]>([])
-  const [assets, setAssets] = React.useState<any[]>([])
+  const [exhibitions, setExhibitions] = React.useState<Exhibition[]>([])
+  const [assets, setAssets] = React.useState<GalleryAsset[]>([])
   const [isLoading, setIsLoading] = React.useState(true)
   const [isEditing, setIsEditing] = React.useState(false)
-  const [selectedExhibition, setSelectedExhibition] = React.useState<any | null>(null)
+  const [selectedExhibition, setSelectedExhibition] = React.useState<Exhibition | null>(null)
+
   
   // Estado do Formulário
   const [formData, setFormData] = React.useState({
@@ -80,7 +83,7 @@ export function ExhibitionsAdminPanel() {
     setIsEditing(true)
   }
 
-  function openEdit(ex: any) {
+  function openEdit(ex: Exhibition) {
     setSelectedExhibition(ex)
     setFormData({
       title: ex.title,

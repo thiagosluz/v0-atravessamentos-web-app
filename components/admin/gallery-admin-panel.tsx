@@ -27,11 +27,15 @@ import {
 } from "@/lib/actions/gallery"
 import { EditAssetModal } from "./edit-asset-modal"
 
+import { type GalleryAsset, type GalleryTag, type ProjectOption } from "@/types/admin"
+
 export function GalleryAdminPanel() {
   const [isUploading, setIsUploading] = React.useState(false)
-  const [tags, setTags] = React.useState<any[]>([])
-  const [projects, setProjects] = React.useState<any[]>([])
-  const [assets, setAssets] = React.useState<any[]>([])
+  const [tags, setTags] = React.useState<GalleryTag[]>([])
+  const [projects, setProjects] = React.useState<ProjectOption[]>([])
+  const [assets, setAssets] = React.useState<GalleryAsset[]>([])
+
+
   const [newTag, setNewTag] = React.useState("")
   const [selectedTags, setSelectedTags] = React.useState<string[]>([])
   const [editingAssetIndex, setEditingAssetIndex] = React.useState<number | null>(null)

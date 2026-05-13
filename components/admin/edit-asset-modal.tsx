@@ -3,6 +3,7 @@
 import * as React from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
 import { galleryAssetSchema } from "@/lib/validations"
 import {
   Dialog,
@@ -35,15 +36,19 @@ import { Loader2, Save, ArrowRight, Trash2 } from "lucide-react"
 import { updateGalleryAsset, deleteGalleryAsset } from "@/lib/actions/gallery"
 import { useToast } from "@/hooks/use-toast"
 
+import { type GalleryAsset, type GalleryTag, type ProjectOption } from "@/types/admin"
+
 interface EditAssetModalProps {
-  asset: any | null
+  asset: GalleryAsset | null
   isOpen: boolean
   onClose: () => void
   onSuccess: () => void
   onNext?: () => void
-  projects: any[]
-  availableTags: any[]
+  projects: ProjectOption[]
+  availableTags: GalleryTag[]
 }
+
+
 
 export function EditAssetModal({
   asset,
@@ -81,7 +86,7 @@ export function EditAssetModal({
     }
   }, [asset, form])
 
-  async function onSubmit(data: any, nextAfter = false) {
+  async function onSubmit(data: z.infer<typeof galleryAssetSchema>, nextAfter = false) {
     if (!asset) return
     setIsSubmitting(true)
 

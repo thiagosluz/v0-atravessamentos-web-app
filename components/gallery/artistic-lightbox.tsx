@@ -7,8 +7,11 @@ import { OrganicImage } from "@/components/ui/organic-image"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
+import { type GalleryAsset } from "@/types/admin"
+
 interface ArtisticLightboxProps {
-  asset: any | null
+  asset: GalleryAsset | null
+
   onClose: () => void
   onNext?: () => void
   onPrev?: () => void
