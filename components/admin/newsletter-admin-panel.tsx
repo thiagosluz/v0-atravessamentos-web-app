@@ -14,55 +14,77 @@ import { NewsletterHeader } from "./panels/newsletter/newsletter-header"
 import { SubscriberList } from "./panels/newsletter/subscriber-list"
 import { BroadcastHistory } from "./panels/newsletter/broadcast-history"
 import { cn } from "@/lib/utils"
+import { useAsyncData } from "@/hooks/use-async-data"
+import { Trash2, Send } from "lucide-react"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+import { Button } from "@/components/ui/button"
 
 type NewsletterTab = "subscribers" | "history"
 
 export function NewsletterAdminPanel() {
   const [activeTab, setActiveTab] = React.useState<NewsletterTab>("subscribers")
-  const [subscribers, setSubscribers] = React.useState<NewsletterSubscriber[]>([])
-  const [history, setHistory] = React.useState<NewsletterBroadcast[]>([])
-  const [isLoading, setIsLoading] = React.useState(true)
   const [isBroadcasting, setIsBroadcasting] = React.useState(false)
+  const [subscriberToRemove, setSubscriberToRemove] = React.useState<string | null>(null)
+  const [showBroadcastConfirm, setShowBroadcastConfirm] = React.useState(false)
   const { toast } = useToast()
 
-  React.useEffect(() => {
-    loadData()
-  }, [activeTab])
+  // Uso do hook customizado useAsyncData para simplificar o fetch-and-state
+  // O hook gerencia isLoading, error e refresh automaticamente
+  const { 
+    data: subscribers, 
+    isLoading: loadingSubscribers, 
+    refresh: refreshSubscribers 
+  } = useAsyncData<NewsletterSubscriber[]>(
+    getNewsletterSubscribers, 
+    { immediate: activeTab === "subscribers" }
+  )
 
-  async function loadData() {
-    setIsLoading(true)
-    if (activeTab === "subscribers") {
-      const res = await getNewsletterSubscribers()
-      if (res.success) {
-        setSubscribers(res.data || [])
-      } else {
-        toast({ title: "Erro ao carregar assinantes", description: res.error, variant: "destructive" })
-      }
-    } else {
-      const res = await getBroadcastHistory()
-      if (res.success) {
-        setHistory(res.data || [])
-      } else {
-        toast({ title: "Erro ao carregar histórico", description: res.error, variant: "destructive" })
-      }
-    }
-    setIsLoading(false)
-  }
+  const { 
+    data: history, 
+    isLoading: loadingHistory, 
+    refresh: refreshHistory 
+  } = useAsyncData<NewsletterBroadcast[]>(
+    getBroadcastHistory, 
+    { immediate: activeTab === "history" }
+  )
+
+  // Sincroniza o carregamento baseado na aba ativa
+  React.useEffect(() => {
+    if (activeTab === "subscribers" && !subscribers) refreshSubscribers()
+    if (activeTab === "history" && !history) refreshHistory()
+  }, [activeTab, subscribers, history, refreshSubscribers, refreshHistory])
+
+  const isLoading = activeTab === "subscribers" ? loadingSubscribers : loadingHistory
 
   async function handleRemove(email: string) {
-    if (confirm(`Remover ${email} da lista?`)) {
-      const res = await unsubscribeFromNewsletter(email)
-      if (res.success) {
-        toast({ title: "Assinante removido" })
-        loadData()
-      } else {
-        toast({ title: "Erro ao remover", description: res.error, variant: "destructive" })
-      }
+    setSubscriberToRemove(email)
+  }
+
+  async function confirmRemove() {
+    if (!subscriberToRemove) return
+    const res = await unsubscribeFromNewsletter(subscriberToRemove)
+    if (res.success) {
+      toast({ title: "Assinante removido" })
+      refreshSubscribers()
     }
+    setSubscriberToRemove(null)
   }
 
   async function handleBroadcast() {
-    if (!confirm("Deseja disparar o último conteúdo publicado para todos os assinantes?")) return
+    setShowBroadcastConfirm(true)
+  }
+
+  async function confirmBroadcast() {
+    setShowBroadcastConfirm(false)
 
     setIsBroadcasting(true)
     const res = await broadcastNews({
@@ -77,9 +99,7 @@ export function NewsletterAdminPanel() {
         title: "Broadcast concluído!", 
         description: `${res.count} e-mails foram processados.` 
       })
-      if (activeTab === "history") loadData()
-    } else {
-      toast({ title: "Erro no disparo", description: res.error, variant: "destructive" })
+      if (activeTab === "history") refreshHistory()
     }
     setIsBroadcasting(false)
   }
@@ -106,7 +126,7 @@ export function NewsletterAdminPanel() {
             <Users className="h-4 w-4" />
             Assinantes
             <span className="ml-1 text-[10px] bg-primary/10 px-1.5 py-0.5 rounded-full">
-              {subscribers.length}
+              {subscribers?.length || 0}
             </span>
           </button>
           <button
@@ -132,15 +152,73 @@ export function NewsletterAdminPanel() {
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
             {activeTab === "subscribers" ? (
               <SubscriberList 
-                subscribers={subscribers} 
+                subscribers={subscribers || []} 
                 onRemove={handleRemove} 
               />
             ) : (
-              <BroadcastHistory history={history} />
+              <BroadcastHistory history={history || []} />
             )}
           </div>
         )}
       </div>
+
+      {/* Modal de Remoção de Assinante */}
+      <AlertDialog open={!!subscriberToRemove} onOpenChange={(open: boolean) => !open && setSubscriberToRemove(null)}>
+        <AlertDialogContent className="rounded-[32px] border-none shadow-2xl p-8">
+          <AlertDialogHeader>
+            <div className="h-12 w-12 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center mb-4">
+              <Trash2 className="h-6 w-6" />
+            </div>
+            <AlertDialogTitle className="text-2xl font-display font-black uppercase italic tracking-tight">
+              Remover Assinante
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-base text-foreground/60">
+              Tem certeza que deseja remover <strong>{subscriberToRemove}</strong> da lista de newsletter? 
+              O usuário deixará de receber comunicações imediatamente.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="mt-8 gap-3">
+            <AlertDialogCancel className="rounded-full border-none bg-muted hover:bg-muted/80 h-12 px-6 font-bold transition-all">
+              Cancelar
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={confirmRemove}
+              className="rounded-full bg-red-600 hover:bg-red-700 text-white h-12 px-8 font-bold shadow-lg shadow-red-600/20 transition-all border-none"
+            >
+              Sim, Remover
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Modal de Confirmação de Broadcast */}
+      <AlertDialog open={showBroadcastConfirm} onOpenChange={setShowBroadcastConfirm}>
+        <AlertDialogContent className="rounded-[32px] border-none shadow-2xl p-8">
+          <AlertDialogHeader>
+            <div className="h-12 w-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-4">
+              <Send className="h-6 w-6" />
+            </div>
+            <AlertDialogTitle className="text-2xl font-display font-black uppercase italic tracking-tight">
+              Disparar Novidades
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-base text-foreground/60">
+              Deseja disparar o último conteúdo publicado para todos os <strong>{subscribers?.length || 0} assinantes</strong> agora?
+              Esta ação enviará e-mails via Resend imediatamente.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="mt-8 gap-3">
+            <AlertDialogCancel className="rounded-full border-none bg-muted hover:bg-muted/80 h-12 px-6 font-bold transition-all">
+              Agora não
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={confirmBroadcast}
+              className="rounded-full bg-primary hover:bg-primary/90 text-white h-12 px-8 font-bold shadow-lg shadow-primary/20 transition-all border-none"
+            >
+              Sim, disparar agora
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

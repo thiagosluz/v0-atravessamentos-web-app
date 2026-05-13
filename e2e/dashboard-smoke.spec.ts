@@ -73,15 +73,17 @@ test.describe('Dashboard Admin - Smoke Test', () => {
     await page.setViewportSize({ width: 1280, height: 720 });
     
     // 1. Testar Logo
-    const logoLink = page.locator('aside a:has-text("atravessamentos")');
-    await expect(logoLink).toBeVisible();
+    const logo = page.getByTestId('admin-logo');
+    await expect(logo).toBeVisible();
     
-    // 2. Testar Botão "Ver site" no topo
-    const viewSiteBtn = page.locator('header a:has-text("Ver site")');
-    await expect(viewSiteBtn).toBeVisible();
+    // 2. Testar Botão "Ver site" via Command Menu (novo fluxo)
+    await page.getByTestId('command-menu-trigger').click();
+    
+    const viewSiteOption = page.locator('text="Ver Site Público"');
+    await expect(viewSiteOption).toBeVisible();
     
     // Clicar e verificar se saiu do admin
-    await viewSiteBtn.click();
+    await viewSiteOption.click();
     await expect(page).not.toHaveURL(/\/admin/);
   });
 });

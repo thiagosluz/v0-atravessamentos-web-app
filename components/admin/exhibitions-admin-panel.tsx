@@ -11,6 +11,17 @@ import {
 } from "@/lib/actions/exhibitions"
 import { getGalleryAssets } from "@/lib/actions/gallery"
 import { type Exhibition, type GalleryAsset, type ExhibitionFormData } from "@/types/admin"
+import { Trash2 } from "lucide-react"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 
 import { ExhibitionsHeader } from "./panels/exhibitions/exhibitions-header"
 import { ExhibitionsGrid } from "./panels/exhibitions/exhibitions-grid"
@@ -22,7 +33,7 @@ export function ExhibitionsAdminPanel() {
   const [isLoading, setIsLoading] = React.useState(true)
   const [isEditing, setIsEditing] = React.useState(false)
   const [selectedExhibition, setSelectedExhibition] = React.useState<Exhibition | null>(null)
-
+  const [exhibitionToDelete, setExhibitionToDelete] = React.useState<string | null>(null)
   const { toast } = useToast()
 
   React.useEffect(() => {
@@ -51,15 +62,19 @@ export function ExhibitionsAdminPanel() {
   }
 
   async function handleDelete(id: string) {
-    if (confirm("Excluir esta sala virtual?")) {
-      const res = await deleteExhibition(id)
-      if (res.success) {
-        toast({ title: "Exposição excluída" })
-        loadData()
-      } else {
-        toast({ title: "Erro ao excluir", description: res.error, variant: "destructive" })
-      }
+    setExhibitionToDelete(id)
+  }
+
+  async function confirmDelete() {
+    if (!exhibitionToDelete) return
+    const res = await deleteExhibition(exhibitionToDelete)
+    if (res.success) {
+      toast({ title: "Exposição excluída" })
+      loadData()
+    } else {
+      toast({ title: "Erro ao excluir", description: res.error, variant: "destructive" })
     }
+    setExhibitionToDelete(null)
   }
 
   async function handleSubmit(formData: ExhibitionFormData) {
@@ -107,6 +122,34 @@ export function ExhibitionsAdminPanel() {
         assets={assets}
         onSubmit={handleSubmit}
       />
+
+      {/* Modal de Confirmação de Deleção Customizado */}
+      <AlertDialog open={!!exhibitionToDelete} onOpenChange={(open: boolean) => !open && setExhibitionToDelete(null)}>
+        <AlertDialogContent className="rounded-[32px] border-none shadow-2xl p-8">
+          <AlertDialogHeader>
+            <div className="h-12 w-12 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center mb-4">
+              <Trash2 className="h-6 w-6" />
+            </div>
+            <AlertDialogTitle className="text-2xl font-display font-black uppercase italic tracking-tight">
+              Excluir Exposição
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-base text-foreground/60">
+              Você tem certeza que deseja excluir esta sala virtual? Esta ação removerá a narrativa e desvinculará os ativos permanentemente.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="mt-8 gap-3">
+            <AlertDialogCancel className="rounded-full border-none bg-muted hover:bg-muted/80 h-12 px-6 font-bold transition-all">
+              Cancelar
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={confirmDelete}
+              className="rounded-full bg-red-600 hover:bg-red-700 text-white h-12 px-8 font-bold shadow-lg shadow-red-600/20 transition-all border-none"
+            >
+              Sim, Excluir Sala
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

@@ -13,6 +13,16 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog"
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+import {
   Form,
   FormControl,
   FormField,
@@ -58,6 +68,7 @@ export function EditAssetModal({
   availableTags
 }: EditAssetModalProps) {
   const [isSubmitting, setIsSubmitting] = React.useState(false)
+  const [showDeleteConfirm, setShowDeleteConfirm] = React.useState(false)
   const { toast } = useToast()
 
   const form = useForm({
@@ -116,6 +127,26 @@ export function EditAssetModal({
       toast({ title: "Erro técnico", description: "Verifique os dados informados.", variant: "destructive" })
     } finally {
       setIsSubmitting(false)
+    }
+  }
+
+  async function onDelete() {
+    if (!asset) return
+    setIsSubmitting(true)
+    try {
+      const res = await deleteGalleryAsset(asset.id)
+      if (res.success) {
+        toast({ title: "Ativo excluído com sucesso!" })
+        onSuccess()
+        onClose()
+      } else {
+        toast({ title: "Erro ao excluir", description: res.error, variant: "destructive" })
+      }
+    } catch (error) {
+      toast({ title: "Erro técnico", variant: "destructive" })
+    } finally {
+      setIsSubmitting(false)
+      setShowDeleteConfirm(false)
     }
   }
 
@@ -258,13 +289,8 @@ export function EditAssetModal({
             type="button"
             variant="destructive"
             size="sm"
-            onClick={async () => {
-              if (confirm("Excluir definitivamente esta memória?")) {
-                await deleteGalleryAsset(asset.id)
-                onSuccess()
-                onClose()
-              }
-            }}
+            onClick={() => setShowDeleteConfirm(true)}
+            disabled={isSubmitting}
           >
             <Trash2 className="mr-2 h-4 w-4" />
             Excluir
@@ -298,6 +324,34 @@ export function EditAssetModal({
           </div>
         </DialogFooter>
       </DialogContent>
+
+      <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+        <AlertDialogContent className="rounded-[32px] border-none shadow-2xl p-8">
+          <AlertDialogHeader>
+            <div className="h-12 w-12 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center mb-4">
+              <Trash2 className="h-6 w-6" />
+            </div>
+            <AlertDialogTitle className="text-2xl font-display font-black uppercase italic tracking-tight">
+              Excluir Memória
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-base text-foreground/60">
+              Você tem certeza que deseja excluir permanentemente esta imagem do acervo? 
+              Esta ação não pode ser desfeita.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="mt-8 gap-3">
+            <AlertDialogCancel className="rounded-full border-none bg-muted hover:bg-muted/80 h-12 px-6 font-bold transition-all">
+              Cancelar
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={onDelete}
+              className="rounded-full bg-red-600 hover:bg-red-700 text-white h-12 px-8 font-bold shadow-lg shadow-red-600/20 transition-all border-none"
+            >
+              Sim, Excluir Definitivamente
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Dialog>
   )
 }

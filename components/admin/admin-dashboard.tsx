@@ -1,27 +1,47 @@
 "use client"
 
 import * as React from "react"
-import Link from "next/link"
-import { motion } from "motion/react"
-import {
-  ArrowUpRight,
-  BookOpen,
+import { 
+  Users, 
+  Settings, 
+  Loader2, 
+  LayoutDashboard, 
+  FileText, 
   FolderKanban,
-  LayoutDashboard,
-  LogOut,
-  Pencil,
-  Settings,
-  Trash2,
-  Users,
-  UserCircle,
-  ExternalLink,
-  Palette,
-  GalleryVertical,
-  Image as ImageIcon,
+  Library,
   Mail,
+  UserCircle,
+  LogOut,
+  ChevronRight
 } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { useToast } from "@/hooks/use-toast"
+import { type AdminDashboardProps, type Project, type Member, type BlogPost } from "@/types/admin"
+import { signOut } from "@/lib/actions/auth"
+
+// Painéis
+import { OverviewPanel } from "./overview-panel"
+import { ProjectPanel } from "./panels/project-panel"
+import { BlogPanel } from "./panels/blog-panel"
+import { MemberPanel } from "./panels/member-panel"
+import { ProjectFormDialog } from "./project-form-dialog"
+import { BlogFormDialog } from "./blog-form-dialog"
+import { MemberFormDialog } from "./member-form-dialog"
+import { SettingsPanel } from "./settings-panel"
+import { ProfilePanel } from "./profile-panel"
+import { VisualSettingsPanel } from "./visual-settings-panel"
+import { GalleryAdminPanel } from "./gallery-admin-panel"
+import { ExhibitionsAdminPanel } from "./exhibitions-admin-panel"
+import { NewsletterAdminPanel } from "./newsletter-admin-panel"
+
+// Actions
+import { deleteProject } from "@/lib/actions/projects-admin"
+import { deleteMember } from "@/lib/actions/members-admin"
+import { deleteBlogPost } from "@/lib/actions/blog-admin"
+
+// Componentes UI
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { AdminCommandMenu } from "./admin-command-menu"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -32,57 +52,15 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { useToast } from "@/hooks/use-toast"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { type Project, type ProjectStatus, type Member, type BlogPost } from "@/lib/mock-data"
-import { cn } from "@/lib/utils"
-import { signOut } from "@/lib/actions/auth"
-import { deleteProject } from "@/lib/actions/projects-admin"
-import { deleteMember } from "@/lib/actions/members-admin"
-import { deleteBlogPost } from "@/lib/actions/blog-admin"
-import { ProjectFormDialog } from "@/components/admin/project-form-dialog"
-import { MemberFormDialog } from "@/components/admin/member-form-dialog"
-import { BlogFormDialog } from "@/components/admin/blog-form-dialog"
-import { SettingsPanel } from "@/components/admin/settings-panel"
-import { ProfilePanel } from "@/components/admin/profile-panel"
-import { OverviewPanel } from "@/components/admin/overview-panel"
-import { VisualSettingsPanel } from "@/components/admin/visual-settings-panel"
-import { GalleryAdminPanel } from "@/components/admin/gallery-admin-panel"
-import { ExhibitionsAdminPanel } from "@/components/admin/exhibitions-admin-panel"
-import { NewsletterAdminPanel } from "@/components/admin/newsletter-admin-panel"
-import { type Category } from "@/lib/actions/categories"
-import { type SiteSettings } from "@/lib/actions/settings"
-import { AdminCommandMenu } from "@/components/admin/admin-command-menu"
-import { AdminDataTable, type Column } from "@/components/admin/admin-data-table"
-
-import { AdminSidebar } from "./layout/admin-sidebar"
-import { AdminTopbar } from "./layout/admin-topbar"
-import { StatCard } from "./layout/stat-card"
-import { ProjectPanel } from "./panels/project-panel"
-
-import { MemberPanel } from "./panels/member-panel"
-import { BlogPanel } from "./panels/blog-panel"
-
-const navigation = [
-  { id: "overview", label: "Visão Geral", icon: LayoutDashboard },
-  { id: "projects", label: "Projetos", icon: FolderKanban },
-  { id: "members", label: "Membros", icon: Users },
-  { id: "blog", label: "Blog", icon: BookOpen },
-  { id: "newsletter", label: "Newsletter", icon: Mail },
-  { id: "acervo", label: "Acervo", icon: ImageIcon },
-  { id: "exhibitions", label: "Exposições", icon: GalleryVertical },
-  { id: "visual", label: "Identidade Visual", icon: Palette },
-  { id: "settings", label: "Configurações", icon: Settings },
-  { id: "profile", label: "Meu Perfil", icon: UserCircle },
-]
-
-import { type AdminDashboardProps, type User } from "@/types/admin"
+import { Trash2 } from "lucide-react"
 
 export function AdminDashboard({
   user,
@@ -97,344 +75,460 @@ export function AdminDashboard({
   const [active, setActive] = React.useState("overview")
   const [query, setQuery] = React.useState("")
   const [searchEditItem, setSearchEditItem] = React.useState<{ type: "project" | "member" | "blog", id: string } | null>(null)
-  const [deleteConfirm, setDeleteConfirm] = React.useState<{ type: "project" | "member" | "blog", id: string } | null>(null)
+  const [deleteConfirmation, setDeleteConfirmation] = React.useState<{ type: "project" | "member" | "blog", id: string } | null>(null)
   const { toast } = useToast()
 
+  // Estado Local para permitir atualizações otimistas
   const [localProjects, setLocalProjects] = React.useState<Project[]>(projectsData.data)
   const [localMembers, setLocalMembers] = React.useState<Member[]>(membersData.data)
   const [localBlogPosts, setLocalBlogPosts] = React.useState<BlogPost[]>(blogPostsData.data)
 
-  // Sincroniza estado local quando as props mudam (navegação por página)
+  // Sincroniza estado local quando as props mudam
   React.useEffect(() => {
     setLocalProjects(projectsData.data)
-  }, [projectsData.data])
-
-  React.useEffect(() => {
     setLocalMembers(membersData.data)
-  }, [membersData.data])
-
-  React.useEffect(() => {
     setLocalBlogPosts(blogPostsData.data)
-  }, [blogPostsData.data])
+  }, [projectsData.data, membersData.data, blogPostsData.data])
 
-  const filteredProjects = localProjects.filter((p) =>
-    p.title.toLowerCase().includes(query.toLowerCase()),
-  )
-  const filteredMembers = localMembers.filter((m) =>
-    m.name.toLowerCase().includes(query.toLowerCase()),
-  )
-  const filteredBlogPosts = localBlogPosts.filter((b) =>
-    b.title.toLowerCase().includes(query.toLowerCase()),
-  )
-
-  function handleProjectSuccess(project: Project, isEdit: boolean) {
+  // Handlers estabilizados
+  const handleProjectSuccess = React.useCallback((project: Project, isEdit: boolean) => {
     if (isEdit) {
-      setLocalProjects((prev) => prev.map((p) => p.id === project.id ? project : p))
+      setLocalProjects(prev => prev.map(p => p.id === project.id ? project : p))
     } else {
-      setLocalProjects((prev) => [project, ...prev])
+      setLocalProjects(prev => [project, ...prev])
     }
-  }
-  function handleMemberSuccess(member: Member, isEdit: boolean) {
+  }, [])
+
+  const handleMemberSuccess = React.useCallback((member: Member, isEdit: boolean) => {
     if (isEdit) {
-      setLocalMembers((prev) => prev.map((m) => m.id === member.id ? member : m))
+      setLocalMembers(prev => prev.map(m => m.id === member.id ? member : m))
     } else {
-      setLocalMembers((prev) => [member, ...prev])
+      setLocalMembers(prev => [member, ...prev])
     }
-  }
-  function handleBlogPostSuccess(post: BlogPost, isEdit: boolean) {
+  }, [])
+
+  const handleBlogSuccess = React.useCallback((post: BlogPost, isEdit: boolean) => {
     if (isEdit) {
-      setLocalBlogPosts((prev) => prev.map((b) => b.id === post.id ? post : b))
+      setLocalBlogPosts(prev => prev.map(p => p.id === post.id ? post : p))
     } else {
-      setLocalBlogPosts((prev) => [post, ...prev])
+      setLocalBlogPosts(prev => [post, ...prev])
     }
-  }
+  }, [])
 
-  function handleDelete(type: "project" | "member" | "blog", id: string) {
-    setDeleteConfirm({ type, id })
-  }
-
-  async function handleDeleteBulk(type: "project" | "member" | "blog", ids: string[]) {
-    let result: { success?: boolean, error?: string } = { success: true }
-
-    // Atualização otimista
-    if (type === "project") {
-      setLocalProjects((prev) => prev.filter((p) => !ids.includes(p.id)))
-      for (const id of ids) {
-        const res = await deleteProject(id)
-        if (res.error) result = res
-      }
-    } else if (type === "member") {
-      setLocalMembers((prev) => prev.filter((m) => !ids.includes(m.id)))
-      for (const id of ids) {
-        const res = await deleteMember(id)
-        if (res.error) result = res
-      }
-    } else if (type === "blog") {
-      setLocalBlogPosts((prev) => prev.filter((b) => !ids.includes(b.id)))
-      for (const id of ids) {
-        const res = await deleteBlogPost(id)
-        if (res.error) result = res
-      }
-    }
-
-    if (result.error) {
-      toast({
-        title: "Erro ao excluir alguns itens",
-        description: result.error,
-        variant: "destructive",
-      })
-    } else {
-      toast({
-        title: "Exclusão em massa concluída",
-        description: `${ids.length} itens foram removidos com sucesso.`,
-      })
-    }
-  }
-
-  async function confirmDelete() {
-    if (!deleteConfirm) return
-    const { type, id } = deleteConfirm
-    setDeleteConfirm(null)
-
-    let result: { success?: boolean, error?: string } = {}
-
-    if (type === "project") {
-      setLocalProjects((prev) => prev.filter((p) => p.id !== id))
-      result = await deleteProject(id)
-    } else if (type === "member") {
-      setLocalMembers((prev) => prev.filter((m) => m.id !== id))
-      result = await deleteMember(id)
-    } else if (type === "blog") {
-      setLocalBlogPosts((prev) => prev.filter((b) => b.id !== id))
-      result = await deleteBlogPost(id)
-    }
-
-    if (result.error) {
-      toast({
-        title: "Erro ao excluir",
-        description: result.error,
-        variant: "destructive",
-      })
-    } else {
-      toast({
-        title: "Excluído com sucesso",
-        description: "O item foi removido permanentemente do sistema.",
-      })
-    }
-  }
-
-
-
-  function handleEditItem(type: "project" | "member" | "blog", id: string) {
-    if (type === "project") setActive("projects")
-    if (type === "member") setActive("members")
-    if (type === "blog") setActive("blog")
-
+  const handleEditItem = React.useCallback((type: "project" | "member" | "blog", id: string) => {
     setSearchEditItem({ type, id })
+  }, [])
+
+  const handleDeleteProject = async (id: string) => {
+    setDeleteConfirmation({ type: "project", id })
   }
+
+  const handleDeleteMember = async (id: string) => {
+    setDeleteConfirmation({ type: "member", id })
+  }
+
+  const handleDeleteBlog = async (id: string) => {
+    setDeleteConfirmation({ type: "blog", id })
+  }
+
+  const confirmDelete = async () => {
+    if (!deleteConfirmation) return
+
+    const { type, id } = deleteConfirmation
+    let success = false
+
+    try {
+      if (type === "project") {
+        const res = await deleteProject(id)
+        if (res.success) {
+          setLocalProjects(prev => prev.filter(p => p.id !== id))
+          success = true
+        }
+      } else if (type === "member") {
+        const res = await deleteMember(id)
+        if (res.success) {
+          setLocalMembers(prev => prev.filter(m => m.id !== id))
+          success = true
+        }
+      } else if (type === "blog") {
+        const res = await deleteBlogPost(id)
+        if (res.success) {
+          setLocalBlogPosts(prev => prev.filter(p => p.id !== id))
+          success = true
+        }
+      }
+
+      if (success) {
+        toast({ title: "Item excluído com sucesso" })
+      } else {
+        toast({ title: "Erro ao excluir item", variant: "destructive" })
+      }
+    } catch (err) {
+      toast({ title: "Erro na operação", variant: "destructive" })
+    } finally {
+      setDeleteConfirmation(null)
+    }
+  }
+
+  // Encontrar itens para edição
+  const projectToEdit = React.useMemo(() => 
+    searchEditItem?.type === "project" ? localProjects.find(p => p.id === searchEditItem.id) : null,
+    [searchEditItem, localProjects]
+  )
+
+  const memberToEdit = React.useMemo(() => 
+    searchEditItem?.type === "member" ? localMembers.find(m => m.id === searchEditItem.id) : null,
+    [searchEditItem, localMembers]
+  )
+
+  const blogToEdit = React.useMemo(() => 
+    searchEditItem?.type === "blog" ? localBlogPosts.find(p => p.id === searchEditItem.id) : null,
+    [searchEditItem, localBlogPosts]
+  )
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.3 }}
-      className="fixed inset-0 z-[60] bg-background"
-    >
-      <div className="flex h-screen">
-        <AdminSidebar
-          active={active}
-          setActive={setActive}
-          navigation={navigation}
-          user={user}
-          projectsCount={localProjects.length}
-        />
-
-        <main className="flex flex-1 flex-col overflow-hidden">
-          <AdminTopbar
-            activeLabel={navigation.find((n) => n.id === active)?.label || ""}
-            setActive={setActive}
-            onEditItem={handleEditItem}
-          />
-
-          <div className="flex-1 overflow-y-auto bg-background">
-            <div className="mx-auto max-w-7xl space-y-8 p-4 md:p-8">
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 admin-stats-grid">
-                <StatCard
-                  label="Projetos publicados"
-                  value={localProjects.filter((p) => p.status === "Publicado").length.toString()}
-                  trend={`${localProjects.length} totais no banco`}
-                  icon={FolderKanban}
-                  accent="bg-primary/10 text-primary"
-                  variation={`+${
-                    localProjects.filter(
-                      (p) =>
-                        new Date(p.updatedAt).getTime() > Date.now() - 30 * 24 * 60 * 60 * 1000
-                    ).length
-                  }`}
-                />
-                <StatCard
-                  label="Pessoas no coletivo"
-                  value={localMembers.length.toString()}
-                  trend="Membros cadastrados"
-                  icon={Users}
-                  accent="bg-accent/15 text-accent"
-                />
-                <StatCard
-                  label="Posts no diário"
-                  value={localBlogPosts.filter((p) => p.status === "Publicado").length.toString()}
-                  trend={`${localBlogPosts.length} rascunhos e publicados`}
-                  icon={BookOpen}
-                  accent="bg-[var(--ouro)]/25 text-foreground"
-                  variation={`+${
-                    localBlogPosts.filter(
-                      (p) => new Date(p.date).getTime() > Date.now() - 30 * 24 * 60 * 60 * 1000
-                    ).length
-                  }`}
-                />
-                <StatCard
-                  label="Categorias & Tags"
-                  value={initialCategories.length.toString()}
-                  trend="Filtros globais do sistema"
-                  icon={LayoutDashboard}
-                  accent="bg-foreground text-background"
-                />
-              </div>
-
-              <div className="rounded-2xl border border-border bg-card">
-                {active === "projects" && (
-                  <ProjectPanel
-                    projects={filteredProjects}
-                    totalCount={projectsData.count}
-                    currentPage={currentPage.projects}
-                    categories={initialCategories}
-                    onSuccess={handleProjectSuccess}
-                    onEdit={(id) => handleEditItem("project", id)}
-                    onDelete={(id) => handleDelete("project", id)}
-                    onDeleteBulk={(ids) => handleDeleteBulk("project", ids)}
-                  />
-                )}
-
-                {active === "members" && (
-                  <MemberPanel
-                    members={filteredMembers}
-                    totalCount={membersData.count}
-                    currentPage={currentPage.members}
-                    categories={initialCategories}
-                    onSuccess={handleMemberSuccess}
-                    onEdit={(id) => handleEditItem("member", id)}
-                    onDelete={(id) => handleDelete("member", id)}
-                    onDeleteBulk={(ids) => handleDeleteBulk("member", ids)}
-                  />
-                )}
-
-                {active === "blog" && (
-                  <BlogPanel
-                    posts={filteredBlogPosts}
-                    totalCount={blogPostsData.count}
-                    currentPage={currentPage.blog}
-                    categories={initialCategories}
-                    onSuccess={handleBlogPostSuccess}
-                    onEdit={(id) => handleEditItem("blog", id)}
-                    onDelete={(id) => handleDelete("blog", id)}
-                    onDeleteBulk={(ids) => handleDeleteBulk("blog", ids)}
-                  />
-                )}
-
-
-                {active === "settings" && (
-                  <SettingsPanel categories={initialCategories} siteSettings={siteSettings} />
-                )}
-
-                {active === "profile" && (
-                  <ProfilePanel user={user} />
-                )}
-
-                {active === "visual" && (
-                  <VisualSettingsPanel siteSettings={siteSettings} />
-                )}
-
-                {active === "acervo" && (
-                  <GalleryAdminPanel />
-                )}
-
-                {active === "exhibitions" && (
-                  <ExhibitionsAdminPanel />
-                )}
-
-                {active === "newsletter" && (
-                  <NewsletterAdminPanel />
-                )}
-
-                {active === "overview" && (
-                  <OverviewPanel
-                    user={user}
-                    projects={localProjects}
-                    blogPosts={localBlogPosts}
-                    members={localMembers}
-                    setActive={setActive}
-                  />
-                )}
-              </div>
-
-              {/* Mobile menu hint */}
-              <div className="rounded-2xl border border-dashed border-border bg-muted/40 p-4 text-xs text-foreground/65 md:hidden">
-                Esta é uma visualização demo do CMS. No celular, o menu lateral é colapsado para
-                priorizar a tabela.
-              </div>
+    <div className="flex min-h-screen bg-[#F9F6F1] text-foreground selection:bg-primary selection:text-white">
+      {/* Sidebar */}
+      <aside className="w-64 border-r border-border/40 flex flex-col sticky top-0 h-screen bg-[#F9F6F1]">
+        <div className="p-6">
+          <div className="flex items-center gap-3 mb-10">
+            <div className="h-9 w-9 bg-[#A65A3C] rounded-xl flex items-center justify-center text-white shadow-lg shadow-[#A65A3C]/20">
+              <span className="font-display font-black text-lg italic">A</span>
             </div>
+            <h1 data-testid="admin-logo" className="font-display font-black text-xl tracking-tighter uppercase text-[#333]">Admin</h1>
           </div>
-        </main>
-      </div>
+          
+          <nav className="space-y-1.5">
+            <SidebarItem 
+              icon={<LayoutDashboard className="h-4 w-4" />} 
+              label="Visão Geral" 
+              active={active === "overview"} 
+              onClick={() => setActive("overview")} 
+            />
+            
+            <div className="pt-6 pb-2 px-3">
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/30">Acervo & Memória</span>
+            </div>
+            <SidebarItem 
+              icon={<FolderKanban className="h-4 w-4" />} 
+              label="Projetos" 
+              active={active === "projects"} 
+              onClick={() => setActive("projects")} 
+            />
+            <SidebarItem 
+              icon={<Library className="h-4 w-4" />} 
+              label="Acervo Vivo" 
+              active={active === "acervo"} 
+              onClick={() => setActive("acervo")} 
+            />
+            <SidebarItem 
+              icon={<Image className="h-4 w-4" />} 
+              label="Exposições" 
+              active={active === "exhibitions"} 
+              onClick={() => setActive("exhibitions")} 
+            />
+            
+            <div className="pt-6 pb-2 px-3">
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/30">Comunicados</span>
+            </div>
+            <SidebarItem 
+              icon={<FileText className="h-4 w-4" />} 
+              label="Diário" 
+              active={active === "blog"} 
+              onClick={() => setActive("blog")} 
+            />
+            <SidebarItem 
+              icon={<Mail className="h-4 w-4" />} 
+              label="Newsletter" 
+              active={active === "newsletter"} 
+              onClick={() => setActive("newsletter")} 
+            />
+            
+            <div className="pt-6 pb-2 px-3">
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/30">Coletivo</span>
+            </div>
+            <SidebarItem 
+              icon={<Users className="h-4 w-4" />} 
+              label="Membros" 
+              active={active === "members"} 
+              onClick={() => setActive("members")} 
+            />
+            <SidebarItem 
+              icon={<Settings className="h-4 w-4" />} 
+              label="Configurações" 
+              active={active === "settings"} 
+              onClick={() => setActive("settings")} 
+            />
+          </nav>
+        </div>
 
-      {/* Global Edit Dialogs (from Search) */}
-      {searchEditItem?.type === "project" && (
-        <ProjectFormDialog
-          open={!!searchEditItem}
-          onOpenChange={(open) => !open && setSearchEditItem(null)}
-          initialData={localProjects.find(p => p.id === searchEditItem.id)}
-          categories={initialCategories.filter(c => c.type === "project")}
-          onSuccess={handleProjectSuccess}
-        />
-      )}
+        {/* User Profile Section in Sidebar */}
+        <div className="mt-auto p-4 m-4 rounded-2xl bg-white/50 border border-border/40">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center overflow-hidden shrink-0">
+               {user?.user_metadata?.avatar_url ? (
+                 <img src={user.user_metadata.avatar_url} alt="" className="h-full w-full object-cover" />
+               ) : (
+                 <span className="font-bold text-primary">{user?.email?.[0].toUpperCase()}</span>
+               )}
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-black truncate text-[#333]">
+                {user?.user_metadata?.full_name || user?.email?.split('@')[0]}
+              </p>
+              <p className="text-[10px] text-foreground/50 truncate">{user?.email}</p>
+            </div>
+            <button 
+              onClick={() => signOut()}
+              className="h-8 w-8 rounded-lg hover:bg-red-500/10 hover:text-red-600 transition-colors flex items-center justify-center text-foreground/40"
+              title="Sair"
+            >
+              <LogOut className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      </aside>
 
-      {searchEditItem?.type === "member" && (
-        <MemberFormDialog
-          open={!!searchEditItem}
-          onOpenChange={(open) => !open && setSearchEditItem(null)}
-          initialData={localMembers.find(m => m.id === searchEditItem.id)}
-          categories={initialCategories}
-          onSuccess={handleMemberSuccess}
-        />
-      )}
+      {/* Main Content */}
+      <main className="flex-1 flex flex-col min-w-0 bg-white shadow-[-20px_0_40px_rgba(0,0,0,0.02)] rounded-l-[40px] relative z-10 my-4 mr-4 overflow-hidden border">
+        <header className="h-20 flex items-center justify-between px-10 bg-white/80 backdrop-blur-xl sticky top-0 z-30 border-b border-border/40">
+          <div className="flex items-center gap-4">
+             <div className="flex items-center gap-2 text-xs font-bold text-foreground/40 uppercase tracking-widest">
+               <span className="hover:text-primary transition-colors cursor-pointer" onClick={() => setActive("overview")}>Admin</span>
+               <ChevronRight className="h-3 w-3" />
+               <span className="text-[#333]">
+                 {active === "overview" ? "Visão Geral" : 
+                  active === "projects" ? "Projetos" :
+                  active === "blog" ? "Diário" :
+                  active === "members" ? "Membros" :
+                  active === "newsletter" ? "Newsletter" :
+                  active === "acervo" ? "Acervo Vivo" :
+                  active === "exhibitions" ? "Exposições" :
+                  active === "settings" ? "Configurações" :
+                  active === "profile" ? "Perfil" :
+                  active === "visual" ? "Identidade Visual" :
+                  active.charAt(0).toUpperCase() + active.slice(1)}
+               </span>
+             </div>
+          </div>
+          
+          <div className="flex items-center gap-6">
+            <AdminCommandMenu setActive={setActive} onEditItem={handleEditItem} />
+            
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="h-10 w-10 rounded-2xl bg-muted/30 border border-border/40 flex items-center justify-center overflow-hidden hover:border-primary/40 transition-colors">
+                  {user?.user_metadata?.avatar_url ? (
+                    <img src={user.user_metadata.avatar_url} alt="" className="h-full w-full object-cover" />
+                  ) : (
+                    <span className="text-sm font-bold">{user?.email?.[0].toUpperCase()}</span>
+                  )}
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56 rounded-2xl p-2">
+                <DropdownMenuLabel className="font-display font-bold">Minha Conta</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => setActive("profile")} className="rounded-xl cursor-pointer">
+                  <UserCircle className="mr-2 h-4 w-4" /> Perfil
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setActive("settings")} className="rounded-xl cursor-pointer">
+                  <Settings className="mr-2 h-4 w-4" /> Configurações
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => signOut()} className="rounded-xl cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50">
+                  <LogOut className="mr-2 h-4 w-4" /> Sair do Sistema
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </header>
 
-      {searchEditItem?.type === "blog" && (
-        <BlogFormDialog
-          open={!!searchEditItem}
-          onOpenChange={(open) => !open && setSearchEditItem(null)}
-          initialData={localBlogPosts.find(p => p.id === searchEditItem.id)}
-          categories={initialCategories.filter(c => c.type === "post")}
-          onSuccess={handleBlogPostSuccess}
-        />
-      )}
+        <div className="flex-1 overflow-y-auto scrollbar-hide">
+          <div className="max-w-6xl mx-auto p-10 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <React.Suspense fallback={
+              <div className="flex items-center justify-center h-[60vh]">
+                <Loader2 className="h-8 w-8 animate-spin text-primary/40" />
+              </div>
+            }>
+              {active === "overview" && (
+                <OverviewPanel 
+                  user={user}
+                  projects={localProjects}
+                  blogPosts={localBlogPosts}
+                  members={localMembers}
+                  setActive={setActive}
+                />
+              )}
 
-      <AlertDialog open={!!deleteConfirm} onOpenChange={(open) => !open && setDeleteConfirm(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Tem certeza absoluta?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Esta ação não pode ser desfeita. Isso excluirá permanentemente este item e todos os dados associados a ele dos nossos servidores.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-              Excluir
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </motion.div>
+              {active === "projects" && (
+                <ProjectPanel 
+                  projects={localProjects}
+                  totalCount={projectsData.count}
+                  currentPage={currentPage.projects}
+                  categories={initialCategories}
+                  onSuccess={handleProjectSuccess}
+                  onEdit={(id) => handleEditItem("project", id)}
+                  onDelete={handleDeleteProject}
+                  onDeleteBulk={async () => {}}
+                />
+              )}
+
+              {active === "blog" && (
+                <BlogPanel 
+                  posts={localBlogPosts}
+                  totalCount={blogPostsData.count}
+                  currentPage={currentPage.blog}
+                  categories={initialCategories}
+                  onSuccess={handleBlogSuccess}
+                  onEdit={(id) => handleEditItem("blog", id)}
+                  onDelete={handleDeleteBlog}
+                  onDeleteBulk={async () => {}}
+                />
+              )}
+
+              {active === "members" && (
+                <MemberPanel 
+                  members={localMembers}
+                  totalCount={membersData.count}
+                  currentPage={currentPage.members}
+                  categories={initialCategories}
+                  onSuccess={handleMemberSuccess}
+                  onEdit={(id) => handleEditItem("member", id)}
+                  onDelete={handleDeleteMember}
+                  onDeleteBulk={async () => {}}
+                />
+              )}
+
+              {active === "profile" && (
+                <ProfilePanel user={user} />
+              )}
+
+              {active === "settings" && (
+                <SettingsPanel siteSettings={siteSettings} categories={initialCategories} />
+              )}
+
+              {active === "visual" && (
+                <VisualSettingsPanel siteSettings={siteSettings} />
+              )}
+
+              {active === "acervo" && (
+                <GalleryAdminPanel />
+              )}
+
+              {active === "exhibitions" && (
+                <ExhibitionsAdminPanel />
+              )}
+
+              {active === "newsletter" && (
+                <NewsletterAdminPanel />
+              )}
+            </React.Suspense>
+          </div>
+        </div>
+
+        {/* Modais de Edição (Controlados) */}
+        {projectToEdit && (
+          <ProjectFormDialog 
+            open={!!projectToEdit} 
+            onOpenChange={(open: boolean) => !open && setSearchEditItem(null)}
+            initialData={projectToEdit}
+            categories={initialCategories}
+            onSuccess={handleProjectSuccess}
+          />
+        )}
+
+        {memberToEdit && (
+          <MemberFormDialog 
+            open={!!memberToEdit} 
+            onOpenChange={(open: boolean) => !open && setSearchEditItem(null)}
+            initialData={memberToEdit}
+            categories={initialCategories}
+            onSuccess={handleMemberSuccess}
+          />
+        )}
+
+        {blogToEdit && (
+          <BlogFormDialog 
+            open={!!blogToEdit} 
+            onOpenChange={(open: boolean) => !open && setSearchEditItem(null)}
+            initialData={blogToEdit}
+            categories={initialCategories}
+            onSuccess={handleBlogSuccess}
+          />
+        )}
+
+        {/* Modal de Confirmação de Deleção Customizado */}
+        <AlertDialog open={!!deleteConfirmation} onOpenChange={(open: boolean) => !open && setDeleteConfirmation(null)}>
+          <AlertDialogContent className="rounded-[32px] border-none shadow-2xl p-8">
+            <AlertDialogHeader>
+              <div className="h-12 w-12 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center mb-4">
+                <Trash2 className="h-6 w-6" />
+              </div>
+              <AlertDialogTitle className="text-2xl font-display font-black uppercase italic tracking-tight">
+                Confirmar Exclusão
+              </AlertDialogTitle>
+              <AlertDialogDescription className="text-base text-foreground/60">
+                Você tem certeza que deseja excluir este item? Esta ação é irreversível e removerá todos os dados permanentemente.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter className="mt-8 gap-3">
+              <AlertDialogCancel className="rounded-full border-none bg-muted hover:bg-muted/80 h-12 px-6 font-bold transition-all">
+                Cancelar
+              </AlertDialogCancel>
+              <AlertDialogAction 
+                onClick={confirmDelete}
+                className="rounded-full bg-red-600 hover:bg-red-700 text-white h-12 px-8 font-bold shadow-lg shadow-red-600/20 transition-all border-none"
+              >
+                Sim, Excluir Item
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </main>
+    </div>
   )
 }
 
+function SidebarItem({ icon, label, active, onClick }: { icon: React.ReactNode, label: string, active?: boolean, onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      data-testid={`sidebar-item-${label.toLowerCase().replace(/\s+/g, '-')}`}
+      className={cn(
+        "w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all group",
+        active 
+          ? "bg-[#A65A3C] text-white shadow-xl shadow-[#A65A3C]/20 translate-x-1" 
+          : "text-foreground/50 hover:text-[#A65A3C] hover:bg-white/50"
+      )}
+    >
+      <div className={cn(
+        "transition-transform group-hover:scale-110",
+        active ? "text-white" : "text-foreground/30"
+      )}>
+        {icon}
+      </div>
+      {label}
+    </button>
+  )
+}
+
+function Image(props: any) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+      <circle cx="9" cy="9" r="2" />
+      <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+    </svg>
+  )
+}

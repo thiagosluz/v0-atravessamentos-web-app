@@ -2,6 +2,8 @@ import { type Project, type Member, type BlogPost, type ProjectStatus } from "@/
 import { type Category } from "@/lib/actions/categories"
 import { type SiteSettings } from "@/lib/actions/settings"
 
+export type { Project, Member, BlogPost, ProjectStatus }
+
 export type ContentStatus = ProjectStatus | "Publicado" | "Rascunho" | "Em revisão"
 
 export interface ActionResponse<T = any> {
@@ -48,7 +50,6 @@ export interface NewsletterBroadcast {
   batch_id?: string
   status: string
 }
-
 
 export interface User {
   id: string
@@ -110,4 +111,3 @@ export interface AdminDashboardProps {
     blog: number
   }
 }
-

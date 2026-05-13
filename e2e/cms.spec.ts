@@ -69,7 +69,7 @@ test.describe('CMS - Fluxo de Conteúdo', () => {
     const postTitle = `[E2E] Post E2E ${Date.now()}`;
     
     await test.step('Criar post como rascunho', async () => {
-      await page.click('aside button:has-text("Blog")');
+      await page.click('aside button:has-text("Diário")');
       await page.click('button:has-text("Novo post")');
       
       await page.fill('#blog-title', postTitle);
@@ -116,7 +116,7 @@ test.describe('CMS - Fluxo de Conteúdo', () => {
 
     await test.step('Excluir o post', async () => {
       await page.goto('/admin');
-      await page.click('aside button:has-text("Blog")');
+      await page.click('aside button:has-text("Diário")');
       
       const postRow = page.locator('tr', { hasText: postTitle });
       await postRow.getByLabel('Excluir post').click();
