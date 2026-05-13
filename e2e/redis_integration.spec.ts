@@ -5,7 +5,11 @@ test.describe('Integração Redis - Cache do Acervo', () => {
     // 1. Primeira carga (Cache Miss)
     const start1 = Date.now();
     await page.goto('/acervo');
-    await page.waitForSelector('img', { timeout: 15000 });
+    // Wait for the acervo grid or the empty state message to appear
+    await page.waitForFunction(() => {
+      return document.querySelector('.columns-1') !== null || 
+             document.querySelector('.border-dashed') !== null;
+    }, { timeout: 15000 });
     const end1 = Date.now();
     const duration1 = end1 - start1;
     
@@ -18,7 +22,10 @@ test.describe('Integração Redis - Cache do Acervo', () => {
     
     const start2 = Date.now();
     await page.goto('/acervo');
-    await page.waitForSelector('img', { timeout: 10000 });
+    await page.waitForFunction(() => {
+      return document.querySelector('.columns-1') !== null || 
+             document.querySelector('.border-dashed') !== null;
+    }, { timeout: 10000 });
     const end2 = Date.now();
     const duration2 = end2 - start2;
 

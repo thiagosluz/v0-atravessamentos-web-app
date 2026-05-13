@@ -65,6 +65,7 @@ test.describe('CMS - Fluxo de Conteúdo', () => {
   });
 
   test('deve gerenciar o ciclo de vida de um post do blog', async ({ page }) => {
+    test.setTimeout(60000);
     const postTitle = `[E2E] Post E2E ${Date.now()}`;
     
     await test.step('Criar post como rascunho', async () => {

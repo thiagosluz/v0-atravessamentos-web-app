@@ -69,6 +69,9 @@ test.describe('Dashboard Admin - Smoke Test', () => {
   });
 
   test('deve permitir voltar para o site público via Logo e Header', async ({ page }) => {
+    // Garantir viewport desktop para botão "Ver site" que usa lg:flex
+    await page.setViewportSize({ width: 1280, height: 720 });
+    
     // 1. Testar Logo
     const logoLink = page.locator('aside a:has-text("atravessamentos")');
     await expect(logoLink).toBeVisible();

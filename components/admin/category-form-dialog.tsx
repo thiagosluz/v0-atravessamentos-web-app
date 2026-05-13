@@ -1,20 +1,13 @@
 "use client"
 
 import * as React from "react"
-import { Plus, Pencil } from "lucide-react"
+import { Plus, Pencil, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
+import { AnimatedAdminModal } from "@/components/admin/animated-admin-modal"
+import { useAdminForm } from "@/hooks/use-admin-form"
 import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
-import { useToast } from "@/hooks/use-toast"
 import { type Category, upsertCategory } from "@/lib/actions/categories"
 
 interface CategoryFormDialogProps {
@@ -26,45 +19,41 @@ interface CategoryFormDialogProps {
 
 export function CategoryFormDialog({ type, initialData, onSuccess, totalCount }: CategoryFormDialogProps) {
   const [open, setOpen] = React.useState(false)
-  const [pending, setPending] = React.useState(false)
-  const { toast } = useToast()
+  const { executeAction, pending, error } = useAdminForm()
 
   const isEdit = !!initialData
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    setPending(true)
-    
+
     const formData = new FormData(e.currentTarget)
     const name = formData.get("name") as string
     const color = formData.get("color") as string
     
-    const { data, error } = await upsertCategory({
-      id: initialData?.id,
-      type,
-      name,
-      color: color || null,
-      sort_order: initialData?.sort_order ?? totalCount
+    executeAction({
+      actionFn: async () => {
+        const result = await upsertCategory({
+          id: initialData?.id,
+          type,
+          name,
+          color: color || null,
+          sort_order: initialData?.sort_order ?? totalCount
+        })
+        if (result.error || !result.data) {
+          return { error: result.error || "Não foi possível salvar a categoria." }
+        }
+        return result.data
+      },
+      onSuccessCallback: (result) => result,
+      successMessage: () => ({
+        title: "Categoria salva",
+        description: "A categoria foi atualizada com sucesso."
+      }),
+      onComplete: (data) => {
+        onSuccess(data, isEdit)
+        setOpen(false)
+      }
     })
-
-    setPending(false)
-
-    if (error || !data) {
-      toast({
-        title: "Erro ao salvar",
-        description: error || "Não foi possível salvar a categoria.",
-        variant: "destructive"
-      })
-      return
-    }
-
-    toast({
-      title: "Categoria salva",
-      description: "A categoria foi atualizada com sucesso."
-    })
-
-    onSuccess(data, isEdit)
-    setOpen(false)
   }
 
   return (
@@ -84,30 +73,33 @@ export function CategoryFormDialog({ type, initialData, onSuccess, totalCount }:
         </Button>
       )}
 
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
-          <form onSubmit={handleSubmit}>
-            <DialogHeader>
-              <DialogTitle>{isEdit ? "Editar Categoria" : "Nova Categoria"}</DialogTitle>
-              <DialogDescription>
-                Preencha os dados da categoria. O slug será gerado automaticamente.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid gap-2">
-                <Label htmlFor="name">Nome</Label>
-                <Input id="name" name="name" defaultValue={initialData?.name} placeholder="Ex: Audiovisual" required disabled={pending} />
-              </div>
-              <ColorPicker defaultValue={initialData?.color || ""} />
+      <AnimatedAdminModal
+        isOpen={open}
+        onClose={() => setOpen(false)}
+        title={isEdit ? "Editar Categoria" : "Nova Categoria"}
+        description="Preencha os dados da categoria. O slug será gerado automaticamente."
+        maxWidthClass="max-w-md"
+        isPending={pending}
+      >
+          <form onSubmit={handleSubmit} className="space-y-4 pt-2">
+            <div className="grid gap-2">
+              <Label htmlFor="name">Nome</Label>
+              <Input id="name" name="name" defaultValue={initialData?.name} placeholder="Ex: Audiovisual" required disabled={pending} className="h-10" />
             </div>
-            <DialogFooter>
-              <Button type="submit" disabled={pending}>
-                {pending ? "Salvando..." : "Salvar"}
+            <ColorPicker defaultValue={initialData?.color || ""} />
+            
+            {error && <p className="text-sm text-destructive">{error}</p>}
+            
+            <div className="flex justify-end gap-3 pt-2 border-t border-border mt-6">
+              <Button type="button" variant="ghost" onClick={() => setOpen(false)} disabled={pending} className="rounded-full">
+                Cancelar
               </Button>
-            </DialogFooter>
+              <Button type="submit" disabled={pending} className="rounded-full bg-foreground text-background">
+                {pending ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Salvando...</> : "Salvar"}
+              </Button>
+            </div>
           </form>
-        </DialogContent>
-      </Dialog>
+      </AnimatedAdminModal>
     </>
   )
 }

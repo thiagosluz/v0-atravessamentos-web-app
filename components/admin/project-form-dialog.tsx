@@ -1,14 +1,14 @@
 "use client"
 
 import * as React from "react"
-import { motion, AnimatePresence } from "motion/react"
-import { X, Plus, Loader2, Pencil } from "lucide-react"
+import { Plus, Loader2, Pencil } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { createProject, updateProject } from "@/lib/actions/projects-admin"
 import { cn } from "@/lib/utils"
-import { useToast } from "@/hooks/use-toast"
 import { RichTextEditor } from "@/components/admin/rich-text-editor"
+import { AnimatedAdminModal } from "@/components/admin/animated-admin-modal"
+import { useAdminForm } from "@/hooks/use-admin-form"
 
 import { type Category } from "@/lib/actions/categories"
 
@@ -32,11 +32,9 @@ export function ProjectFormDialog({
   const [internalOpen, setInternalOpen] = React.useState(false)
   const open = controlledOpen !== undefined ? controlledOpen : internalOpen
   const setOpen = setControlledOpen !== undefined ? setControlledOpen : setInternalOpen
-  const [pending, setPending] = React.useState(false)
-  const [error, setError] = React.useState<string | null>(null)
   const [status, setStatus] = React.useState<string>(initialData?.status || "Rascunho")
   const [editorContent, setEditorContent] = React.useState<string>(initialData?.description || "")
-  const { toast } = useToast()
+  const { executeAction, pending, error } = useAdminForm()
 
   // Resetar formulário quando abrir
   React.useEffect(() => {
@@ -53,50 +51,33 @@ export function ProjectFormDialog({
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    setPending(true)
-    setError(null)
 
     const formData = new FormData(e.currentTarget)
-    // Add the status to formData manually since we're using state for visual feedback
     formData.set("status", status)
     
-    let result
-
-    if (isEdit) {
-      result = await updateProject(initialData.id, formData)
-    } else {
-      result = await createProject(formData)
-    }
-
-    if (result?.error) {
-      setError(result.error)
-      setPending(false)
-      return
-    }
-
-    // Build a temporary project object for optimistic UI update
-    const optimistic = {
-      id: isEdit ? initialData.id : ((result as any).id || `temp-${Date.now()}`),
-      title: formData.get("title") as string,
-      category: formData.get("category") as string,
-      description: formData.get("description") as string,
-      year: parseInt(formData.get("year") as string),
-      status: status,
-      coverImage: initialData?.coverImage || null,
-      updatedAt: new Date().toISOString(),
-    }
-
-    onSuccess(optimistic, isEdit)
-    
-    toast({
-      title: isEdit ? "Projeto atualizado" : "Projeto criado",
-      description: isEdit 
-        ? `O projeto "${optimistic.title}" foi atualizado com sucesso.`
-        : `O projeto "${optimistic.title}" foi adicionado à galeria.`,
+    executeAction({
+      actionFn: () => isEdit ? updateProject(initialData.id, formData) : createProject(formData),
+      onSuccessCallback: (result) => ({
+        id: isEdit ? initialData.id : (result.id || `temp-${Date.now()}`),
+        title: formData.get("title") as string,
+        category: formData.get("category") as string,
+        description: formData.get("description") as string,
+        year: parseInt(formData.get("year") as string),
+        status: status,
+        coverImage: initialData?.coverImage || null,
+        updatedAt: new Date().toISOString(),
+      }),
+      successMessage: (optimistic) => ({
+        title: isEdit ? "Projeto atualizado" : "Projeto criado",
+        description: isEdit 
+          ? `O projeto "${optimistic.title}" foi atualizado com sucesso.`
+          : `O projeto "${optimistic.title}" foi adicionado à galeria.`,
+      }),
+      onComplete: (optimistic) => {
+        onSuccess(optimistic, isEdit)
+        setOpen(false)
+      }
     })
-
-    setOpen(false)
-    setPending(false)
   }
 
   return (
@@ -121,44 +102,14 @@ export function ProjectFormDialog({
         </Button>
       )}
 
-      <AnimatePresence>
-        {open && (
-          <>
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => !pending && setOpen(false)}
-              className="fixed inset-0 z-[100] bg-foreground/60 backdrop-blur-sm"
-            />
-
-            {/* Dialog */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.96, y: 8 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.96, y: 8 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed left-1/2 top-1/2 z-[101] w-full max-w-4xl -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-border bg-card p-6 shadow-2xl text-left whitespace-normal max-h-[90vh] overflow-y-auto"
-            >
-              <div className="mb-6 flex items-start justify-between">
-                <div>
-                  <h2 className="font-display text-xl font-bold tracking-tight">
-                    {isEdit ? "Editar projeto" : "Novo projeto"}
-                  </h2>
-                  <p className="mt-1 text-sm text-foreground/55">
-                    {isEdit ? "Atualize as informações do projeto." : "Preencha as informações básicas para criar o projeto."}
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => !pending && setOpen(false)}
-                  className="rounded-full p-1.5 text-foreground/40 hover:bg-muted hover:text-foreground transition-colors"
-                  aria-label="Fechar"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              </div>
+      <AnimatedAdminModal
+        isOpen={open}
+        onClose={() => setOpen(false)}
+        title={isEdit ? "Editar projeto" : "Novo projeto"}
+        description={isEdit ? "Atualize as informações do projeto." : "Preencha as informações básicas para criar o projeto."}
+        maxWidthClass="max-w-4xl"
+        isPending={pending}
+      >
 
               <form id="project-form" onSubmit={handleSubmit} className="space-y-4">
                 {/* Title */}
@@ -286,10 +237,7 @@ export function ProjectFormDialog({
                   </Button>
                 </div>
               </form>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+      </AnimatedAdminModal>
     </>
   )
 }
