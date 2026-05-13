@@ -80,8 +80,19 @@ O `BackgroundBlobs` é responsável pela atmosfera imersiva e orgânica das pág
 
 ---
 
+## 🛠️ Organização Modular (Admin)
+
+Recentemente, refatoramos o diretório `components/admin/` para uma estrutura funcional, visando escalabilidade:
+
+- **`forms/`**: Contém os formulários complexos de edição e criação (ex: `ProjectForm`, `BlogPostForm`). Utilizam o hook `useAdminForm`.
+- **`panels/`**: Componentes de alto nível que compõem as telas principais (ex: `OverviewPanel`, `SettingsPanel`).
+- **`table/`**: Toda a lógica de listagem, incluindo `AdminDataTable`, `TableHeader` e ações em lote.
+- **`shared/`**: Componentes reutilizáveis específicos do admin, como diálogos de confirmação e inputs customizados.
+
+---
+
 ## 💡 Instruções para Desenvolvedores
-Ao criar novas páginas internas, siga o padrão:
-1. `BackButton` no topo.
-2. `PageHeader` para o título.
-3. `BackgroundBlobs` no fundo para manter a atmosfera unificada.
+Ao criar novas funcionalidades administrativas:
+1. Verifique se o componente deve ser um **Form** (mutação) ou um **Panel** (visualização).
+2. Utilize o hook `useAdminForm` para gerenciar o estado da mutação e feedbacks (toast).
+3. Siga o padrão poético: `PageHeader` para o título e `BackgroundBlobs` para a atmosfera.

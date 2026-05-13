@@ -19,11 +19,14 @@ Visão técnica do projeto **Atravessamentos** (Next.js App Router + Supabase).
 │   ├── diario/             # Arquivo do blog e post por slug
 │   └── (legal)/            # Termos, privacidade, acessibilidade
 ├── components/
-│   ├── admin/              # Dashboard, formulários, RichTextEditor (Tiptap)
+│   ├── admin/              # Dashboard, formulários, RichTextEditor
+│   │   ├── forms/          # Formulários específicos (Projeto, Post, Membro)
+│   │   ├── panels/         # Painéis de controle (Overview, Configurações)
+│   │   ├── table/          # UI de tabelas, cabeçalhos e ações em lote
+│   │   └── shared/         # Componentes utilitários do admin
 │   ├── landing/            # Seções da home
 │   ├── blog/               # Feed e UI do diário
-│   ├── ui/                 # Componentes shadcn/ui
-│   ├── theme-provider.tsx
+│   ├── ui/                 # Componentes shadcn/ui base
 │   └── …
 ├── lib/
 │   ├── actions/            # Server Actions ("use server") — CRUD e leituras
@@ -69,9 +72,23 @@ Visão técnica do projeto **Atravessamentos** (Next.js App Router + Supabase).
 
 ### 5. Fluxos de Dados Críticos
 
+### 5. Fluxos de Dados Críticos
+
 1. **Leitura**: via Server Components que chamam funções em `lib/actions/*.ts`. Implementamos uma **Camada de Cache** (Redis) para ativos da galeria, reduzindo a carga no Supabase e acelerando navegações subsequentes.
-2. **Interatividade**: dados hidratados em componentes `"use client"` (filtros, formulários, animações). O componente `<Pagination />` gerencia a navegação sincronizada com a URL.
-3. **Escrita**: Server Actions em `lib/actions/*-admin.ts`, etc., usando o cliente admin do Supabase. Agora todas as mutações são validadas com **Zod Schemas** antes de qualquer persistência.
+2. **Interatividade**: dados hidratados em componentes `"use client"` (filtros, formulários, animações). O componente `useAdminForm` padroniza o ciclo de vida de mutações (loading, error, success toasts).
+3. **Escrita**: Server Actions em `lib/actions/*-admin.ts`, validadas com **Zod Schemas**. O cliente `createAdminClient` é usado para bypass de RLS quando necessário por lógica de negócio.
+
+---
+
+## 🗺️ Mapa de Rotas (App Router)
+
+```text
+/admin              # Dashboard Principal
+├ /projetos         # Gerenciamento de Projetos
+├ /diario           # Gerenciamento do Blog
+├ /membros          # Gerenciamento da Equipe
+└ /configuracoes    # Configurações de SEO e Site
+```
 
 ---
 
@@ -95,8 +112,8 @@ O painel central (`OverviewPanel`) utiliza uma arquitetura de agregação de dad
 
 ## Estratégia de Testes e Qualidade
 
-- **Testes Unitários**: Vitest para funções puras e utilitários em `lib/utils.ts`.
-- **Testes E2E**: Playwright para fluxos completos do CMS.
+- **Testes Unitários**: Vitest para funções puras e utilitários. Expandimos para cobrir **Server Actions** com asserções assertivas de banco de dados (usando mocks) e **Hooks customizados** (`useAdminForm`).
+- **Testes E2E**: Playwright para fluxos completos do CMS, incluindo integração com Redis e validação de cache.
 - **Vassoura de Dados (Cleanup)**: Implementamos um `globalTeardown` que identifica itens criados durante os testes (prefixados com `[E2E]`) e os remove automaticamente do banco ao final da execução. Isso mantém o banco de desenvolvimento livre de lixo.
 
 ---

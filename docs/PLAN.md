@@ -1,36 +1,48 @@
-# System Update Plan - Documentation & Testing (Redis Integration)
+# Implementation Plan - Documentation Synchronization
 
-Ensure the project documentation and testing suite are aligned with the new Vercel KV / Redis infrastructure.
+This document outlines the strategy for updating the codebase documentation to reflect recent architectural changes, testing improvements, and accessibility guidelines.
 
-## User Review Required
+## 🏗️ Architectural Context
+The project underwent a significant refactoring of the administrative area, standardizing hooks, server actions, and component organization. The testing strategy also evolved from basic smoke tests to assertive unit tests.
 
-> [!IMPORTANT]
-> The E2E tests might need to be adjusted to handle the new Rate Limiting logic. We will ensure the tests remain deterministic.
+## 🎯 Goals
+1. Synchronize `ARCHITECTURE.md` with the new file structure.
+2. Update `DEVELOPER_GUIDE.md` with the new testing protocols.
+3. Update `COMPONENTS.md` to reflect the functional modularization of the Admin Dashboard.
+4. Refresh `README.md` with current project status and commands.
 
-## Proposed Changes
+## 📂 Targeted Files
+- `README.md`
+- `docs/ARCHITECTURE.md`
+- `docs/COMPONENTS.md`
+- `docs/DEVELOPER_GUIDE.md`
+- `docs/ADMIN_GUIDE.md`
 
-### 1. Technical Documentation
-#### [MODIFY] [README.md](file:///home/thiago/Projetos/v0-atravessamentos-web-app/README.md)
-- Add `KV_REST_API_URL` and `KV_REST_API_TOKEN` to the environment variables section.
-- Add a note about Redis/Vercel KV requirement for production stability.
+## 🗓️ Phases
 
-#### [MODIFY] [ARCHITECTURE.md](file:///home/thiago/Projetos/v0-atravessamentos-web-app/ARCHITECTURE.md) (If exists)
-- Update the system diagram to show Vercel KV sitting between the App and Supabase for caching.
-- Document the Rate Limiting strategy (5 req/10s).
+### Phase 1: Structural Synchronization
+- **ARCHITECTURE.md**: 
+    - Update directory tree (new `components/admin` modules).
+    - Document `useAdminForm` hook pattern.
+    - Document Zod validation layer in Server Actions.
+- **COMPONENTS.md**: 
+    - Map `panels/`, `forms/`, `shared/`, `table/` inside admin.
 
-### 2. E2E Testing Suite
-#### [MODIFY] [e2e/contact.spec.ts](file:///home/thiago/Projetos/v0-atravessamentos-web-app/e2e/contact.spec.ts)
-- Update contact form tests to account for potential rate limiting.
-- Add a new test case: "should block repeated submissions (Rate Limiting)".
+### Phase 2: Developer Experience (DX)
+- **DEVELOPER_GUIDE.md**:
+    - Add `pnpm vitest` instructions.
+    - Document the Supabase mock pattern for unit tests.
+    - Update contribution guidelines.
+- **README.md**:
+    - Update test command section.
+    - Add link to the new `ROADMAP_OPTIMIZATION.md`.
 
-#### [NEW] [e2e/redis_integration.spec.ts](file:///home/thiago/Projetos/v0-atravessamentos-web-app/e2e/redis_integration.spec.ts)
-- Create a dedicated test to verify that the Acervo page loads faster on subsequent hits (visual check or timing).
+### Phase 3: Operational Update
+- **ADMIN_GUIDE.md**:
+    - Review dashboard screenshots/descriptions (if applicable).
+    - Update mentions of "Bulk Actions" and "Status Management".
 
-## Verification Plan
-
-### Automated Tests
-- Run `pnpm test:e2e` to verify all flows.
-- Run `lint_runner.py` to ensure documentation links are correct.
-
-### Manual Verification
-- Review the generated documentation files for clarity and completeness.
+## 🧪 Verification
+- [ ] Run `npx tsc --noEmit` to ensure no typos in docs (if they contain code snippets).
+- [ ] Verify all relative file links in markdown.
+- [ ] Confirm consistency with `ROADMAP_OPTIMIZATION.md`.

@@ -17,6 +17,7 @@ O Atravessamentos é uma plataforma digital dedicada a preservar e difundir a me
 - 🔍 **SEO de Elite**: Sitemap dinâmico, metadados automáticos e OpenGraph para compartilhamento social.
 - 📧 **Newsletter e Broadcast**: Disparo automático de e-mails com identidade visual ao publicar novas notícias.
 - 🧹 **Testes E2E com Limpeza**: Infraestrutura robusta com limpeza automática no Supabase.
+- 🗺️ **Roadmap de Qualidade**: Estratégia de estabilização e performance detalhada em [ROADMAP_OPTIMIZATION.md](./ROADMAP_OPTIMIZATION.md).
 
 ## 🛠️ Tecnologias
 

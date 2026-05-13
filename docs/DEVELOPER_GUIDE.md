@@ -102,7 +102,10 @@ A infraestrutura do projeto conta com os seguintes serviços configurados para a
 | `pnpm test:e2e` | Playwright (`e2e/`, baseURL `http://localhost:3000`, sobe `pnpm dev` se necessário) |
 | `pnpm lint` | ESLint (`eslint .`) |
 
-As actions administrativas são testadas com **mocks** de `createAdminClient`; isso garante regressão na lógica das funções sem bater no Supabase real.
+As actions administrativas e os hooks customizados são testados com **Vitest**.
+- **Server Actions**: Testadas em `__tests__/unit/actions.test.ts` usando mocks de `createAdminClient` e verificando asserções reais de banco de dados.
+- **Hooks**: Testados em `__tests__/unit/hooks.test.ts` via `@testing-library/react`.
+- **E2E**: O Playwright garante que a integração entre Redis, Supabase e UI está funcional.
 
 ---
 
