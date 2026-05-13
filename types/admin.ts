@@ -4,10 +4,49 @@ import { type SiteSettings } from "@/lib/actions/settings"
 
 export type ContentStatus = ProjectStatus | "Publicado" | "Rascunho" | "Em revisão"
 
-export interface ActionResponse {
-  success?: boolean
+export interface ActionResponse<T = any> {
+  success: boolean
   error?: string
+  message?: string
+  data?: T
+  count?: number
+  batchId?: string
   alreadySubscribed?: boolean
+}
+
+export interface ExhibitionFormData {
+  title: string
+  slug: string
+  description: string
+  cover_image: string
+  status: ContentStatus
+  asset_ids: string[]
+}
+
+export interface GalleryAssetUpdateData {
+  title: string
+  description?: string | null
+  location?: string | null
+  project_id?: string | null
+  tags: string[]
+}
+
+export interface NewsletterSubscriber {
+  id: string
+  email: string
+  created_at: string
+}
+
+export interface NewsletterBroadcast {
+  id: string
+  created_at: string
+  title: string
+  excerpt: string
+  category: string
+  slug: string
+  count: number
+  batch_id?: string
+  status: string
 }
 
 

@@ -36,7 +36,7 @@ import { Loader2, Save, ArrowRight, Trash2 } from "lucide-react"
 import { updateGalleryAsset, deleteGalleryAsset } from "@/lib/actions/gallery"
 import { useToast } from "@/hooks/use-toast"
 
-import { type GalleryAsset, type GalleryTag, type ProjectOption } from "@/types/admin"
+import { type GalleryAsset, type GalleryTag, type ProjectOption, type GalleryAssetUpdateData } from "@/types/admin"
 
 interface EditAssetModalProps {
   asset: GalleryAsset | null
@@ -47,8 +47,6 @@ interface EditAssetModalProps {
   projects: ProjectOption[]
   availableTags: GalleryTag[]
 }
-
-
 
 export function EditAssetModal({
   asset,
@@ -92,8 +90,11 @@ export function EditAssetModal({
 
     try {
       // Ajuste crucial: "none" vira null para o banco de dados
-      const payload = {
-        ...data,
+      const payload: GalleryAssetUpdateData = {
+        title: data.title || "",
+        description: data.description || "",
+        location: data.location || "",
+        tags: data.tags || [],
         project_id: (data.project_id === "none" || data.project_id === "") ? null : data.project_id,
       }
 

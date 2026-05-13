@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache"
 import { redis } from "@/lib/redis"
 import { ensureAdmin } from "@/lib/utils/auth-guard"
 import { galleryAssetSchema, galleryTagSchema } from "@/lib/validations"
-import { z } from "zod"
+import { type ActionResponse, type GalleryAssetUpdateData } from "@/types/admin"
 
 // Helper para upload de imagem
 async function uploadToGallery(supabase: any, file: File) {
@@ -31,7 +31,7 @@ async function uploadToGallery(supabase: any, file: File) {
 }
 
 // Criar nova tag dinâmica
-export async function createGalleryTag(data: { name: string, color?: string }) {
+export async function createGalleryTag(data: { name: string, color?: string }): Promise<ActionResponse> {
   try {
     await ensureAdmin()
     const validated = galleryTagSchema.parse(data)
@@ -50,7 +50,7 @@ export async function createGalleryTag(data: { name: string, color?: string }) {
     revalidatePath("/admin")
     return { success: true }
   } catch (error: any) {
-    return { error: error.message }
+    return { success: false, error: error.message }
   }
 }
 
@@ -68,14 +68,14 @@ export async function getGalleryTags() {
 }
 
 // Upload em lote (Batch Upload)
-export async function batchUploadGalleryImages(formData: FormData) {
+export async function batchUploadGalleryImages(formData: FormData): Promise<ActionResponse> {
   try {
     await ensureAdmin()
     const supabase = createAdminClient()
     const files = formData.getAll("images") as File[]
     const tags = formData.getAll("tags") as string[]
     
-    if (!files || files.length === 0) return { error: "Nenhuma imagem enviada." }
+    if (!files || files.length === 0) return { success: false, error: "Nenhuma imagem enviada." }
 
     const results = []
     for (const file of files) {
@@ -84,7 +84,7 @@ export async function batchUploadGalleryImages(formData: FormData) {
         const { data, error } = await supabase.from("gallery_assets").insert({
           image_url: url,
           tags: tags,
-          title: file.name.split('.')[0] // Título inicial baseado no nome do arquivo
+          title: file.name.split('.')[0]
         }).select("id").single()
         
         if (!error) results.push(data.id)
@@ -93,16 +93,15 @@ export async function batchUploadGalleryImages(formData: FormData) {
 
     revalidatePath("/acervo")
     revalidatePath("/admin")
-    // Invalidate gallery cache
     await redis.del("gallery_assets_all")
     return { success: true, count: results.length }
   } catch (error: any) {
-    return { error: error.message }
+    return { success: false, error: error.message }
   }
 }
 
 // Atualizar ativo do acervo
-export async function updateGalleryAsset(id: string, data: any) {
+export async function updateGalleryAsset(id: string, data: GalleryAssetUpdateData): Promise<ActionResponse> {
   try {
     await ensureAdmin()
     const validated = galleryAssetSchema.parse(data)
@@ -122,41 +121,33 @@ export async function updateGalleryAsset(id: string, data: any) {
     if (error) throw error
     revalidatePath("/acervo")
     revalidatePath("/admin")
-    // Invalidate gallery cache
     await redis.del("gallery_assets_all")
     return { success: true }
   } catch (error: any) {
-    return { error: error.message }
+    return { success: false, error: error.message }
   }
 }
 
 // Excluir ativo do acervo
-export async function deleteGalleryAsset(id: string) {
+export async function deleteGalleryAsset(id: string): Promise<ActionResponse> {
   try {
     await ensureAdmin()
     const supabase = createAdminClient()
     
-    // Primeiro pegamos a URL para deletar do storage depois
-    const { data: asset } = await supabase.from("gallery_assets").select("image_url").eq("id", id).single()
-    
     const { error } = await supabase.from("gallery_assets").delete().eq("id", id)
     if (error) throw error
-
-    // Opcional: Deletar arquivo do storage se necessário
     
     revalidatePath("/acervo")
     revalidatePath("/admin")
-    // Invalidate gallery cache
     await redis.del("gallery_assets_all")
     return { success: true }
   } catch (error: any) {
-    return { error: error.message }
+    return { success: false, error: error.message }
   }
 }
 
 // Obter ativos do acervo (com filtro opcional de tag)
 export async function getGalleryAssets(tag?: string) {
-  // 1. Try cache first (only for "all" to keep it simple, or based on tag)
   const cacheKey = `gallery_assets_${tag || "all"}`
   try {
     const cached = await redis.get(cacheKey)
@@ -185,7 +176,6 @@ export async function getGalleryAssets(tag?: string) {
     return []
   }
 
-  // 2. Save to cache (TTL: 1 hour)
   if (data) {
     try {
       await redis.set(cacheKey, data, { ex: 3600 })

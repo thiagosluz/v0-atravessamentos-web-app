@@ -15,10 +15,13 @@ interface BroadcastNewsProps {
   imageUrl?: string
 }
 
-export async function broadcastNews(props: BroadcastNewsProps) {
+import { createAdminClient } from "@/lib/supabase/admin"
+import { type ActionResponse } from "@/types/admin"
+
+export async function broadcastNews(props: BroadcastNewsProps): Promise<ActionResponse> {
   if (!audienceId) {
     console.error("RESEND_AUDIENCE_ID não configurado para broadcast")
-    return { error: "Configuração de audiência ausente." }
+    return { success: false, error: "Configuração de audiência ausente." }
   }
 
   try {
@@ -29,22 +32,19 @@ export async function broadcastNews(props: BroadcastNewsProps) {
 
     if (contactsError || !contactsData) {
       console.error("Erro ao buscar contatos para broadcast:", contactsError)
-      return { error: "Falha ao recuperar lista de assinantes." }
+      return { success: false, error: "Falha ao recuperar lista de assinantes." }
     }
 
     const subscribers = contactsData.data
     if (subscribers.length === 0) {
-      return { success: true, message: "Nenhum assinante para enviar." }
+      return { success: true, count: 0, message: "Nenhum assinante para enviar." }
     }
 
     // 2. Preparar o e-mail (React Email para HTML)
-    // Nota: O render é assíncrono no @react-email/components v3+
     const FROM_EMAIL = "Coletivo Atravessamentos <onboarding@resend.dev>"
     
-    // Gerar e-mails personalizados para cada destinatário (para ter o link de unsubscribe correto)
     const emails = await Promise.all(subscribers
       .filter(contact => {
-        // Filtro de segurança para o modo onboarding
         if (FROM_EMAIL.includes("onboarding@resend.dev")) {
           return contact.email === "coletivoatravessamentosapp@gmail.com"
         }
@@ -65,7 +65,7 @@ export async function broadcastNews(props: BroadcastNewsProps) {
       }))
 
     if (emails.length === 0) {
-      return { success: true, message: "Nenhum destinatário autorizado para o domínio de teste." }
+      return { success: true, count: 0, message: "Nenhum destinatário autorizado para o domínio de teste." }
     }
 
     // Resend batch send
@@ -73,16 +73,28 @@ export async function broadcastNews(props: BroadcastNewsProps) {
 
     if (batchError) {
       console.error("Erro no disparo em lote:", batchError)
-      return { error: "Erro ao disparar e-mails em massa." }
+      return { success: false, error: "Erro ao disparar e-mails em massa." }
     }
+
+    // 3. Logar no Banco de Dados
+    const supabase = createAdminClient()
+    await supabase.from("newsletter_broadcasts").insert({
+      title: props.title,
+      excerpt: props.excerpt,
+      category: props.category,
+      slug: props.slug,
+      count: emails.length,
+      batch_id: (batchData as any)?.id,
+      status: 'sent'
+    })
 
     return { 
       success: true, 
-      count: subscribers.length,
+      count: emails.length,
       batchId: (batchData as any)?.id 
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error("Erro fatal no broadcast:", error)
-    return { error: "Ocorreu um erro inesperado no disparo." }
+    return { success: false, error: error.message || "Ocorreu um erro inesperado no disparo." }
   }
 }

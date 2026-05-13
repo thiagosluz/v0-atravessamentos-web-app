@@ -10,7 +10,7 @@ import {
   deleteExhibition 
 } from "@/lib/actions/exhibitions"
 import { getGalleryAssets } from "@/lib/actions/gallery"
-import { type Exhibition, type GalleryAsset } from "@/types/admin"
+import { type Exhibition, type GalleryAsset, type ExhibitionFormData } from "@/types/admin"
 
 import { ExhibitionsHeader } from "./panels/exhibitions/exhibitions-header"
 import { ExhibitionsGrid } from "./panels/exhibitions/exhibitions-grid"
@@ -62,7 +62,7 @@ export function ExhibitionsAdminPanel() {
     }
   }
 
-  async function handleSubmit(formData: any) {
+  async function handleSubmit(formData: ExhibitionFormData) {
     if (!formData.title || !formData.slug) {
       toast({ title: "Título e Slug são obrigatórios", variant: "destructive" })
       return

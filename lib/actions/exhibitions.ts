@@ -5,10 +5,9 @@ import { createClient } from "@/lib/supabase/server"
 import { revalidatePath } from "next/cache"
 import { ensureAdmin } from "@/lib/utils/auth-guard"
 
-// Nota: Em Next.js App Router, as ações DEVEM ser "use server"
-// se utilizarem revalidatePath.
+import { type ExhibitionFormData, type ActionResponse, type Exhibition } from "@/types/admin"
 
-export async function createExhibition(payload: any) {
+export async function createExhibition(payload: ExhibitionFormData): Promise<ActionResponse<Exhibition>> {
   try {
     await ensureAdmin()
     const supabase = createAdminClient()
@@ -24,11 +23,11 @@ export async function createExhibition(payload: any) {
     revalidatePath("/exposicoes")
     return { success: true, data }
   } catch (error: any) {
-    return { error: error.message }
+    return { success: false, error: error.message }
   }
 }
 
-export async function updateExhibition(id: string, payload: any) {
+export async function updateExhibition(id: string, payload: ExhibitionFormData): Promise<ActionResponse> {
   try {
     await ensureAdmin()
     const supabase = createAdminClient()
@@ -44,11 +43,11 @@ export async function updateExhibition(id: string, payload: any) {
     revalidatePath(`/exposicoes/${payload.slug}`)
     return { success: true }
   } catch (error: any) {
-    return { error: error.message }
+    return { success: false, error: error.message }
   }
 }
 
-export async function deleteExhibition(id: string) {
+export async function deleteExhibition(id: string): Promise<ActionResponse> {
   try {
     await ensureAdmin()
     const supabase = createAdminClient()
@@ -58,7 +57,7 @@ export async function deleteExhibition(id: string) {
     revalidatePath("/exposicoes")
     return { success: true }
   } catch (error: any) {
-    return { error: error.message }
+    return { success: false, error: error.message }
   }
 }
 
