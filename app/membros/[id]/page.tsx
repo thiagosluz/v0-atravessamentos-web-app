@@ -7,6 +7,7 @@ import Link from "next/link"
 import { ArrowLeft, Instagram, Linkedin, Mail, Phone, BookOpen } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { formatDate } from "@/lib/mock-data"
+import { SafeHTML } from "@/components/safe-html"
 
 const tagColors: Record<string, string> = {
   Educadoras: "bg-[var(--terracota)]/15 text-[var(--terracota)] border-[var(--terracota)]/30",
@@ -129,9 +130,9 @@ export default async function MemberPage({ params }: { params: Promise<{ id: str
                 {member.role}
               </p>
 
-              <div 
+              <SafeHTML 
+                content={member.bio}
                 className="mt-8 prose prose-neutral max-w-none text-foreground/80 leading-relaxed md:prose-lg"
-                dangerouslySetInnerHTML={{ __html: member.bio }}
               />
 
               {/* Related Posts */}
