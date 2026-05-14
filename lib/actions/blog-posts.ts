@@ -16,6 +16,7 @@ function mapPost(p: any): BlogPost & { slug: string; content?: string } {
     slug: p.slug,
     content: p.content,
     status: p.status,
+    tags: p.tags || [],
   }
 }
 
@@ -130,4 +131,45 @@ export async function getPaginatedBlogPosts(filters: BlogPostsFilter = {}) {
     total,
     totalPages,
   }
+}
+
+export async function getRelatedPosts(currentPostId: string, category: string, tags: string[] = [], limit: number = 3) {
+  const supabase = createAdminClient()
+  
+  // Busca posts da mesma categoria ou com tags em comum
+  // Usamos .overlap ({}) para verificar interseção de arrays no Supabase
+  let query = supabase
+    .from("blog_posts")
+    .select("*")
+    .eq("status", "Publicado")
+    .neq("id", currentPostId)
+
+  if (tags.length > 0) {
+    const formattedTags = tags.map(t => `"${t}"`).join(",")
+    query = query.or(`category.eq."${category}",tags.ov.{${formattedTags}}`)
+  } else {
+    query = query.eq("category", category)
+  }
+
+  const { data, error } = await query.limit(limit * 2)
+    
+  if (error || !data) return []
+  
+  const posts = data.map(mapPost)
+  
+  // Ordenação manual por afinidade (mais tags em comum primeiro)
+  return posts.sort((a, b) => {
+    const aCommonTags = (a.tags || []).filter(t => tags.includes(t)).length
+    const bCommonTags = (b.tags || []).filter(t => tags.includes(t)).length
+    
+    if (aCommonTags !== bCommonTags) {
+      return bCommonTags - aCommonTags
+    }
+    
+    // Mesma categoria como segundo critério
+    if (a.category === category && b.category !== category) return -1
+    if (b.category === category && a.category !== category) return 1
+    
+    return 0
+  }).slice(0, limit)
 }

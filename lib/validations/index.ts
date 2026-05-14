@@ -43,6 +43,7 @@ export const blogPostSchema = z.object({
   author: z.string().min(2, "Nome do autor é obrigatório"),
   read_time: z.string().optional(),
   status: z.enum(["Publicado", "Rascunho"]),
+  tags: z.array(z.string()).optional(),
 })
 
 // Esquema para Projetos

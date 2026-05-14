@@ -42,6 +42,7 @@ export interface BlogPost {
   readTime: string
   coverImage: string
   status?: "Publicado" | "Rascunho"
+  tags?: string[]
 }
 
 // ============================================================================

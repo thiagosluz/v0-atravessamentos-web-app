@@ -90,6 +90,7 @@ export function BlogFormDialog({
         status: status,
         date: initialData?.date || new Date().toISOString(),
         coverImage: coverPreview,
+        tags: (formData.get("tags") as string)?.split(",").map(t => t.trim()).filter(Boolean) || [],
       }),
       successMessage: (optimistic) => ({
         title: isEdit ? "Post atualizado" : "Post criado",
@@ -240,6 +241,20 @@ export function BlogFormDialog({
                     </label>
                     <Input id="blog-readtime" name="readTime" defaultValue={initialData?.readTime || "5 min"} disabled={pending} className="h-10" />
                   </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label htmlFor="blog-tags" className="text-xs font-semibold uppercase tracking-widest text-foreground/50">
+                    Palavras-chave (Tags)
+                  </label>
+                  <Input 
+                    id="blog-tags" 
+                    name="tags" 
+                    placeholder="Ex: artes, cerrado, educação (separadas por vírgula)" 
+                    defaultValue={initialData?.tags?.join(", ") || ""} 
+                    disabled={pending} 
+                    className="h-10" 
+                  />
                 </div>
 
                 <div className="space-y-1.5">

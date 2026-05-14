@@ -75,6 +75,7 @@ test.describe('CMS - Fluxo de Conteúdo', () => {
       await page.fill('#blog-title', postTitle);
       await page.fill('#blog-author', 'Robô de Teste');
       await page.fill('#blog-excerpt', 'Este é um resumo gerado pelo teste E2E.');
+      await page.fill('#blog-tags', 'teste, e2e, automação');
       
       // Escrever no editor RichText
       await page.locator('.ProseMirror').fill('Conteúdo do post de teste.');

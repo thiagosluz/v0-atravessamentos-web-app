@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils"
 import { SiteFooter } from "@/components/site-footer"
 import { getSiteSettings } from "@/lib/actions/settings"
 import { SafeHTML } from "@/components/safe-html"
+import { RelatedReadings } from "@/components/blog/related-readings"
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -157,6 +158,12 @@ export default async function BlogPostPage({ params }: Props) {
             </Link>
           </div>
         </div>
+        {/* Related Readings */}
+        <RelatedReadings 
+          currentPostId={post.id} 
+          category={post.category} 
+          tags={post.tags} 
+        />
       </article>
       <SiteFooter settings={settings} />
     </div>

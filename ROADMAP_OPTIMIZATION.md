@@ -117,4 +117,17 @@ Este documento consolida as recomendações de arquitetura, performance e tratam
 6. **Sistema de Compartilhamento:** Implementar o protótipo de "Copiar Link" nos posts (Engajamento).
 
 ---
-*Documento atualizado em 14/05/2026 com o novo Sistema de Compartilhamento Poético.*
+
+## ✅ Funcionalidades Concluídas (Maio 2026)
+
+### 📱 Navegação Administrativa Mobile
+- **Implementação:** Menu "Gaveta" (Sheet/Drawer) com botão hambúrguer.
+- **Resultado:** Painel 100% responsivo, eliminando cortes de conteúdo e compressão de layout em telas pequenas.
+
+### 🧠 Sistema de Recomendações por Afinidade (Diário)
+- **Implementação:** Algoritmo baseado em interseção de Tags e Categorias (`TEXT[]` no Supabase).
+- **Resultado:** Aumento do potencial de engajamento através do componente "Leituras Relacionadas" ao final de cada post.
+- **Testes:** Suítes de E2E e Unitárias atualizadas para cobrir o ciclo de vida das tags.
+
+---
+*Documento atualizado em 14/05/2026.*

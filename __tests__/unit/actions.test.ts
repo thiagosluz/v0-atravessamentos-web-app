@@ -81,6 +81,7 @@ describe('Server Actions - Business Logic Coverage', () => {
     fd.append('readTime', '5 min');
     fd.append('excerpt', 'Este é um resumo curto mas suficiente para o teste.');
     fd.append('content', 'Este é o conteúdo do post que deve ter pelo menos vinte caracteres para passar.');
+    fd.append('tags', 'tag1, tag2, tag3');
     return fd;
   };
 
@@ -122,6 +123,10 @@ describe('Server Actions - Business Logic Coverage', () => {
     const result = await createBlogPost(fd);
     expect(result.success).toBe(true);
     expect(mockSupabase.from).toHaveBeenCalledWith('blog_posts');
+    // Verifica se as tags foram processadas como array no insert
+    expect(mockSupabase.insert).toHaveBeenCalledWith(expect.objectContaining({
+      tags: ['tag1', 'tag2', 'tag3']
+    }));
 
     // Duplicate Slug Error
     mockError = { code: '23505' };

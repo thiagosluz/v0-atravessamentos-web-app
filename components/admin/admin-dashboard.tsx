@@ -12,8 +12,10 @@ import {
   Mail,
   UserCircle,
   LogOut,
-  ChevronRight
+  ChevronRight,
+  Menu
 } from "lucide-react"
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
 import { useToast } from "@/hooks/use-toast"
 import { type AdminDashboardProps, type Project, type Member, type BlogPost } from "@/types/admin"
@@ -85,12 +87,14 @@ export function AdminDashboard(props: AdminDashboardProps) {
     setSearchEditItem
   } = useAdminState(props)
 
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false)
+
   const { user, projectsData, membersData, blogPostsData, initialCategories, siteSettings, currentPage } = props
 
   return (
     <div className="flex min-h-screen bg-[#F9F6F1] text-foreground selection:bg-primary selection:text-white">
-      {/* Sidebar */}
-      <aside className="w-64 border-r border-border/40 flex flex-col sticky top-0 h-screen bg-[#F9F6F1]">
+      {/* Desktop Sidebar */}
+      <aside className="hidden md:flex w-64 border-r border-border/40 flex-col sticky top-0 h-screen bg-[#F9F6F1]">
         <div className="p-6">
           <div className="flex items-center gap-3 mb-10">
             <div className="h-9 w-9 bg-[#A65A3C] rounded-xl flex items-center justify-center text-white shadow-lg shadow-[#A65A3C]/20">
@@ -191,10 +195,120 @@ export function AdminDashboard(props: AdminDashboardProps) {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col min-w-0 bg-white shadow-[-20px_0_40px_rgba(0,0,0,0.02)] rounded-l-[40px] relative z-10 my-4 mr-4 overflow-hidden border">
-        <header className="h-20 flex items-center justify-between px-10 bg-white/80 backdrop-blur-xl sticky top-0 z-30 border-b border-border/40">
-          <div className="flex items-center gap-4">
-             <div className="flex items-center gap-2 text-xs font-bold text-foreground/40 uppercase tracking-widest">
+      <main className="flex-1 flex flex-col min-w-0 bg-white shadow-none md:shadow-[-20px_0_40px_rgba(0,0,0,0.02)] rounded-none md:rounded-l-[40px] relative z-10 md:my-4 md:mr-4 overflow-hidden border-none md:border">
+        <header className="h-20 flex items-center justify-between px-4 md:px-10 bg-white/80 backdrop-blur-xl sticky top-0 z-30 border-b border-border/40">
+          <div className="flex items-center gap-2 md:gap-4">
+             {/* Mobile Menu Trigger */}
+             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+               <SheetTrigger asChild>
+                 <Button variant="ghost" size="icon" className="md:hidden">
+                   <Menu className="h-5 w-5" />
+                 </Button>
+               </SheetTrigger>
+               <SheetContent side="left" className="p-0 w-72 bg-[#F9F6F1] border-r-border/40">
+                 <SheetTitle className="sr-only">Menu de Navegação</SheetTitle>
+                 <div className="h-full flex flex-col">
+                   <div className="p-6">
+                     <div className="flex items-center gap-3 mb-10">
+                       <div className="h-9 w-9 bg-[#A65A3C] rounded-xl flex items-center justify-center text-white shadow-lg shadow-[#A65A3C]/20">
+                         <span className="font-display font-black text-lg italic">A</span>
+                       </div>
+                       <h1 className="font-display font-black text-xl tracking-tighter uppercase text-[#333]">Admin</h1>
+                     </div>
+                     
+                     <nav className="space-y-1.5">
+                       <SidebarItem 
+                         icon={<LayoutDashboard className="h-4 w-4" />} 
+                         label="Visão Geral" 
+                         active={active === "overview"} 
+                         onClick={() => { setActive("overview"); setIsMobileMenuOpen(false); }} 
+                       />
+                       
+                       <div className="pt-6 pb-2 px-3">
+                         <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/30">Acervo & Memória</span>
+                       </div>
+                       <SidebarItem 
+                         icon={<FolderKanban className="h-4 w-4" />} 
+                         label="Projetos" 
+                         active={active === "projects"} 
+                         onClick={() => { setActive("projects"); setIsMobileMenuOpen(false); }} 
+                       />
+                       <SidebarItem 
+                         icon={<Library className="h-4 w-4" />} 
+                         label="Acervo Vivo" 
+                         active={active === "acervo"} 
+                         onClick={() => { setActive("acervo"); setIsMobileMenuOpen(false); }} 
+                       />
+                       <SidebarItem 
+                         icon={<Image className="h-4 w-4" />} 
+                         label="Exposições" 
+                         active={active === "exhibitions"} 
+                         onClick={() => { setActive("exhibitions"); setIsMobileMenuOpen(false); }} 
+                       />
+                       
+                       <div className="pt-6 pb-2 px-3">
+                         <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/30">Comunicados</span>
+                       </div>
+                       <SidebarItem 
+                         icon={<FileText className="h-4 w-4" />} 
+                         label="Diário" 
+                         active={active === "blog"} 
+                         onClick={() => { setActive("blog"); setIsMobileMenuOpen(false); }} 
+                       />
+                       <SidebarItem 
+                         icon={<Mail className="h-4 w-4" />} 
+                         label="Newsletter" 
+                         active={active === "newsletter"} 
+                         onClick={() => { setActive("newsletter"); setIsMobileMenuOpen(false); }} 
+                       />
+                       
+                       <div className="pt-6 pb-2 px-3">
+                         <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/30">Coletivo</span>
+                       </div>
+                       <SidebarItem 
+                         icon={<Users className="h-4 w-4" />} 
+                         label="Membros" 
+                         active={active === "members"} 
+                         onClick={() => { setActive("members"); setIsMobileMenuOpen(false); }} 
+                       />
+                       <SidebarItem 
+                         icon={<Settings className="h-4 w-4" />} 
+                         label="Configurações" 
+                         active={active === "settings"} 
+                         onClick={() => { setActive("settings"); setIsMobileMenuOpen(false); }} 
+                       />
+                     </nav>
+                   </div>
+
+                   <div className="mt-auto p-4 m-4 rounded-2xl bg-white/50 border border-border/40">
+                     <div className="flex items-center gap-3">
+                       <div className="h-10 w-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center overflow-hidden shrink-0">
+                          {user?.user_metadata?.avatar_url ? (
+                            <img src={user.user_metadata.avatar_url} alt="" className="h-full w-full object-cover" />
+                          ) : (
+                            <span className="font-bold text-primary">{user?.email?.[0].toUpperCase()}</span>
+                          )}
+                       </div>
+                       <div className="min-w-0 flex-1">
+                         <p className="text-xs font-black truncate text-[#333]">
+                           {user?.user_metadata?.full_name || user?.email?.split('@')[0]}
+                         </p>
+                         <p className="text-[10px] text-foreground/50 truncate">{user?.email}</p>
+                       </div>
+                       <button 
+                         onClick={() => signOut()}
+                         className="h-8 w-8 rounded-lg hover:bg-red-500/10 hover:text-red-600 transition-colors flex items-center justify-center text-foreground/40"
+                         title="Sair"
+                       >
+                         <LogOut className="h-4 w-4" />
+                       </button>
+                     </div>
+                   </div>
+                 </div>
+               </SheetContent>
+             </Sheet>
+
+             <div className="flex items-center gap-2 text-[10px] md:text-xs font-bold text-foreground/40 uppercase tracking-widest">
                <span className="hover:text-primary transition-colors cursor-pointer" onClick={() => setActive("overview")}>Admin</span>
                <ChevronRight className="h-3 w-3" />
                <span className="text-[#333]">
@@ -245,7 +359,7 @@ export function AdminDashboard(props: AdminDashboardProps) {
         </header>
 
         <div className="flex-1 overflow-y-auto scrollbar-hide">
-          <div className="max-w-6xl mx-auto p-10 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+          <div className="max-w-6xl mx-auto p-4 md:p-10 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <React.Suspense fallback={
               <div className="flex items-center justify-center h-[60vh]">
                 <Loader2 className="h-8 w-8 animate-spin text-primary/40" />

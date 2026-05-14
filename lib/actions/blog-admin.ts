@@ -61,6 +61,7 @@ export async function createBlogPost(formData: FormData) {
       author: formData.get("author") as string,
       read_time: formData.get("readTime") as string,
       status: formData.get("status") as any,
+      tags: formData.get("tags") ? (formData.get("tags") as string).split(",").map(t => t.trim()).filter(Boolean) : [],
     }
 
     const validated = blogPostSchema.parse(rawData)
@@ -139,6 +140,7 @@ export async function updateBlogPost(id: string, formData: FormData) {
       author: formData.get("author") as string,
       read_time: formData.get("readTime") as string,
       status: formData.get("status") as any,
+      tags: formData.get("tags") ? (formData.get("tags") as string).split(",").map(t => t.trim()).filter(Boolean) : [],
     }
 
     const validated = blogPostSchema.parse(rawData)
