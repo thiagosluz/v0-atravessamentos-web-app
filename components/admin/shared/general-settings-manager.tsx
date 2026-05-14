@@ -9,6 +9,7 @@ import { InstitutionalSettings } from "../settings/institutional-settings"
 import { SocialSettings } from "../settings/social-settings"
 import { LegalSettings } from "../settings/legal-settings"
 import { EditorialSettings } from "../settings/editorial-settings"
+import { HomeSettings } from "../settings/home-settings"
 
 interface GeneralSettingsManagerProps {
   initialSettings: SiteSettings
@@ -44,8 +45,12 @@ export function GeneralSettingsManager({ initialSettings }: GeneralSettingsManag
     <form onSubmit={handleSave} className="space-y-8 p-4 md:p-6">
       <div className="grid gap-8 lg:grid-cols-2">
         <InstitutionalSettings settings={settings} setSettings={setSettings} />
-        <SocialSettings settings={settings} setSettings={setSettings} />
+        <HomeSettings settings={settings} setSettings={setSettings} />
       </div>
+
+      <hr className="border-border" />
+
+      <SocialSettings settings={settings} setSettings={setSettings} />
 
       <hr className="border-border" />
 

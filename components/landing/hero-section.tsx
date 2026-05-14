@@ -29,7 +29,7 @@ export function HeroSection({ settings }: { settings?: SiteSettings }) {
             className="mb-6 inline-flex w-fit items-center gap-2 rounded-full border border-foreground/15 bg-background/60 px-4 py-1.5 text-xs font-medium uppercase tracking-widest backdrop-blur"
           >
             <Sparkles className="h-3.5 w-3.5 text-primary" />
-            <span>Coletivo nascido em Jataí — GO</span>
+            <span>{settings?.location_text || "Coletivo nascido em Jataí — GO"}</span>
           </motion.div>
 
           <motion.h1
@@ -72,14 +72,14 @@ export function HeroSection({ settings }: { settings?: SiteSettings }) {
                 <ArrowDown className="ml-2 h-4 w-4" />
               </a>
             </Button>
-            <Button
+            {/* <Button
               variant="ghost"
               size="lg"
               asChild
               className="h-12 rounded-full px-5 text-base font-semibold text-foreground hover:bg-foreground/5"
             >
               <a href="#sobre">Manifesto</a>
-            </Button>
+            </Button> */}
           </motion.div>
 
           <motion.div
@@ -114,16 +114,8 @@ export function HeroSection({ settings }: { settings?: SiteSettings }) {
                 shape="organic"
                 priority={true}
               />
-              {/* Video placeholder badge */}
-              <div className="absolute bottom-4 left-4 inline-flex items-center gap-2 rounded-full bg-background/85 px-3 py-1.5 text-xs font-medium backdrop-blur">
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
-                </span>
-                vídeo em loop
-              </div>
-            </div>
 
+            </div>
             {/* Floating accent shapes */}
             <motion.div
               animate={{ rotate: [0, 8, -4, 0] }}

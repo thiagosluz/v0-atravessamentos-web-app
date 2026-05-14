@@ -98,6 +98,14 @@ Este documento consolida as recomendações de arquitetura, performance e tratam
 - **Acessibilidade Assistiva Nativa**: Campos dedicados para audiodescrição em todas as obras da galeria (Acervo) e suporte a widgets de acessibilidade (Libras).
 - **Sistema de Apoio e Sustentabilidade**: Integração de botões de doação, assinaturas (Newsletter Premium) ou pequena loja de merchandising.
 
+### D. Sistema de Compartilhamento Poético (Editorial)
+- **Objetivo:** Facilitar a circulação dos conteúdos sem poluir o design minimalista.
+- **Implementação Sugerida:**
+    - Botão flutuante minimalista (Popover) com opções: WhatsApp, Twitter/X e LinkedIn.
+    - Funcionalidade de "Copiar Link" com feedback visual imediato (check ✅).
+    - Integração com a API nativa `navigator.share` em dispositivos móveis para uma experiência fluida.
+    - Posicionamento Estratégico: Popover flutuante ou bloco integrado ao rodapé dos posts.
+
 ---
 
 ## 📅 Próximos Passos Sugeridos
@@ -106,6 +114,7 @@ Este documento consolida as recomendações de arquitetura, performance e tratam
 3. Implementação de Memoization no `AdminDataTable` (Melhoria de UX no gerenciamento).
 4. **Auditoria de Contraste:** Ajustar tokens de cores para conformidade WCAG (Inclusão).
 5. Adição de Error Boundaries nos gráficos do Overview (Resiliência).
+6. **Sistema de Compartilhamento:** Implementar o protótipo de "Copiar Link" nos posts (Engajamento).
 
 ---
-*Documento atualizado em 13/05/2026 com sugestões de expansão e funcionalidades sociais.*
+*Documento atualizado em 14/05/2026 com o novo Sistema de Compartilhamento Poético.*
