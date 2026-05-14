@@ -75,7 +75,7 @@ export function AboutSection({ settings }: { settings?: SiteSettings }) {
             <div className="col-span-4 row-span-2">
               <OrganicImage
                 src={settings?.about_images?.[0] || ""}
-                fallbackSrc="/placeholder.svg?width=900&height=900&query=community-gathering-people-in-circle-warm-light"
+                fallbackSrc="/images/landing/about-1.png"
                 alt="Encontro do coletivo em roda"
                 shape="organic"
                 overlayColor="primary"
@@ -85,7 +85,7 @@ export function AboutSection({ settings }: { settings?: SiteSettings }) {
             <div className="col-span-2">
               <OrganicImage
                 src={settings?.about_images?.[1] || ""}
-                fallbackSrc="/placeholder.svg?width=400&height=400&query=hands-painting-bright-colors-close-up-texture"
+                fallbackSrc="/images/landing/about-2.png"
                 alt="Mãos pintando uma obra coletiva"
                 shape="rounded-3xl"
                 overlayColor="accent"
@@ -96,7 +96,7 @@ export function AboutSection({ settings }: { settings?: SiteSettings }) {
             <div className="col-span-2">
               <OrganicImage
                 src={settings?.about_images?.[2] || ""}
-                fallbackSrc="/placeholder.svg?width=400&height=400&query=typewriter-text-on-paper-vintage-warm-tones"
+                fallbackSrc="/images/landing/about-3.png"
                 alt="Máquina de escrever com texto manifestário"
                 shape="rounded-custom"
                 overlayColor="ouro"
@@ -107,7 +107,7 @@ export function AboutSection({ settings }: { settings?: SiteSettings }) {
             <div className="col-span-3">
               <OrganicImage
                 src={settings?.about_images?.[3] || ""}
-                fallbackSrc="/placeholder.svg?width=600&height=400&query=protest-march-banners-flags-people-walking"
+                fallbackSrc="/images/landing/about-4.png"
                 alt="Marcha de protesto com cartazes"
                 shape="organic-3"
                 overlayColor="primary"
@@ -118,7 +118,7 @@ export function AboutSection({ settings }: { settings?: SiteSettings }) {
             <div className="col-span-3">
               <OrganicImage
                 src={settings?.about_images?.[4] || ""}
-                fallbackSrc="/placeholder.svg?width=600&height=400&query=film-camera-clapper-on-set-cinematic-lighting"
+                fallbackSrc="/images/landing/about-5.png"
                 alt="Câmera de cinema em set de filmagem"
                 shape="rounded-3xl"
                 overlayColor="foreground"

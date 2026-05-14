@@ -21,7 +21,7 @@ export function HeroSection({ settings }: { settings?: SiteSettings }) {
 
       <div className="mx-auto grid max-w-7xl gap-10 px-4 md:grid-cols-12 md:gap-8 md:px-8">
         {/* Left content */}
-        <div className="flex flex-col justify-center md:col-span-7">
+        <div className="flex flex-col justify-center md:col-span-7 order-2 md:order-1">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -103,13 +103,13 @@ export function HeroSection({ settings }: { settings?: SiteSettings }) {
           initial={{ opacity: 0, scale: 0.92 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.9, delay: 0.2 }}
-          className="relative md:col-span-5 z-10"
+          className="relative md:col-span-5 z-10 order-1 md:order-2"
         >
           <div className="relative mx-auto aspect-[4/5] w-full max-w-md md:max-w-none">
             <div className="relative h-full w-full">
               <OrganicImage
                 src={settings?.hero_image_url || ""}
-                fallbackSrc="/placeholder.svg?width=800&height=1000&query=abstract-collage-brazilian-women-faces-painted-textures"
+                fallbackSrc="/images/landing/hero.png"
                 alt="Colagem artística representando o coletivo Atravessamentos"
                 shape="organic"
                 priority={true}
