@@ -17,6 +17,7 @@ export function ThemeToggle() {
       <Button
         variant="ghost"
         size="icon"
+        aria-label="Alternar tema"
         className="h-10 w-10 rounded-full border border-foreground/10"
       >
         <Sun className="h-5 w-5 text-muted-foreground" />
@@ -30,6 +31,7 @@ export function ThemeToggle() {
     <Button
       variant="ghost"
       size="icon"
+      aria-label="Alternar tema"
       onClick={() => setTheme(isDark ? "light" : "dark")}
       className="relative h-10 w-10 overflow-hidden rounded-full border border-foreground/10 bg-background/50 backdrop-blur-sm transition-colors hover:bg-foreground/5"
     >

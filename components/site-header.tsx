@@ -50,7 +50,7 @@ export function SiteHeader({ onOpenAdmin }: SiteHeaderProps) {
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 md:h-20 md:px-8">
         {/* Logo — sempre volta para home */}
-        <Link href="/" className="group flex items-center gap-2">
+        <Link href="/" aria-label="Home" className="group flex items-center gap-2">
           <span className="relative flex h-9 w-9 items-center justify-center bg-primary text-primary-foreground border-organic transition-transform group-hover:rotate-12">
             <span className="font-display text-lg font-bold leading-none">A</span>
           </span>

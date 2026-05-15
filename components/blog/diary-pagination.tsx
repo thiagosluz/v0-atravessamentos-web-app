@@ -35,6 +35,7 @@ export function DiaryPagination({ currentPage, totalPages, category, q }: DiaryP
       {/* Anterior */}
       <Link
         href={buildURL(currentPage - 1, category, q)}
+        aria-label="Página anterior"
         aria-disabled={currentPage === 1}
         className={cn(
           "flex h-10 w-10 items-center justify-center rounded-full border border-border text-foreground transition-colors",
@@ -75,6 +76,7 @@ export function DiaryPagination({ currentPage, totalPages, category, q }: DiaryP
       {/* Próximo */}
       <Link
         href={buildURL(currentPage + 1, category, q)}
+        aria-label="Próxima página"
         aria-disabled={currentPage === totalPages}
         className={cn(
           "flex h-10 w-10 items-center justify-center rounded-full border border-border text-foreground transition-colors",

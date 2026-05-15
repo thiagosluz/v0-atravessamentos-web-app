@@ -160,7 +160,7 @@ export function SiteFooter({ settings }: SiteFooterProps) {
         {/* Middle: links + brand */}
         <div className="grid gap-12 py-16 md:grid-cols-12 md:gap-8">
           <div className="md:col-span-5">
-            <a href="#topo" className="flex items-center gap-3">
+            <a href="#topo" aria-label="Voltar ao topo" className="flex items-center gap-3">
               <span className="flex h-12 w-12 items-center justify-center bg-primary text-primary-foreground border-organic">
                 <span className="font-display text-2xl font-bold leading-none">A</span>
               </span>

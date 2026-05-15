@@ -65,6 +65,7 @@ export function DiaryFilters({ categories, currentCategory, currentQ }: DiaryFil
           type="search"
           defaultValue={currentQ}
           placeholder="Buscar no diário…"
+          aria-label="Buscar no diário"
           className="h-12 w-full rounded-full border border-border bg-card pl-11 pr-12 text-sm text-foreground placeholder:text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all"
         />
         {currentQ && (

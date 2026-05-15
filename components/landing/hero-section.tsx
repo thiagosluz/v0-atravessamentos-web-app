@@ -39,7 +39,7 @@ export function HeroSection({ settings }: { settings?: SiteSettings }) {
             className="relative z-20 font-display text-[clamp(2.2rem,11.5vw,9.5rem)] font-bold leading-[0.85] tracking-[-0.04em] md:-mr-48 lg:-mr-64"
           >
             <span className="block">COLETIVO</span>
-            <span className="block italic font-light text-primary mt-2">
+            <span className="block italic font-light text-primary mt-2 md:[text-shadow:_-1px_-1px_0_#fff,_1px_-1px_0_#fff,_-1px_1px_0_#fff,_1px_1px_0_#fff]">
               Atravessamentos
             </span>
           </motion.h1>
