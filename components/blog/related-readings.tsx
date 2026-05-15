@@ -49,6 +49,8 @@ export async function RelatedReadings({ currentPostId, category, tags = [] }: Re
                 <img 
                   src={post.coverImage} 
                   alt={post.title}
+                  width={400}
+                  height={250}
                   className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
               ) : (

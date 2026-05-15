@@ -2,6 +2,11 @@ import { test, expect } from '@playwright/test';
 
 test.describe('CMS - Fluxo de Conteúdo', () => {
   test.beforeEach(async ({ page }) => {
+    // Injetar consentimento de cookies ANTES da navegação
+    await page.addInitScript(() => {
+      window.localStorage.setItem('cookie-consent', 'accepted');
+    });
+
     // Login antes de cada teste
     await page.goto('/login');
     await page.fill('#login-email', 'test@atravessamentos.com');

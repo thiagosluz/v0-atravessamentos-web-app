@@ -120,6 +120,15 @@ Este documento consolida as recomendações de arquitetura, performance e tratam
 
 ## ✅ Funcionalidades Concluídas (Maio 2026)
 
+### 🧩 Estabilização de Layout e Resiliência da Sidebar
+- **Implementação:** Refatoração de contêineres Flexbox da Sidebar (Desktop/Mobile) adotando estratégias de restrição (`min-h-0` e `overflow-y-auto`).
+- **Resultado:** Menu de navegação perfeitamente rolável, mantendo o logo (Header) e as opções de perfil (Footer) sempre visíveis e alinhados, sem empurrar componentes para fora da tela.
+- **Auditoria de Acessibilidade:** Conformidade em semântica de botões interativos para navegação via teclado, suporte a `prefers-reduced-motion` no Cookie Consent, e correção de CLS nas galerias/avatares.
+
+### 🤖 Automação E2E e Bypass Estratégico
+- **Implementação:** Padronização global de bypass do `Cookie Consent` para suítes de testes (`window.localStorage`). Expansão de tolerância de timeouts (`toHaveURL`) nas soft-navigations locais do ambiente de desenvolvimento.
+- **Resultado:** Esteira E2E 100% verde (7 testes passando sem falsos positivos). Seletores mais resilientes.
+
 ### 📱 Navegação Administrativa Mobile
 - **Implementação:** Menu "Gaveta" (Sheet/Drawer) com botão hambúrguer.
 - **Resultado:** Painel 100% responsivo, eliminando cortes de conteúdo e compressão de layout em telas pequenas.

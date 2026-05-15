@@ -72,6 +72,8 @@ export const viewport: Viewport = {
   ],
 }
 
+import { CookieConsent } from "@/components/shared/cookie-consent"
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -87,6 +89,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="light" disableTransitionOnChange>
           {children}
           <Toaster />
+          <CookieConsent />
         </ThemeProvider>
         {process.env.NODE_ENV === "production" && (
           <>

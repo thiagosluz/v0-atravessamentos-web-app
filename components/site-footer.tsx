@@ -112,7 +112,7 @@ export function SiteFooter({ settings }: SiteFooterProps) {
         <div className="grid gap-12 border-b border-background/15 pb-16 md:grid-cols-12 md:gap-16">
           <div className="md:col-span-7">
             <h2 className="font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl text-balance">
-              Vamos atravessar <span className="italic font-light">juntas</span>?
+              Vamos atravessar <span className="italic font-light">juntas e juntos</span>?
             </h2>
             <p className="mt-5 max-w-xl text-lg text-background/75 md:text-xl">
               Receba notícias, editais e ensaios do coletivo direto no seu e-mail. Sem spam, com
@@ -147,7 +147,7 @@ export function SiteFooter({ settings }: SiteFooterProps) {
                   disabled={isSubmitting}
                   className="h-12 rounded-full bg-primary px-7 font-semibold text-primary-foreground hover:bg-primary/90"
                 >
-                  {isSubmitting ? "Assinando..." : "Assinar"}
+                  {isSubmitting ? "Assinando…" : "Assinar"}
                 </Button>
               </div>
               <p className="text-xs text-background/55">
@@ -221,7 +221,7 @@ export function SiteFooter({ settings }: SiteFooterProps) {
 
         {/* Bottom: legal */}
         <div className="flex flex-col items-start justify-between gap-4 border-t border-background/15 pt-8 text-xs text-background/55 md:flex-row md:items-center">
-          <p>© {new Date().getFullYear()} Coletivo Atravessamentos. Feito com afeto e disputa.</p>
+          <p suppressHydrationWarning>© {new Date().getFullYear()} Coletivo Atravessamentos. Feito com afeto e disputa.</p>
           <div className="flex flex-wrap gap-x-5 gap-y-1">
             <a href={settings.privacy_policy_url} className="hover:text-background">
               Política de privacidade

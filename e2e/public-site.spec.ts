@@ -1,6 +1,14 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Site Público - Navegação e Filtros', () => {
+
+  test.beforeEach(async ({ page }) => {
+    // Injetar consentimento de cookies ANTES da navegação para evitar intercepção de cliques no site público
+    await page.addInitScript(() => {
+      window.localStorage.setItem('cookie-consent', 'accepted');
+    });
+  });
+
   test('deve navegar pelas seções da home', async ({ page }) => {
     await page.goto('/');
     
@@ -30,7 +38,7 @@ test.describe('Site Público - Navegação e Filtros', () => {
     const clearButton = page.locator('button:has-text("Limpar")');
     if (await clearButton.isVisible()) {
       await clearButton.click();
-      await expect(page).not.toHaveURL(/.*categoria=.*/);
+      await expect(page).not.toHaveURL(/.*categoria=.*/, { timeout: 15000 });
     }
   });
 

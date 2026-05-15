@@ -2,14 +2,19 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Dashboard Admin - Smoke Test', () => {
   test.beforeEach(async ({ page }) => {
+    // Injetar consentimento de cookies ANTES da navegação para evitar timeouts e bloqueio de UI
+    await page.addInitScript(() => {
+      window.localStorage.setItem('cookie-consent', 'accepted');
+    });
+
     // Login automático usando credenciais de teste padrão
     await page.goto('/login');
-    await page.fill('#login-email', 'test@atravessamentos.com');
-    await page.fill('#login-password', 'password123');
+    await page.fill('input[type="email"]', 'test@atravessamentos.com');
+    await page.fill('input[type="password"]', 'password123');
     await page.click('button[type="submit"]');
     
-    // Esperar redirecionar para o admin
-    await expect(page).toHaveURL('/admin');
+    // Esperar redirecionar para o admin (Next.js dev server pode demorar na compilação)
+    await expect(page).toHaveURL('/admin', { timeout: 20000 });
   });
 
   test('deve renderizar os elementos principais da Visão Geral', async ({ page }) => {

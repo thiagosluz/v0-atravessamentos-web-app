@@ -95,15 +95,19 @@ export function AdminDashboard(props: AdminDashboardProps) {
     <div className="flex min-h-screen bg-[#F9F6F1] text-foreground selection:bg-primary selection:text-white">
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex w-64 border-r border-border/40 flex-col sticky top-0 h-screen bg-[#F9F6F1]">
-        <div className="p-6">
-          <div className="flex items-center gap-3 mb-10">
+        {/* Header (Logo) - Fixed */}
+        <div className="p-6 pb-2 shrink-0">
+          <div className="flex items-center gap-3 mb-4">
             <div className="h-9 w-9 bg-[#A65A3C] rounded-xl flex items-center justify-center text-white shadow-lg shadow-[#A65A3C]/20">
               <span className="font-display font-black text-lg italic">A</span>
             </div>
             <h1 data-testid="admin-logo" className="font-display font-black text-xl tracking-tighter uppercase text-[#333]">Admin</h1>
           </div>
-          
-          <nav className="space-y-1.5">
+        </div>
+        
+        {/* Nav Area - Scrollable */}
+        <div className="flex-1 overflow-y-auto min-h-0 scrollbar-hide px-6 py-2">
+          <nav className="space-y-1.5 pb-4">
             <SidebarItem 
               icon={<LayoutDashboard className="h-4 w-4" />} 
               label="Visão Geral" 
@@ -168,11 +172,11 @@ export function AdminDashboard(props: AdminDashboardProps) {
         </div>
 
         {/* User Profile Section in Sidebar */}
-        <div className="mt-auto p-4 m-4 rounded-2xl bg-white/50 border border-border/40">
+        <div className="mt-auto p-4 m-4 rounded-2xl bg-white/50 border border-border/40 shrink-0">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center overflow-hidden shrink-0">
                {user?.user_metadata?.avatar_url ? (
-                 <img src={user.user_metadata.avatar_url} alt="" className="h-full w-full object-cover" />
+                 <img src={user.user_metadata.avatar_url} alt="" width={40} height={40} className="h-full w-full object-cover" />
                ) : (
                  <span className="font-bold text-primary">{user?.email?.[0].toUpperCase()}</span>
                )}
@@ -208,15 +212,19 @@ export function AdminDashboard(props: AdminDashboardProps) {
                <SheetContent side="left" className="p-0 w-72 bg-[#F9F6F1] border-r-border/40">
                  <SheetTitle className="sr-only">Menu de Navegação</SheetTitle>
                  <div className="h-full flex flex-col">
-                   <div className="p-6">
-                     <div className="flex items-center gap-3 mb-10">
+                   {/* Header (Logo) - Fixed */}
+                   <div className="p-6 pb-2 shrink-0">
+                     <div className="flex items-center gap-3 mb-4">
                        <div className="h-9 w-9 bg-[#A65A3C] rounded-xl flex items-center justify-center text-white shadow-lg shadow-[#A65A3C]/20">
                          <span className="font-display font-black text-lg italic">A</span>
                        </div>
                        <h1 className="font-display font-black text-xl tracking-tighter uppercase text-[#333]">Admin</h1>
                      </div>
-                     
-                     <nav className="space-y-1.5">
+                   </div>
+                   
+                   {/* Nav Area - Scrollable */}
+                   <div className="flex-1 overflow-y-auto min-h-0 scrollbar-hide px-6 py-2">
+                     <nav className="space-y-1.5 pb-4">
                        <SidebarItem 
                          icon={<LayoutDashboard className="h-4 w-4" />} 
                          label="Visão Geral" 
@@ -280,12 +288,12 @@ export function AdminDashboard(props: AdminDashboardProps) {
                      </nav>
                    </div>
 
-                   <div className="mt-auto p-4 m-4 rounded-2xl bg-white/50 border border-border/40">
+                   <div className="mt-auto p-4 m-4 rounded-2xl bg-white/50 border border-border/40 shrink-0">
                      <div className="flex items-center gap-3">
-                       <div className="h-10 w-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center overflow-hidden shrink-0">
-                          {user?.user_metadata?.avatar_url ? (
-                            <img src={user.user_metadata.avatar_url} alt="" className="h-full w-full object-cover" />
-                          ) : (
+                        <div className="h-10 w-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center overflow-hidden shrink-0">
+                           {user?.user_metadata?.avatar_url ? (
+                             <img src={user.user_metadata.avatar_url} alt="" width={40} height={40} className="h-full w-full object-cover" />
+                           ) : (
                             <span className="font-bold text-primary">{user?.email?.[0].toUpperCase()}</span>
                           )}
                        </div>
@@ -309,7 +317,13 @@ export function AdminDashboard(props: AdminDashboardProps) {
              </Sheet>
 
              <div className="flex items-center gap-2 text-[10px] md:text-xs font-bold text-foreground/40 uppercase tracking-widest">
-               <span className="hover:text-primary transition-colors cursor-pointer" onClick={() => setActive("overview")}>Admin</span>
+               <button 
+                 type="button"
+                 className="hover:text-primary transition-colors cursor-pointer" 
+                 onClick={() => setActive("overview")}
+               >
+                 Admin
+               </button>
                <ChevronRight className="h-3 w-3" />
                <span className="text-[#333]">
                  {active === "overview" ? "Visão Geral" : 
@@ -334,7 +348,7 @@ export function AdminDashboard(props: AdminDashboardProps) {
               <DropdownMenuTrigger asChild>
                 <button className="h-10 w-10 rounded-2xl bg-muted/30 border border-border/40 flex items-center justify-center overflow-hidden hover:border-primary/40 transition-colors">
                   {user?.user_metadata?.avatar_url ? (
-                    <img src={user.user_metadata.avatar_url} alt="" className="h-full w-full object-cover" />
+                    <img src={user.user_metadata.avatar_url} alt="" width={40} height={40} className="h-full w-full object-cover" />
                   ) : (
                     <span className="text-sm font-bold">{user?.email?.[0].toUpperCase()}</span>
                   )}
