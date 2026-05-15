@@ -149,7 +149,7 @@ function ProjectTimelineCard({ project, align, shape, index, getCategoryColor }:
 
           <SafeHTML
             content={project.description}
-            className="text-foreground/60 line-clamp-3 mb-6 leading-relaxed text-sm md:text-base prose-sm"
+            className="text-foreground line-clamp-3 mb-6 leading-relaxed text-sm md:text-base prose-sm"
           />
 
           <span

@@ -116,7 +116,7 @@ export function BlogFormDialog({
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 text-foreground/70 hover:text-foreground"
+          className="h-8 w-8 text-foreground hover:text-foreground"
           aria-label="Editar post"
           onClick={() => setOpen(true)}
         >
@@ -144,7 +144,7 @@ export function BlogFormDialog({
               <form id="blog-form" onSubmit={handleSubmit} className="space-y-4">
                 {/* Cover Image Upload */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold uppercase tracking-widest text-foreground/50">
+                  <label className="text-xs font-semibold uppercase tracking-widest text-foreground">
                     Imagem de Capa
                   </label>
                   <div 
@@ -178,14 +178,14 @@ export function BlogFormDialog({
                         </div>
                       </>
                     ) : (
-                      <div className="flex flex-col items-center gap-2 text-foreground/30">
+                      <div className="flex flex-col items-center gap-2 text-foreground">
                         <ImageIcon className="h-8 w-8" />
                         <span className="text-xs font-medium">Recomendado: 1200x500px</span>
                         <Button 
                           type="button" 
                           variant="outline" 
                           size="sm" 
-                          className="mt-2 rounded-full border-dashed border-foreground/30 bg-transparent text-foreground/50 hover:bg-muted"
+                          className="mt-2 rounded-full border-dashed border-foreground/30 bg-transparent text-foreground hover:bg-muted"
                           onClick={() => (document.getElementById("blog-cover") as HTMLInputElement).click()}
                         >
                           Escolher imagem
@@ -204,7 +204,7 @@ export function BlogFormDialog({
                 </div>
 
                 <div className="space-y-1.5">
-                  <label htmlFor="blog-title" className="text-xs font-semibold uppercase tracking-widest text-foreground/50">
+                  <label htmlFor="blog-title" className="text-xs font-semibold uppercase tracking-widest text-foreground">
                     Título *
                   </label>
                   <Input id="blog-title" name="title" defaultValue={initialData?.title} required disabled={pending} className="h-10" />
@@ -212,7 +212,7 @@ export function BlogFormDialog({
 
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   <div className="space-y-1.5">
-                    <label htmlFor="blog-category" className="text-xs font-semibold uppercase tracking-widest text-foreground/50">
+                    <label htmlFor="blog-category" className="text-xs font-semibold uppercase tracking-widest text-foreground">
                       Categoria *
                     </label>
                     <select
@@ -230,13 +230,13 @@ export function BlogFormDialog({
                     </select>
                   </div>
                   <div className="space-y-1.5">
-                    <label htmlFor="blog-author" className="text-xs font-semibold uppercase tracking-widest text-foreground/50">
+                    <label htmlFor="blog-author" className="text-xs font-semibold uppercase tracking-widest text-foreground">
                       Autor *
                     </label>
                     <Input id="blog-author" name="author" defaultValue={initialData?.author} required disabled={pending} className="h-10" />
                   </div>
                   <div className="space-y-1.5">
-                    <label htmlFor="blog-readtime" className="text-xs font-semibold uppercase tracking-widest text-foreground/50">
+                    <label htmlFor="blog-readtime" className="text-xs font-semibold uppercase tracking-widest text-foreground">
                       Tempo leitura
                     </label>
                     <Input id="blog-readtime" name="readTime" defaultValue={initialData?.readTime || "5 min"} disabled={pending} className="h-10" />
@@ -244,7 +244,7 @@ export function BlogFormDialog({
                 </div>
 
                 <div className="space-y-1.5">
-                  <label htmlFor="blog-tags" className="text-xs font-semibold uppercase tracking-widest text-foreground/50">
+                  <label htmlFor="blog-tags" className="text-xs font-semibold uppercase tracking-widest text-foreground">
                     Palavras-chave (Tags)
                   </label>
                   <Input 
@@ -258,7 +258,7 @@ export function BlogFormDialog({
                 </div>
 
                 <div className="space-y-1.5">
-                  <label htmlFor="blog-status" className="text-xs font-semibold uppercase tracking-widest text-foreground/50">
+                  <label htmlFor="blog-status" className="text-xs font-semibold uppercase tracking-widest text-foreground">
                     Status *
                   </label>
                   <div className="flex flex-wrap gap-2">
@@ -275,7 +275,7 @@ export function BlogFormDialog({
                             ? s === "Publicado" 
                               ? "border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" 
                               : "border-amber-500 bg-amber-500/10 text-amber-600 dark:text-amber-400"
-                            : "border-border bg-background hover:bg-muted text-foreground/70"
+                            : "border-border bg-background hover:bg-muted text-foreground"
                         )}
                       >
                         {s}
@@ -285,14 +285,14 @@ export function BlogFormDialog({
                 </div>
 
                 <div className="space-y-1.5">
-                  <label htmlFor="blog-excerpt" className="text-xs font-semibold uppercase tracking-widest text-foreground/50">
+                  <label htmlFor="blog-excerpt" className="text-xs font-semibold uppercase tracking-widest text-foreground">
                     Resumo (Linha fina)
                   </label>
                   <textarea id="blog-excerpt" name="excerpt" defaultValue={initialData?.excerpt} rows={2} disabled={pending} className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring resize-none" />
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold uppercase tracking-widest text-foreground/50">
+                  <label className="text-xs font-semibold uppercase tracking-widest text-foreground">
                     Conteúdo
                   </label>
                   <RichTextEditor 

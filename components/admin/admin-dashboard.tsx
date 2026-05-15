@@ -65,6 +65,8 @@ import {
 import { Trash2 } from "lucide-react"
 
 import { useAdminState } from "@/hooks/admin/use-admin-state"
+import { ErrorBoundary } from "@/components/shared/error-boundary"
+import { WifiOff } from "lucide-react"
 
 export function AdminDashboard(props: AdminDashboardProps) {
   const {
@@ -88,6 +90,22 @@ export function AdminDashboard(props: AdminDashboardProps) {
   } = useAdminState(props)
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false)
+  const [isOffline, setIsOffline] = React.useState(false)
+
+  React.useEffect(() => {
+    // Inicializar no cliente
+    setIsOffline(!navigator.onLine)
+    const handleOnline = () => setIsOffline(false)
+    const handleOffline = () => setIsOffline(true)
+
+    window.addEventListener('online', handleOnline)
+    window.addEventListener('offline', handleOffline)
+
+    return () => {
+      window.removeEventListener('online', handleOnline)
+      window.removeEventListener('offline', handleOffline)
+    }
+  }, [])
 
   const { user, projectsData, membersData, blogPostsData, initialCategories, siteSettings, currentPage } = props
 
@@ -116,7 +134,7 @@ export function AdminDashboard(props: AdminDashboardProps) {
             />
             
             <div className="pt-6 pb-2 px-3">
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/30">Acervo & Memória</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground">Acervo & Memória</span>
             </div>
             <SidebarItem 
               icon={<FolderKanban className="h-4 w-4" />} 
@@ -138,7 +156,7 @@ export function AdminDashboard(props: AdminDashboardProps) {
             />
             
             <div className="pt-6 pb-2 px-3">
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/30">Comunicados</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground">Comunicados</span>
             </div>
             <SidebarItem 
               icon={<FileText className="h-4 w-4" />} 
@@ -154,7 +172,7 @@ export function AdminDashboard(props: AdminDashboardProps) {
             />
             
             <div className="pt-6 pb-2 px-3">
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/30">Coletivo</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground">Coletivo</span>
             </div>
             <SidebarItem 
               icon={<Users className="h-4 w-4" />} 
@@ -185,11 +203,11 @@ export function AdminDashboard(props: AdminDashboardProps) {
               <p className="text-xs font-black truncate text-[#333]">
                 {user?.user_metadata?.full_name || user?.email?.split('@')[0]}
               </p>
-              <p className="text-[10px] text-foreground/50 truncate">{user?.email}</p>
+              <p className="text-[10px] text-foreground truncate">{user?.email}</p>
             </div>
             <button 
               onClick={() => signOut()}
-              className="h-8 w-8 rounded-lg hover:bg-red-500/10 hover:text-red-600 transition-colors flex items-center justify-center text-foreground/40"
+              className="h-8 w-8 rounded-lg hover:bg-red-500/10 hover:text-red-600 transition-colors flex items-center justify-center text-foreground"
               title="Sair"
             >
               <LogOut className="h-4 w-4" />
@@ -233,7 +251,7 @@ export function AdminDashboard(props: AdminDashboardProps) {
                        />
                        
                        <div className="pt-6 pb-2 px-3">
-                         <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/30">Acervo & Memória</span>
+                         <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground">Acervo & Memória</span>
                        </div>
                        <SidebarItem 
                          icon={<FolderKanban className="h-4 w-4" />} 
@@ -255,7 +273,7 @@ export function AdminDashboard(props: AdminDashboardProps) {
                        />
                        
                        <div className="pt-6 pb-2 px-3">
-                         <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/30">Comunicados</span>
+                         <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground">Comunicados</span>
                        </div>
                        <SidebarItem 
                          icon={<FileText className="h-4 w-4" />} 
@@ -271,7 +289,7 @@ export function AdminDashboard(props: AdminDashboardProps) {
                        />
                        
                        <div className="pt-6 pb-2 px-3">
-                         <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/30">Coletivo</span>
+                         <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground">Coletivo</span>
                        </div>
                        <SidebarItem 
                          icon={<Users className="h-4 w-4" />} 
@@ -301,11 +319,11 @@ export function AdminDashboard(props: AdminDashboardProps) {
                          <p className="text-xs font-black truncate text-[#333]">
                            {user?.user_metadata?.full_name || user?.email?.split('@')[0]}
                          </p>
-                         <p className="text-[10px] text-foreground/50 truncate">{user?.email}</p>
+                         <p className="text-[10px] text-foreground truncate">{user?.email}</p>
                        </div>
                        <button 
                          onClick={() => signOut()}
-                         className="h-8 w-8 rounded-lg hover:bg-red-500/10 hover:text-red-600 transition-colors flex items-center justify-center text-foreground/40"
+                         className="h-8 w-8 rounded-lg hover:bg-red-500/10 hover:text-red-600 transition-colors flex items-center justify-center text-foreground"
                          title="Sair"
                        >
                          <LogOut className="h-4 w-4" />
@@ -316,7 +334,7 @@ export function AdminDashboard(props: AdminDashboardProps) {
                </SheetContent>
              </Sheet>
 
-             <div className="flex items-center gap-2 text-[10px] md:text-xs font-bold text-foreground/40 uppercase tracking-widest">
+             <div className="flex items-center gap-2 text-[10px] md:text-xs font-bold text-foreground uppercase tracking-widest">
                <button 
                  type="button"
                  className="hover:text-primary transition-colors cursor-pointer" 
@@ -374,7 +392,21 @@ export function AdminDashboard(props: AdminDashboardProps) {
 
         <div className="flex-1 overflow-y-auto scrollbar-hide">
           <div className="max-w-6xl mx-auto p-4 md:p-10 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <React.Suspense fallback={
+            {isOffline && (
+              <div 
+                data-testid="offline-banner"
+                className="bg-orange-500 text-white px-6 py-3 rounded-2xl flex items-center gap-3 shadow-lg shadow-orange-500/20 animate-in slide-in-from-top-4 duration-500"
+              >
+                <WifiOff className="h-5 w-5" />
+                <div className="flex-1">
+                  <p className="text-sm font-bold">Você está offline</p>
+                  <p className="text-xs opacity-90">Verifique sua conexão para salvar alterações.</p>
+                </div>
+              </div>
+            )}
+            
+            <ErrorBoundary name={active}>
+              <React.Suspense fallback={
               <div className="flex items-center justify-center h-[60vh]">
                 <Loader2 className="h-8 w-8 animate-spin text-primary/40" />
               </div>
@@ -453,8 +485,9 @@ export function AdminDashboard(props: AdminDashboardProps) {
                 <NewsletterAdminPanel />
               )}
             </React.Suspense>
-          </div>
+          </ErrorBoundary>
         </div>
+      </div>
 
         {/* Modais de Edição (Controlados) */}
         {projectToEdit && (
@@ -497,7 +530,7 @@ export function AdminDashboard(props: AdminDashboardProps) {
               <AlertDialogTitle className="text-2xl font-display font-black uppercase italic tracking-tight">
                 Confirmar Exclusão
               </AlertDialogTitle>
-              <AlertDialogDescription className="text-base text-foreground/60">
+              <AlertDialogDescription className="text-base text-foreground">
                 Você tem certeza que deseja excluir este item? Esta ação é irreversível e removerá todos os dados permanentemente.
               </AlertDialogDescription>
             </AlertDialogHeader>
@@ -528,12 +561,12 @@ function SidebarItem({ icon, label, active, onClick }: { icon: React.ReactNode, 
         "w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all group",
         active 
           ? "bg-[#A65A3C] text-white shadow-xl shadow-[#A65A3C]/20 translate-x-1" 
-          : "text-foreground/50 hover:text-[#A65A3C] hover:bg-white/50"
+          : "text-foreground hover:text-[#A65A3C] hover:bg-white/50"
       )}
     >
       <div className={cn(
         "transition-transform group-hover:scale-110",
-        active ? "text-white" : "text-foreground/30"
+        active ? "text-white" : "text-foreground"
       )}>
         {icon}
       </div>

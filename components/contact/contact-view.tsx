@@ -73,7 +73,7 @@ export function ContactView({ settings }: ContactViewProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.8 }}
-            className="text-xl md:text-2xl text-foreground/70 leading-relaxed max-w-2xl text-pretty"
+            className="text-xl md:text-2xl text-foreground leading-relaxed max-w-2xl text-pretty"
           >
             Toda travessia começa com um encontro. Use o formulário ou nossos canais diretos para propor parcerias, tirar dúvidas ou simplesmente dizer olá.
           </motion.p>
@@ -93,7 +93,7 @@ export function ContactView({ settings }: ContactViewProps) {
                 className="group relative bg-background/60 backdrop-blur-md p-6 md:p-8 rounded-[2.5rem] border border-foreground/5 shadow-sm transition-all hover:border-primary/20 hover:shadow-md"
               >
                 <div className="absolute top-4 right-6 w-12 h-12 bg-[var(--ouro)]/15 border-organic blur-md opacity-40" />
-                <h3 className="font-display text-xs font-bold text-foreground/40 uppercase tracking-[0.2em] mb-6">Redes sociais</h3>
+                <h3 className="font-display text-xs font-bold text-foreground uppercase tracking-[0.2em] mb-6">Redes sociais</h3>
                 <div className="flex gap-4 relative z-10">
                   <SocialLink href={settings.instagram_url} icon={Instagram} label="Instagram" />
                   <SocialLink href={settings.youtube_url} icon={Youtube} label="YouTube" />
@@ -110,15 +110,15 @@ export function ContactView({ settings }: ContactViewProps) {
                 className="group relative bg-background/60 backdrop-blur-md p-6 md:p-8 rounded-[2.5rem] border border-foreground/5 shadow-sm transition-all hover:border-primary/20 hover:shadow-md"
               >
                 <div className="absolute bottom-4 right-6 w-12 h-12 bg-accent/15 border-organic-2 blur-md opacity-40" />
-                <h3 className="font-display text-xs font-bold text-foreground/40 uppercase tracking-[0.2em] mb-6">Contato direto</h3>
+                <h3 className="font-display text-xs font-bold text-foreground uppercase tracking-[0.2em] mb-6">Contato direto</h3>
                 <div className="space-y-4 relative z-10">
-                  <a href={`mailto:${settings.contact_email}`} className="flex items-center gap-3 text-lg text-foreground/80 hover:text-primary transition-colors group/link">
+                  <a href={`mailto:${settings.contact_email}`} className="flex items-center gap-3 text-lg text-foreground hover:text-primary transition-colors group/link">
                     <div className="size-10 rounded-full bg-foreground/5 flex items-center justify-center shrink-0 transition-colors group-hover/link:bg-primary/10">
                       <Mail className="size-5" />
                     </div>
                     <span className="break-all font-medium leading-tight">{settings.contact_email}</span>
                   </a>
-                  <a href={settings.location_url} target="_blank" rel="noopener" className="flex items-start gap-3 text-lg text-foreground/80 hover:text-primary transition-colors group/link">
+                  <a href={settings.location_url} target="_blank" rel="noopener" className="flex items-start gap-3 text-lg text-foreground hover:text-primary transition-colors group/link">
                     <div className="size-10 rounded-full bg-foreground/5 flex items-center justify-center shrink-0 transition-colors group-hover/link:bg-primary/10">
                       <MapPin className="size-5" />
                     </div>
@@ -133,7 +133,7 @@ export function ContactView({ settings }: ContactViewProps) {
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              className="p-6 md:p-8 border-l-2 border-primary/20 italic text-foreground/60 leading-relaxed bg-primary/5 rounded-r-[2rem]"
+              className="p-6 md:p-8 border-l-2 border-primary/20 italic text-foreground leading-relaxed bg-primary/5 rounded-r-[2rem]"
             >
               <p className="text-lg">
                 "Atravessar é um gesto político. Respondemos a todas as mensagens com a calma que o encontro humano exige."
@@ -177,7 +177,7 @@ function SocialLink({ href, icon: Icon, label }: { href: string | null; icon: an
       aria-label={label}
       target="_blank"
       rel="noopener"
-      className="size-14 rounded-full bg-foreground/5 flex items-center justify-center text-foreground/70 hover:bg-primary hover:text-primary-foreground transition-all hover:scale-110"
+      className="size-14 rounded-full bg-foreground/5 flex items-center justify-center text-foreground hover:bg-primary hover:text-primary-foreground transition-all hover:scale-110"
     >
       <Icon className="size-6" />
     </a>

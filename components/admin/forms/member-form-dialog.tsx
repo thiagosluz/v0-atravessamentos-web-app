@@ -115,7 +115,7 @@ export function MemberFormDialog({
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 text-foreground/70 hover:text-foreground"
+          className="h-8 w-8 text-foreground hover:text-foreground"
           onClick={() => setOpen(true)}
         >
           <Pencil className="h-4 w-4" />
@@ -146,29 +146,29 @@ export function MemberFormDialog({
               {preview ? (
                 <img src={preview} alt="Preview" className="h-full w-full object-cover" />
               ) : (
-                <div className="flex h-full w-full items-center justify-center text-foreground/30">
+                <div className="flex h-full w-full items-center justify-center text-foreground">
                   <Upload className="h-6 w-6" />
                 </div>
               )}
             </div>
             <div className="flex-1 space-y-1.5">
-              <label htmlFor="mem-avatar" className="text-sm font-semibold text-foreground/80">
+              <label htmlFor="mem-avatar" className="text-sm font-semibold text-foreground">
                 Foto de perfil
               </label>
-              <p className="text-xs text-foreground/50">Formato JPG ou PNG. Recomendado: 800x800px.</p>
+              <p className="text-xs text-foreground">Formato JPG ou PNG. Recomendado: 800x800px.</p>
               <Input id="mem-avatar" name="avatar" type="file" accept="image/*" onChange={handleFileChange} disabled={pending} className="mt-2 text-sm h-auto py-1.5" />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <label htmlFor="mem-name" className="text-xs font-semibold uppercase tracking-widest text-foreground/50">
+              <label htmlFor="mem-name" className="text-xs font-semibold uppercase tracking-widest text-foreground">
                 Nome *
               </label>
               <Input id="mem-name" name="name" defaultValue={initialData?.name} required disabled={pending} className="h-10" />
             </div>
             <div className="space-y-1.5">
-              <label htmlFor="mem-role" className="text-xs font-semibold uppercase tracking-widest text-foreground/50">
+              <label htmlFor="mem-role" className="text-xs font-semibold uppercase tracking-widest text-foreground">
                 Papel principal *
               </label>
               <Input id="mem-role" name="role" defaultValue={initialData?.role} required disabled={pending} placeholder="Ex: Pesquisadora" className="h-10" />
@@ -176,7 +176,7 @@ export function MemberFormDialog({
           </div>
 
           <div className="space-y-2.5">
-            <label className="text-xs font-semibold uppercase tracking-widest text-foreground/50">
+            <label className="text-xs font-semibold uppercase tracking-widest text-foreground">
               Especialidades / Tags
             </label>
             <div className="flex flex-wrap gap-2">
@@ -195,7 +195,7 @@ export function MemberFormDialog({
                         "relative flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-all duration-200",
                         isSelected 
                           ? `bg-${color}-500/20 text-${color}-700 border-${color}-500/40 ring-1 ring-${color}-500/20`
-                          : "bg-muted/50 text-foreground/50 border-border hover:bg-muted hover:text-foreground"
+                          : "bg-muted/50 text-foreground border-border hover:bg-muted hover:text-foreground"
                       )}
                     >
                       {isSelected && <Check className="h-3 w-3" />}
@@ -204,7 +204,7 @@ export function MemberFormDialog({
                   )
                 })
               ) : (
-                <p className="text-[10px] text-foreground/40 italic">
+                <p className="text-[10px] text-foreground italic">
                   Nenhuma tag de membro cadastrada em Configurações.
                 </p>
               )}
@@ -212,7 +212,7 @@ export function MemberFormDialog({
           </div>
 
           <div className="space-y-1.5">
-            <label htmlFor="mem-bio" className="text-xs font-semibold uppercase tracking-widest text-foreground/50">
+            <label htmlFor="mem-bio" className="text-xs font-semibold uppercase tracking-widest text-foreground">
               Minibio
             </label>
             <RichTextEditor 
@@ -228,23 +228,23 @@ export function MemberFormDialog({
             <h3 className="text-sm font-bold tracking-tight mb-4">Contatos e Redes (Opcional)</h3>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <label htmlFor="mem-instagram" className="text-xs font-semibold text-foreground/50">Instagram</label>
+                <label htmlFor="mem-instagram" className="text-xs font-semibold text-foreground">Instagram</label>
                 <Input id="mem-instagram" name="instagram" defaultValue={initialData?.instagram || ""} disabled={pending} placeholder="@usuario" className="h-10" />
               </div>
               <div className="space-y-1.5">
-                <label htmlFor="mem-linkedin" className="text-xs font-semibold text-foreground/50">LinkedIn</label>
+                <label htmlFor="mem-linkedin" className="text-xs font-semibold text-foreground">LinkedIn</label>
                 <Input id="mem-linkedin" name="linkedin" defaultValue={initialData?.linkedin || ""} disabled={pending} placeholder="URL do perfil" className="h-10" />
               </div>
               <div className="space-y-1.5">
-                <label htmlFor="mem-lattes" className="text-xs font-semibold text-foreground/50">Currículo Lattes</label>
+                <label htmlFor="mem-lattes" className="text-xs font-semibold text-foreground">Currículo Lattes</label>
                 <Input id="mem-lattes" name="lattes_url" defaultValue={initialData?.lattes_url || ""} disabled={pending} placeholder="URL do Lattes" className="h-10" />
               </div>
               <div className="space-y-1.5">
-                <label htmlFor="mem-email" className="text-xs font-semibold text-foreground/50">E-mail</label>
+                <label htmlFor="mem-email" className="text-xs font-semibold text-foreground">E-mail</label>
                 <Input id="mem-email" name="email" type="email" defaultValue={initialData?.email || ""} disabled={pending} placeholder="contato@exemplo.com" className="h-10" />
               </div>
               <div className="space-y-1.5">
-                <label htmlFor="mem-phone" className="text-xs font-semibold text-foreground/50">Telefone/WhatsApp</label>
+                <label htmlFor="mem-phone" className="text-xs font-semibold text-foreground">Telefone/WhatsApp</label>
                 <Input id="mem-phone" name="phone" defaultValue={initialData?.phone || ""} disabled={pending} placeholder="(00) 00000-0000" className="h-10" />
               </div>
             </div>

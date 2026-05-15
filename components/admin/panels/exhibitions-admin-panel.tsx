@@ -100,7 +100,7 @@ export function ExhibitionsAdminPanel() {
     return (
       <div className="flex flex-col items-center justify-center py-24 gap-4">
         <Loader2 className="h-12 w-12 animate-spin text-primary/40" />
-        <p className="text-sm font-display italic text-foreground/50">Organizando as salas de memória...</p>
+        <p className="text-sm font-display italic text-foreground">Organizando as salas de memória...</p>
       </div>
     )
   }
@@ -133,7 +133,7 @@ export function ExhibitionsAdminPanel() {
             <AlertDialogTitle className="text-2xl font-display font-black uppercase italic tracking-tight">
               Excluir Exposição
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-base text-foreground/60">
+            <AlertDialogDescription className="text-base text-foreground">
               Você tem certeza que deseja excluir esta sala virtual? Esta ação removerá a narrativa e desvinculará os ativos permanentemente.
             </AlertDialogDescription>
           </AlertDialogHeader>

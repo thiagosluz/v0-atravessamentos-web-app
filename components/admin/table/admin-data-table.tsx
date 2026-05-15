@@ -151,7 +151,7 @@ export function AdminDataTable<T extends Record<string, any>>({
           <TableBody>
             {sortedData.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={columns.length + 3} className="py-12 text-center text-foreground/60">
+                <TableCell colSpan={columns.length + 3} className="py-12 text-center text-foreground">
                   Nenhum registro encontrado.
                 </TableCell>
               </TableRow>

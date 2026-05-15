@@ -28,7 +28,7 @@ export function UploadSection({
         </div>
         <div className="space-y-1">
           <h3 className="font-display text-xl font-bold">Upload em Lote</h3>
-          <p className="text-sm text-foreground/60">Arraste ou clique para enviar até 20 fotos de uma vez</p>
+          <p className="text-sm text-foreground">Arraste ou clique para enviar até 20 fotos de uma vez</p>
         </div>
         
         {/* Tag Selection during upload */}

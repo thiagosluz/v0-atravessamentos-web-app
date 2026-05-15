@@ -37,7 +37,7 @@ export function DiaryPagination({ currentPage, totalPages, category, q }: DiaryP
         href={buildURL(currentPage - 1, category, q)}
         aria-disabled={currentPage === 1}
         className={cn(
-          "flex h-10 w-10 items-center justify-center rounded-full border border-border text-foreground/60 transition-colors",
+          "flex h-10 w-10 items-center justify-center rounded-full border border-border text-foreground transition-colors",
           currentPage === 1
             ? "pointer-events-none opacity-30"
             : "hover:border-primary hover:text-primary"
@@ -54,7 +54,7 @@ export function DiaryPagination({ currentPage, totalPages, category, q }: DiaryP
         return (
           <span key={page} className="flex items-center gap-2">
             {showEllipsis && (
-              <span className="text-foreground/30 text-sm px-1">…</span>
+              <span className="text-foreground text-sm px-1">…</span>
             )}
             <Link
               href={buildURL(page, category, q)}
@@ -63,7 +63,7 @@ export function DiaryPagination({ currentPage, totalPages, category, q }: DiaryP
                 "flex h-10 w-10 items-center justify-center rounded-full border text-sm font-medium transition-colors",
                 page === currentPage
                   ? "border-primary bg-primary text-primary-foreground"
-                  : "border-border text-foreground/60 hover:border-primary hover:text-primary"
+                  : "border-border text-foreground hover:border-primary hover:text-primary"
               )}
             >
               {page}
@@ -77,7 +77,7 @@ export function DiaryPagination({ currentPage, totalPages, category, q }: DiaryP
         href={buildURL(currentPage + 1, category, q)}
         aria-disabled={currentPage === totalPages}
         className={cn(
-          "flex h-10 w-10 items-center justify-center rounded-full border border-border text-foreground/60 transition-colors",
+          "flex h-10 w-10 items-center justify-center rounded-full border border-border text-foreground transition-colors",
           currentPage === totalPages
             ? "pointer-events-none opacity-30"
             : "hover:border-primary hover:text-primary"

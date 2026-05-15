@@ -66,7 +66,7 @@ export function ProfilePanel({ user }: { user: any }) {
           <h2 className="font-display text-lg font-bold tracking-tight md:text-xl">
             Seu Perfil
           </h2>
-          <p className="mt-1 text-sm text-foreground/65">
+          <p className="mt-1 text-sm text-foreground">
             Atualize suas credenciais e informações pessoais.
           </p>
         </div>
@@ -92,7 +92,7 @@ export function ProfilePanel({ user }: { user: any }) {
               defaultValue={currentEmail} 
               disabled={pending} 
             />
-            <p className="text-xs text-foreground/60">
+            <p className="text-xs text-foreground">
               Se alterar o e-mail, um link de confirmação será enviado para o novo endereço.
             </p>
           </div>

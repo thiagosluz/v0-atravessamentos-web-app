@@ -37,7 +37,7 @@ export function BlogSection({ initialPosts, categories }: BlogSectionProps) {
             <h2 className="mt-6 font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl text-balance">
               Palavras que atravessam.
             </h2>
-            <p className="mt-5 text-lg text-foreground/75 md:text-xl">
+            <p className="mt-5 text-lg text-foreground md:text-xl">
               Ensaios, manifestos, crônicas e chamadas para os encontros que estão por vir.
             </p>
           </div>
@@ -77,8 +77,8 @@ export function BlogSection({ initialPosts, categories }: BlogSectionProps) {
                   >
                     {featured.category}
                   </span>
-                  <span className="text-foreground/60">{formatDate(featured.date)}</span>
-                  <span className="inline-flex items-center gap-1 text-foreground/60">
+                  <span className="text-foreground">{formatDate(featured.date)}</span>
+                  <span className="inline-flex items-center gap-1 text-foreground">
                     <Clock className="h-3 w-3" />
                     {featured.readTime}
                   </span>
@@ -86,7 +86,7 @@ export function BlogSection({ initialPosts, categories }: BlogSectionProps) {
                 <h3 className="mt-4 font-display text-2xl font-bold leading-tight tracking-tight md:text-4xl text-balance">
                   {featured.title}
                 </h3>
-                <p className="mt-3 text-base text-foreground/75 md:text-lg text-pretty">
+                <p className="mt-3 text-base text-foreground md:text-lg text-pretty">
                   {featured.excerpt}
                 </p>
                 <div className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-primary">
@@ -131,7 +131,7 @@ export function BlogSection({ initialPosts, categories }: BlogSectionProps) {
                     <h3 className="mt-1.5 font-display text-base font-bold leading-snug tracking-tight line-clamp-2">
                       {post.title}
                     </h3>
-                    <p className="mt-1 text-xs text-foreground/60">
+                    <p className="mt-1 text-xs text-foreground">
                       {formatDate(post.date)} · {post.readTime}
                     </p>
                   </div>

@@ -18,14 +18,18 @@ export function LoginForm() {
     setPending(true)
     setError(null)
 
-    const formData = new FormData(e.currentTarget)
-    const result = await signIn(formData)
+    try {
+      const formData = new FormData(e.currentTarget)
+      const result = await signIn(formData)
 
-    if (result?.error) {
-      setError(result.error)
+      if (result?.error) {
+        setError(result.error)
+        setPending(false)
+      }
+    } catch (err) {
+      setError("Erro de conexão. Tente novamente em instantes.")
       setPending(false)
     }
-    // If no error, the server action redirects to /admin
   }
 
   return (
@@ -34,7 +38,7 @@ export function LoginForm() {
       <div className="space-y-2">
         <label
           htmlFor="login-email"
-          className="text-xs font-semibold uppercase tracking-[0.2em] text-foreground/60"
+          className="text-xs font-semibold uppercase tracking-[0.2em] text-foreground"
         >
           E-mail
         </label>
@@ -46,7 +50,7 @@ export function LoginForm() {
           autoComplete="email"
           placeholder="sua@email.com"
           disabled={pending}
-          className="h-12 rounded-none border-0 border-b-2 border-foreground/20 bg-transparent px-0 text-base placeholder:text-foreground/30 focus-visible:border-primary focus-visible:ring-0 focus-visible:ring-offset-0 transition-colors"
+          className="h-12 rounded-none border-0 border-b-2 border-foreground/20 bg-transparent px-0 text-base placeholder:text-foreground focus-visible:border-primary focus-visible:ring-0 focus-visible:ring-offset-0 transition-colors"
         />
       </div>
 
@@ -54,7 +58,7 @@ export function LoginForm() {
       <div className="space-y-2">
         <label
           htmlFor="login-password"
-          className="text-xs font-semibold uppercase tracking-[0.2em] text-foreground/60"
+          className="text-xs font-semibold uppercase tracking-[0.2em] text-foreground"
         >
           Senha
         </label>
@@ -67,12 +71,12 @@ export function LoginForm() {
             autoComplete="current-password"
             placeholder="••••••••"
             disabled={pending}
-            className="h-12 rounded-none border-0 border-b-2 border-foreground/20 bg-transparent px-0 pr-10 text-base placeholder:text-foreground/30 focus-visible:border-primary focus-visible:ring-0 focus-visible:ring-offset-0 transition-colors"
+            className="h-12 rounded-none border-0 border-b-2 border-foreground/20 bg-transparent px-0 pr-10 text-base placeholder:text-foreground focus-visible:border-primary focus-visible:ring-0 focus-visible:ring-offset-0 transition-colors"
           />
           <button
             type="button"
             onClick={() => setShowPassword((v) => !v)}
-            className="absolute right-0 top-1/2 -translate-y-1/2 text-foreground/40 hover:text-foreground transition-colors"
+            className="absolute right-0 top-1/2 -translate-y-1/2 text-foreground hover:text-foreground transition-colors"
             aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
           >
             {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -117,7 +121,7 @@ export function LoginForm() {
       </div>
 
       {/* Back link */}
-      <p className="pt-2 text-center text-xs text-foreground/50">
+      <p className="pt-2 text-center text-xs text-foreground">
         <a href="/" className="underline underline-offset-4 hover:text-foreground transition-colors">
           ← Voltar ao site
         </a>

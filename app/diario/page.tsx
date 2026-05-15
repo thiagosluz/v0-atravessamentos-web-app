@@ -76,7 +76,7 @@ export default async function DiarioPage({ searchParams }: DiarioPageProps) {
             <DiaryFeed posts={posts} categories={categories} />
           ) : (
             <div className="py-24 text-center">
-              <p className="text-foreground/40 text-lg">
+              <p className="text-foreground text-lg">
                 Nenhuma entrada encontrada{q ? ` para "${q}"` : ""}{category ? ` em ${category}` : ""}.
               </p>
             </div>

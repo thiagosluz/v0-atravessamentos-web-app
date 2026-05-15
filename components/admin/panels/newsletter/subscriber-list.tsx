@@ -35,7 +35,7 @@ export function SubscriberList({ subscribers, onRemove }: SubscriberListProps) {
     <div className="space-y-4 p-6 md:p-10">
       <div className="flex items-center gap-4 max-w-md">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground/40" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground" />
           <Input 
             placeholder="Buscar assinante..." 
             className="pl-10 rounded-xl"
@@ -57,7 +57,7 @@ export function SubscriberList({ subscribers, onRemove }: SubscriberListProps) {
           <TableBody>
             {filtered.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={3} className="py-12 text-center text-foreground/40 italic">
+                <TableCell colSpan={3} className="py-12 text-center text-foreground italic">
                   Nenhum assinante encontrado.
                 </TableCell>
               </TableRow>
@@ -65,7 +65,7 @@ export function SubscriberList({ subscribers, onRemove }: SubscriberListProps) {
               filtered.map((s) => (
                 <TableRow key={s.id} className="hover:bg-muted/10 transition-colors border-border">
                   <TableCell className="font-medium">{s.email}</TableCell>
-                  <TableCell className="text-sm text-foreground/60">
+                  <TableCell className="text-sm text-foreground">
                     {new Date(s.created_at).toLocaleDateString('pt-BR')}
                   </TableCell>
                   <TableCell className="text-right">

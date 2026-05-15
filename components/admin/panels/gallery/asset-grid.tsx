@@ -24,7 +24,7 @@ export function AssetGrid({
           <ImageIcon className="h-5 w-5" />
           Memória do Coletivo
         </h3>
-        <p className="text-xs text-foreground/60">Os ativos aparecerão aqui após o upload.</p>
+        <p className="text-xs text-foreground">Os ativos aparecerão aqui após o upload.</p>
       </div>
       
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">

@@ -24,7 +24,7 @@ export function ExhibitionCard({ exhibition, onEdit, onDelete }: ExhibitionCardP
         {exhibition.cover_image ? (
           <img src={exhibition.cover_image} alt={exhibition.title} className="h-full w-full object-cover" />
         ) : (
-          <div className="flex h-full items-center justify-center text-foreground/20">
+          <div className="flex h-full items-center justify-center text-foreground">
             <ImageIcon className="h-12 w-12" />
           </div>
         )}
@@ -38,8 +38,8 @@ export function ExhibitionCard({ exhibition, onEdit, onDelete }: ExhibitionCardP
       
       <div className="space-y-2">
         <h4 className="font-display text-lg font-bold truncate">{exhibition.title}</h4>
-        <p className="text-xs text-foreground/60 line-clamp-2 italic">{exhibition.description}</p>
-        <div className="flex items-center gap-2 text-[10px] text-foreground/40 font-medium">
+        <p className="text-xs text-foreground line-clamp-2 italic">{exhibition.description}</p>
+        <div className="flex items-center gap-2 text-[10px] text-foreground font-medium">
           <ImageIcon className="h-3 w-3" />
           {exhibition.asset_ids?.length || 0} Ativos vinculados
         </div>

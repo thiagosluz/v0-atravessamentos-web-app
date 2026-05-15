@@ -98,7 +98,7 @@ export function ArtisticLightbox({ asset, onClose, onNext, onPrev }: ArtisticLig
               </h2>
               
               {asset.description && (
-                <p className="text-lg text-foreground/70 italic leading-relaxed">
+                <p className="text-lg text-foreground italic leading-relaxed">
                   "{asset.description}"
                 </p>
               )}
@@ -111,7 +111,7 @@ export function ArtisticLightbox({ asset, onClose, onNext, onPrev }: ArtisticLig
               className="space-y-4 pt-6 border-t border-border"
             >
               {asset.location && (
-                <div className="flex items-center gap-2 text-sm text-foreground/60">
+                <div className="flex items-center gap-2 text-sm text-foreground">
                   <MapPin className="h-4 w-4 text-primary" />
                   {asset.location}
                 </div>

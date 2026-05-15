@@ -16,7 +16,7 @@ export function SEOPreview({ title, description, imageUrl, url = "https://atrave
     <div className="grid gap-8 md:grid-cols-2">
       {/* Google Preview */}
       <div className="space-y-4">
-        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-foreground/40">
+        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-foreground">
           <Globe className="h-3 w-3" />
           Busca no Google
         </div>
@@ -37,7 +37,7 @@ export function SEOPreview({ title, description, imageUrl, url = "https://atrave
 
       {/* Social Card Preview (WhatsApp/Facebook) */}
       <div className="space-y-4">
-        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-foreground/40">
+        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-foreground">
           <Share2 className="h-3 w-3" />
           Redes Sociais e WhatsApp
         </div>
@@ -48,15 +48,15 @@ export function SEOPreview({ title, description, imageUrl, url = "https://atrave
             </div>
           ) : (
             <div className="aspect-[1200/630] w-full bg-muted flex items-center justify-center border-b border-border">
-              <span className="text-xs text-foreground/30 font-medium uppercase tracking-widest">Sem Imagem</span>
+              <span className="text-xs text-foreground font-medium uppercase tracking-widest">Sem Imagem</span>
             </div>
           )}
           <div className="p-4 bg-muted/30">
-            <div className="text-[12px] text-foreground/40 uppercase tracking-wider mb-1">ATRAVESSAMENTOS.ART</div>
+            <div className="text-[12px] text-foreground uppercase tracking-wider mb-1">ATRAVESSAMENTOS.ART</div>
             <h4 className="text-[16px] font-bold text-foreground mb-1 line-clamp-1">
               {title || "Título da Travessia"}
             </h4>
-            <p className="text-[13px] text-foreground/60 line-clamp-2 leading-snug">
+            <p className="text-[13px] text-foreground line-clamp-2 leading-snug">
               {description || "A descrição de como o coletivo é visto nas redes sociais aparecerá aqui..."}
             </p>
           </div>

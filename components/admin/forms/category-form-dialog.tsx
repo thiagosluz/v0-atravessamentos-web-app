@@ -166,7 +166,7 @@ function ColorPicker({ defaultValue }: { defaultValue: string }) {
 
       {/* Live preview */}
       <div className="flex items-center gap-2 rounded-lg border border-border bg-muted/40 px-3 py-2">
-        <span className="text-xs text-foreground/60">Preview:</span>
+        <span className="text-xs text-foreground">Preview:</span>
         <span
           className={cn(
             "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold",

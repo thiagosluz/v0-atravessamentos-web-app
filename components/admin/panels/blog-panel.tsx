@@ -59,7 +59,7 @@ export function BlogPanel({
       render: (post) => (
         <div className="min-w-0">
           <p className="truncate font-medium">{post.title}</p>
-          <p className="truncate text-xs text-foreground/50">Por {post.author}</p>
+          <p className="truncate text-xs text-foreground">Por {post.author}</p>
         </div>
       ),
     },
@@ -69,7 +69,7 @@ export function BlogPanel({
       label: "Data",
       sortable: true,
       render: (post) => (
-        <span className="text-sm text-foreground/65">
+        <span className="text-sm text-foreground">
           {new Date(post.date).toLocaleDateString("pt-BR")}
         </span>
       ),
@@ -83,7 +83,7 @@ export function BlogPanel({
           <h2 className="font-display text-lg font-bold tracking-tight md:text-xl">
             Diário de Travessia
           </h2>
-          <p className="mt-1 text-sm text-foreground/65">Gerencie os posts do blog e artigos.</p>
+          <p className="mt-1 text-sm text-foreground">Gerencie os posts do blog e artigos.</p>
         </div>
         <BlogFormDialog
           categories={categories.filter((c) => c.type === "post")}

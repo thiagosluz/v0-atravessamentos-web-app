@@ -87,7 +87,7 @@ export default async function LoginPage() {
               <h2 className="font-display text-3xl font-bold tracking-tight">
                 Bem-vinde de volta
               </h2>
-              <p className="mt-2 text-sm text-foreground/55">
+              <p className="mt-2 text-sm text-foreground">
                 Use seu e-mail e senha de acesso ao painel.
               </p>
             </div>

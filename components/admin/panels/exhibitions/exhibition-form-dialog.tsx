@@ -108,7 +108,7 @@ export function ExhibitionFormDialog({
             {/* Coluna de Metadados */}
             <div className="space-y-6">
               <div className="space-y-4">
-                <h4 className="text-sm font-bold uppercase tracking-wider text-foreground/40">Conceito & Identidade</h4>
+                <h4 className="text-sm font-bold uppercase tracking-wider text-foreground">Conceito & Identidade</h4>
                 <div className="space-y-2">
                   <label className="text-xs font-medium">Título da Exposição</label>
                   <Input 
@@ -169,7 +169,7 @@ export function ExhibitionFormDialog({
             <div className="space-y-6 border-l pl-8">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-sm font-bold uppercase tracking-wider text-foreground/40">Mesa de Curadoria</h4>
+                  <h4 className="text-sm font-bold uppercase tracking-wider text-foreground">Mesa de Curadoria</h4>
                   <Badge variant="secondary" className="rounded-full">
                     {formData.asset_ids.length} selecionados
                   </Badge>
@@ -178,7 +178,7 @@ export function ExhibitionFormDialog({
                 {/* Filtros e Busca */}
                 <div className="space-y-4 bg-muted/30 p-4 rounded-2xl border">
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground/40" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground" />
                     <Input 
                       placeholder="Buscar no acervo..." 
                       value={searchQuery}
@@ -188,7 +188,7 @@ export function ExhibitionFormDialog({
                   </div>
                   
                   <div className="flex flex-wrap gap-2 items-center">
-                    <span className="text-[10px] font-bold uppercase text-foreground/30 mr-1">Filtrar por:</span>
+                    <span className="text-[10px] font-bold uppercase text-foreground mr-1">Filtrar por:</span>
                     <Badge 
                       variant={activeFilter === null ? "default" : "outline"}
                       className="cursor-pointer rounded-full transition-all"
@@ -213,7 +213,7 @@ export function ExhibitionFormDialog({
                 <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 overflow-y-auto max-h-[450px] pr-2 custom-scrollbar">
                   {filteredAssets.length === 0 ? (
                     <div className="col-span-full py-12 text-center">
-                      <p className="text-sm text-foreground/40 italic">Nenhum ativo encontrado com estes filtros.</p>
+                      <p className="text-sm text-foreground italic">Nenhum ativo encontrado com estes filtros.</p>
                     </div>
                   ) : (
                     filteredAssets.map((asset) => {

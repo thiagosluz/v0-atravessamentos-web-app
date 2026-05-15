@@ -126,7 +126,7 @@ function CategoryManager({ type, title, description, categories, onChange }: Cat
           <h2 className="font-display text-lg font-bold tracking-tight md:text-xl">
             {title}
           </h2>
-          <p className="mt-1 text-sm text-foreground/65">
+          <p className="mt-1 text-sm text-foreground">
             {description}
           </p>
         </div>
@@ -148,7 +148,7 @@ function CategoryManager({ type, title, description, categories, onChange }: Cat
           <TableBody>
             {categories.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="py-12 text-center text-foreground/60">
+                <TableCell colSpan={5} className="py-12 text-center text-foreground">
                   Nenhuma categoria cadastrada.
                 </TableCell>
               </TableRow>
@@ -156,17 +156,17 @@ function CategoryManager({ type, title, description, categories, onChange }: Cat
               categories.sort((a,b) => a.sort_order - b.sort_order).map((cat) => (
                 <TableRow key={cat.id} className="border-border">
                   <TableCell>
-                    <GripVertical className="h-4 w-4 text-foreground/20 cursor-grab" />
+                    <GripVertical className="h-4 w-4 text-foreground cursor-grab" />
                   </TableCell>
                   <TableCell className="font-medium">{cat.name}</TableCell>
-                  <TableCell className="text-foreground/60 font-mono text-xs">{cat.slug}</TableCell>
+                  <TableCell className="text-foreground font-mono text-xs">{cat.slug}</TableCell>
                   <TableCell>
                     {cat.color ? (
                       <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold bg-${cat.color}-500/15 text-${cat.color}-700 dark:text-${cat.color}-400 border border-${cat.color}-500/30`}>
                         {cat.color}
                       </span>
                     ) : (
-                      <span className="text-xs text-foreground/40">—</span>
+                      <span className="text-xs text-foreground">—</span>
                     )}
                   </TableCell>
                   <TableCell className="text-right">

@@ -42,7 +42,7 @@ export function Pagination({ totalCount, pageSize, currentPage, paramName }: Pag
 
   return (
     <div className="flex items-center justify-between border-t border-border p-4 px-6">
-      <p className="text-xs text-foreground/50">
+      <p className="text-xs text-foreground">
         Mostrando <span className="font-medium text-foreground">{(currentPage - 1) * pageSize + 1}</span> a{" "}
         <span className="font-medium text-foreground">{Math.min(currentPage * pageSize, totalCount)}</span> de{" "}
         <span className="font-medium text-foreground">{totalCount}</span> resultados
@@ -62,7 +62,7 @@ export function Pagination({ totalCount, pageSize, currentPage, paramName }: Pag
         <div className="flex items-center gap-1 px-2">
           {uniquePages.map((page, i) => (
             page === "ellipsis" ? (
-              <MoreHorizontal key={`ellipsis-${i}`} className="h-4 w-4 text-foreground/30" />
+              <MoreHorizontal key={`ellipsis-${i}`} className="h-4 w-4 text-foreground" />
             ) : (
               <button
                 key={`page-${page}`}
@@ -71,7 +71,7 @@ export function Pagination({ totalCount, pageSize, currentPage, paramName }: Pag
                   "flex h-8 w-8 items-center justify-center rounded-lg text-xs font-medium transition-colors",
                   currentPage === page
                     ? "bg-primary text-primary-foreground"
-                    : "text-foreground/60 hover:bg-muted hover:text-foreground"
+                    : "text-foreground hover:bg-muted hover:text-foreground"
                 )}
               >
                 {page}

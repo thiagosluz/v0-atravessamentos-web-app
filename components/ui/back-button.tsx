@@ -13,7 +13,7 @@ export function BackButton({ href, label = "Voltar para o início", className }:
     <Link 
       href={href} 
       className={cn(
-        "inline-flex items-center gap-2 text-sm font-medium text-foreground/50 hover:text-primary transition-colors group",
+        "inline-flex items-center gap-2 text-sm font-medium text-foreground hover:text-primary transition-colors group",
         className
       )}
     >

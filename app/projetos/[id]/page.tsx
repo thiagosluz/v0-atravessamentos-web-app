@@ -132,11 +132,11 @@ export default async function ProjectPage({ params }: Props) {
           {project.description ? (
             <SafeHTML 
               content={project.description} 
-              className="prose prose-lg max-w-none text-foreground/80 leading-relaxed prose-headings:font-display prose-headings:font-bold prose-headings:tracking-tight prose-a:text-primary prose-img:rounded-3xl"
+              className="prose prose-lg max-w-none text-foreground leading-relaxed prose-headings:font-display prose-headings:font-bold prose-headings:tracking-tight prose-a:text-primary prose-img:rounded-3xl"
             />
           ) : (
             <div className="rounded-2xl border border-dashed border-border bg-muted/40 p-8 text-center">
-              <p className="text-sm text-foreground/50">
+              <p className="text-sm text-foreground">
                 ✏️ O conteúdo completo deste projeto pode ser editado pelo painel administrativo.
               </p>
             </div>

@@ -50,13 +50,13 @@ export function CookieConsent() {
                   <h3 className="font-display text-lg font-bold tracking-tight text-foreground dark:text-white">
                     Atravessamos com cookies
                   </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-foreground/70">
+                  <p className="mt-2 text-sm leading-relaxed text-foreground">
                     Utilizamos cookies para entender como você atravessa nosso conteúdo e melhorar sua experiência. Tudo bem para você?
                   </p>
                 </div>
                 <button 
                   onClick={() => setIsOpen(false)}
-                  className="text-foreground/30 hover:text-foreground transition-colors"
+                  className="text-foreground hover:text-foreground transition-colors"
                   aria-label="Fechar"
                 >
                   <X className="h-4 w-4" />
@@ -75,7 +75,7 @@ export function CookieConsent() {
               <div className="mt-4 text-center">
                 <Link 
                   href="/privacidade" 
-                  className="text-[10px] font-medium uppercase tracking-widest text-foreground/30 hover:text-primary transition-colors"
+                  className="text-[10px] font-medium uppercase tracking-widest text-foreground hover:text-primary transition-colors"
                 >
                   Política de Privacidade
                 </Link>

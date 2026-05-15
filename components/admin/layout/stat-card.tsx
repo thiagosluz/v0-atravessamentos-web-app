@@ -16,7 +16,7 @@ export function StatCard({ label, value, trend, icon: Icon, accent, variation }:
   return (
     <div className="rounded-2xl border border-border bg-card p-5">
       <div className="flex items-start justify-between">
-        <p className="text-sm text-foreground/65">{label}</p>
+        <p className="text-sm text-foreground">{label}</p>
         <span className={cn("flex h-9 w-9 items-center justify-center rounded-xl", accent)}>
           <Icon className="h-4 w-4" />
         </span>
@@ -29,7 +29,7 @@ export function StatCard({ label, value, trend, icon: Icon, accent, variation }:
           </span>
         )}
       </p>
-      <p className="mt-1 text-xs text-foreground/60">{trend}</p>
+      <p className="mt-1 text-xs text-foreground">{trend}</p>
     </div>
   )
 }

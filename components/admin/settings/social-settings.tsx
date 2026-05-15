@@ -19,14 +19,14 @@ export function SocialSettings({ settings, setSettings }: SocialSettingsProps) {
           <Mail className="h-5 w-5 text-primary" />
           Canais de Contato
         </h3>
-        <p className="text-sm text-foreground/60 mt-1">Links das redes sociais e e-mail oficial.</p>
+        <p className="text-sm text-foreground mt-1">Links das redes sociais e e-mail oficial.</p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="contact_email">E-mail Público</Label>
           <div className="relative">
-            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground/40" />
+            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground" />
             <Input
               id="contact_email"
               value={settings.contact_email}
@@ -50,7 +50,7 @@ export function SocialSettings({ settings, setSettings }: SocialSettingsProps) {
         <div className="space-y-2">
           <Label htmlFor="instagram">Instagram</Label>
           <div className="relative">
-            <Instagram className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground/40" />
+            <Instagram className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground" />
             <Input
               id="instagram"
               value={settings.instagram_url || ""}
@@ -63,7 +63,7 @@ export function SocialSettings({ settings, setSettings }: SocialSettingsProps) {
         <div className="space-y-2">
           <Label htmlFor="youtube">YouTube</Label>
           <div className="relative">
-            <Youtube className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground/40" />
+            <Youtube className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground" />
             <Input
               id="youtube"
               value={settings.youtube_url || ""}

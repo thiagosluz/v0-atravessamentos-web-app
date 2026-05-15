@@ -14,7 +14,7 @@ export function ExhibitionsGrid({ exhibitions, onEdit, onDelete }: ExhibitionsGr
   if (exhibitions.length === 0) {
     return (
       <div className="py-24 text-center">
-        <p className="text-foreground/40 italic">Nenhuma exposição criada ainda.</p>
+        <p className="text-foreground italic">Nenhuma exposição criada ainda.</p>
       </div>
     )
   }

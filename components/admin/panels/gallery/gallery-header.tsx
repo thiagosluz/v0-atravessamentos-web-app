@@ -11,7 +11,7 @@ export function GalleryHeader() {
           <ImageIcon className="h-5 w-5 text-primary" />
           Acervo de Mídias
         </h3>
-        <p className="text-sm text-foreground/65">
+        <p className="text-sm text-foreground">
           Gerencie o repositório de imagens e vídeos do coletivo.
         </p>
       </div>

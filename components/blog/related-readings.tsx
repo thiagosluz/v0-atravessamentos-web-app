@@ -30,7 +30,7 @@ export async function RelatedReadings({ currentPostId, category, tags = [] }: Re
         </h2>
         <Link 
           href="/#diario" 
-          className="text-sm font-medium text-foreground/50 hover:text-primary transition-colors flex items-center gap-1.5"
+          className="text-sm font-medium text-foreground hover:text-primary transition-colors flex items-center gap-1.5"
         >
           Ver todo o diário
           <ArrowRight className="h-3.5 w-3.5" />
@@ -69,13 +69,13 @@ export async function RelatedReadings({ currentPostId, category, tags = [] }: Re
             </div>
             
             <div className="flex-1 flex flex-col">
-              <span className="text-[10px] font-medium text-foreground/40 mb-1.5 uppercase tracking-widest">
+              <span className="text-[10px] font-medium text-foreground mb-1.5 uppercase tracking-widest">
                 {formatDate(post.date)}
               </span>
               <h3 className="font-display text-lg font-bold leading-tight group-hover:text-primary transition-colors line-clamp-2">
                 {post.title}
               </h3>
-              <p className="mt-2 text-sm text-foreground/60 line-clamp-2 leading-relaxed">
+              <p className="mt-2 text-sm text-foreground line-clamp-2 leading-relaxed">
                 {post.excerpt}
               </p>
             </div>

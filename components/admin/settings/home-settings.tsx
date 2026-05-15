@@ -39,7 +39,7 @@ export function HomeSettings({ settings, setSettings }: HomeSettingsProps) {
             value={settings.hero_image_url || ""}
             onChange={(url) => setSettings({ ...settings, hero_image_url: url })}
           />
-          <p className="text-xs text-foreground/40">
+          <p className="text-xs text-foreground">
             A imagem principal que aparece ao lado do título do coletivo.
           </p>
         </div>

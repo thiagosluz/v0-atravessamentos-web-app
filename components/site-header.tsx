@@ -72,7 +72,7 @@ export function SiteHeader({ onOpenAdmin }: SiteHeaderProps) {
                   "relative rounded-full px-4 py-2 text-sm font-medium transition-colors",
                   isActive
                     ? "text-foreground font-semibold after:absolute after:bottom-1 after:left-1/2 after:h-1 after:w-1 after:rounded-full after:bg-primary after:-translate-x-1/2"
-                    : "text-foreground/80 hover:text-foreground"
+                    : "text-foreground hover:text-foreground"
                 )}
               >
                 {item.label}
@@ -110,7 +110,7 @@ export function SiteHeader({ onOpenAdmin }: SiteHeaderProps) {
                 key={item.href}
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className="rounded-lg px-3 py-3 text-base font-medium text-foreground/80 hover:bg-foreground/5"
+                className="rounded-lg px-3 py-3 text-base font-medium text-foreground hover:bg-foreground/5"
               >
                 {item.label}
               </Link>

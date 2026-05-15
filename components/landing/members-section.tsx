@@ -65,7 +65,7 @@ const overlayPatterns = [
               Um coletivo que se faz de muitas{" "}
               <span className="italic font-light text-primary">vozes</span>.
             </h2>
-            <p className="mt-5 text-lg text-foreground/75 md:text-xl">
+            <p className="mt-5 text-lg text-foreground md:text-xl">
               Educadoras, artistas e pesquisadoras que tecem juntas as travessias do coletivo.
               Encontre quem caminha conosco.
             </p>
@@ -123,7 +123,7 @@ const overlayPatterns = [
                       <h3 className="font-display text-lg font-bold leading-tight tracking-tight">
                         {member.name}
                       </h3>
-                      <p className="mt-0.5 text-sm text-foreground/65">{member.role}</p>
+                      <p className="mt-0.5 text-sm text-foreground">{member.role}</p>
                       <div className="mt-2 flex flex-wrap gap-1.5">
                         {member.tags.map((tag) => (
                           <span

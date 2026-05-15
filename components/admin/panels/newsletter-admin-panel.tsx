@@ -120,7 +120,7 @@ export function NewsletterAdminPanel() {
               "flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold transition-all",
               activeTab === "subscribers" 
                 ? "bg-background shadow-lg shadow-black/5 text-primary" 
-                : "text-foreground/40 hover:text-foreground/60"
+                : "text-foreground hover:text-foreground"
             )}
           >
             <Users className="h-4 w-4" />
@@ -135,7 +135,7 @@ export function NewsletterAdminPanel() {
               "flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold transition-all",
               activeTab === "history" 
                 ? "bg-background shadow-lg shadow-black/5 text-primary" 
-                : "text-foreground/40 hover:text-foreground/60"
+                : "text-foreground hover:text-foreground"
             )}
           >
             <HistoryIcon className="h-4 w-4" />
@@ -146,7 +146,7 @@ export function NewsletterAdminPanel() {
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-24 gap-4">
             <Loader2 className="h-12 w-12 animate-spin text-primary/40" />
-            <p className="text-sm font-display italic text-foreground/50">Sincronizando dados...</p>
+            <p className="text-sm font-display italic text-foreground">Sincronizando dados...</p>
           </div>
         ) : (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -172,7 +172,7 @@ export function NewsletterAdminPanel() {
             <AlertDialogTitle className="text-2xl font-display font-black uppercase italic tracking-tight">
               Remover Assinante
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-base text-foreground/60">
+            <AlertDialogDescription className="text-base text-foreground">
               Tem certeza que deseja remover <strong>{subscriberToRemove}</strong> da lista de newsletter? 
               O usuário deixará de receber comunicações imediatamente.
             </AlertDialogDescription>
@@ -201,7 +201,7 @@ export function NewsletterAdminPanel() {
             <AlertDialogTitle className="text-2xl font-display font-black uppercase italic tracking-tight">
               Disparar Novidades
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-base text-foreground/60">
+            <AlertDialogDescription className="text-base text-foreground">
               Deseja disparar o último conteúdo publicado para todos os <strong>{subscribers?.length || 0} assinantes</strong> agora?
               Esta ação enviará e-mails via Resend imediatamente.
             </AlertDialogDescription>

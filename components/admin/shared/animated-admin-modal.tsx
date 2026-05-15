@@ -54,7 +54,7 @@ export function AnimatedAdminModal({
                   {title}
                 </h2>
                 {description && (
-                  <p className="mt-1 text-sm text-foreground/55">
+                  <p className="mt-1 text-sm text-foreground">
                     {description}
                   </p>
                 )}
@@ -62,7 +62,7 @@ export function AnimatedAdminModal({
               <button
                 type="button"
                 onClick={() => !isPending && onClose()}
-                className="rounded-full p-1.5 text-foreground/40 hover:bg-muted hover:text-foreground transition-colors"
+                className="rounded-full p-1.5 text-foreground hover:bg-muted hover:text-foreground transition-colors"
                 aria-label="Fechar"
               >
                 <X className="h-4 w-4" />

@@ -70,7 +70,7 @@ export function ContactForm() {
             name="name"
             placeholder="Como podemos te chamar?"
             required
-            className="h-12 rounded-2xl border-foreground/10 bg-foreground/5 text-foreground placeholder:text-foreground/40 focus:border-primary focus:ring-primary/20 transition-all"
+            className="h-12 rounded-2xl border-foreground/10 bg-foreground/5 text-foreground placeholder:text-foreground focus:border-primary focus:ring-primary/20 transition-all"
           />
         </div>
         <div className="space-y-2">
@@ -83,7 +83,7 @@ export function ContactForm() {
             type="email"
             placeholder="onde te respondemos?"
             required
-            className="h-12 rounded-2xl border-foreground/10 bg-foreground/5 text-foreground placeholder:text-foreground/40 focus:border-primary focus:ring-primary/20 transition-all"
+            className="h-12 rounded-2xl border-foreground/10 bg-foreground/5 text-foreground placeholder:text-foreground focus:border-primary focus:ring-primary/20 transition-all"
           />
         </div>
       </div>
@@ -115,7 +115,7 @@ export function ContactForm() {
           name="subject"
           placeholder="Um resumo breve"
           required
-          className="h-12 rounded-2xl border-foreground/10 bg-foreground/5 text-foreground placeholder:text-foreground/40 focus:border-primary focus:ring-primary/20 transition-all"
+          className="h-12 rounded-2xl border-foreground/10 bg-foreground/5 text-foreground placeholder:text-foreground focus:border-primary focus:ring-primary/20 transition-all"
         />
       </div>
 
@@ -128,7 +128,7 @@ export function ContactForm() {
           name="message"
           placeholder="Escreva aqui seu pensamento, proposta ou dúvida..."
           required
-          className="min-h-[160px] resize-none rounded-3xl border-foreground/10 bg-foreground/5 text-foreground placeholder:text-foreground/40 focus:border-primary focus:ring-primary/20 transition-all"
+          className="min-h-[160px] resize-none rounded-3xl border-foreground/10 bg-foreground/5 text-foreground placeholder:text-foreground focus:border-primary focus:ring-primary/20 transition-all"
         />
       </div>
 

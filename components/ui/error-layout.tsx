@@ -54,7 +54,7 @@ export function ErrorLayout({ code, title, message, action }: ErrorLayoutProps) 
             {title}
           </h1>
           
-          <p className="text-lg text-foreground/60 max-w-md mx-auto mb-10 leading-relaxed font-medium">
+          <p className="text-lg text-foreground max-w-md mx-auto mb-10 leading-relaxed font-medium">
             {message}
           </p>
 
@@ -83,7 +83,7 @@ export function ErrorLayout({ code, title, message, action }: ErrorLayoutProps) 
         </div>
 
         {/* Decorative path indicator */}
-        <div className="mt-12 flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-foreground/20">
+        <div className="mt-12 flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-foreground">
           <div className="h-[1px] w-8 bg-current" />
           <span>Atravessamentos Interrompidos</span>
           <div className="h-[1px] w-8 bg-current" />

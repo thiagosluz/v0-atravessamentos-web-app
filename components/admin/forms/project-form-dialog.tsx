@@ -87,7 +87,7 @@ export function ProjectFormDialog({
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 text-foreground/70 hover:text-foreground"
+          className="h-8 w-8 text-foreground hover:text-foreground"
           aria-label="Editar projeto"
           onClick={() => setOpen(true)}
         >
@@ -115,7 +115,7 @@ export function ProjectFormDialog({
               <form id="project-form" onSubmit={handleSubmit} className="space-y-4">
                 {/* Title */}
                 <div className="space-y-1.5">
-                  <label htmlFor="proj-title" className="text-xs font-semibold uppercase tracking-widest text-foreground/50">
+                  <label htmlFor="proj-title" className="text-xs font-semibold uppercase tracking-widest text-foreground">
                     Título *
                   </label>
                   <Input
@@ -132,7 +132,7 @@ export function ProjectFormDialog({
                 {/* Category + Year */}
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
-                    <label htmlFor="proj-category" className="text-xs font-semibold uppercase tracking-widest text-foreground/50">
+                    <label htmlFor="proj-category" className="text-xs font-semibold uppercase tracking-widest text-foreground">
                       Categoria *
                     </label>
                       <select
@@ -151,7 +151,7 @@ export function ProjectFormDialog({
                       </select>
                   </div>
                   <div className="space-y-1.5">
-                    <label htmlFor="proj-year" className="text-xs font-semibold uppercase tracking-widest text-foreground/50">
+                    <label htmlFor="proj-year" className="text-xs font-semibold uppercase tracking-widest text-foreground">
                       Ano *
                     </label>
                     <Input
@@ -170,7 +170,7 @@ export function ProjectFormDialog({
 
                 {/* Status */}
                 <div className="space-y-1.5">
-                  <label htmlFor="proj-status" className="text-xs font-semibold uppercase tracking-widest text-foreground/50">
+                  <label htmlFor="proj-status" className="text-xs font-semibold uppercase tracking-widest text-foreground">
                     Status *
                   </label>
                   <div className="flex flex-wrap gap-2">
@@ -189,7 +189,7 @@ export function ProjectFormDialog({
                               : s === "Rascunho"
                                 ? "border-amber-500 bg-amber-500/10 text-amber-600 dark:text-amber-400"
                                 : "border-primary bg-primary/10 text-primary"
-                            : "border-border bg-background hover:bg-muted text-foreground/70"
+                            : "border-border bg-background hover:bg-muted text-foreground"
                         )}
                       >
                         {s}
@@ -200,7 +200,7 @@ export function ProjectFormDialog({
 
                 {/* Excerpt */}
                 <div className="space-y-1.5">
-                  <label htmlFor="proj-excerpt" className="text-xs font-semibold uppercase tracking-widest text-foreground/50">
+                  <label htmlFor="proj-excerpt" className="text-xs font-semibold uppercase tracking-widest text-foreground">
                     Resumo (Excerpt) *
                   </label>
                   <textarea
@@ -216,7 +216,7 @@ export function ProjectFormDialog({
 
                 {/* Description */}
                 <div className="space-y-1.5">
-                  <label htmlFor="proj-desc" className="text-xs font-semibold uppercase tracking-widest text-foreground/50">
+                  <label htmlFor="proj-desc" className="text-xs font-semibold uppercase tracking-widest text-foreground">
                     Conteúdo Completo (Rich Text)
                   </label>
                   <RichTextEditor 

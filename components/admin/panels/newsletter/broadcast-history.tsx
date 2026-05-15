@@ -23,8 +23,8 @@ export function BroadcastHistory({ history }: BroadcastHistoryProps) {
   if (history.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-24 border-2 border-dashed rounded-3xl bg-muted/20">
-        <History className="h-12 w-12 text-foreground/20 mb-4" />
-        <p className="text-sm font-display italic text-foreground/50">Nenhum disparo realizado até o momento.</p>
+        <History className="h-12 w-12 text-foreground mb-4" />
+        <p className="text-sm font-display italic text-foreground">Nenhum disparo realizado até o momento.</p>
       </div>
     )
   }
@@ -33,7 +33,7 @@ export function BroadcastHistory({ history }: BroadcastHistoryProps) {
     <div className="space-y-4">
       <div className="flex items-center gap-2 mb-6 px-4">
         <History className="h-4 w-4 text-primary" />
-        <h3 className="text-sm font-bold uppercase tracking-wider text-foreground/60">Registros de Transmissão</h3>
+        <h3 className="text-sm font-bold uppercase tracking-wider text-foreground">Registros de Transmissão</h3>
       </div>
 
       <div className="grid gap-4">
@@ -48,14 +48,14 @@ export function BroadcastHistory({ history }: BroadcastHistoryProps) {
                   <Badge variant="outline" className="rounded-full bg-primary/5 text-primary border-primary/20 text-[10px]">
                     {item.category}
                   </Badge>
-                  <span className="text-[10px] text-foreground/40 font-medium uppercase tracking-tighter">
+                  <span className="text-[10px] text-foreground font-medium uppercase tracking-tighter">
                     {format(new Date(item.created_at), "dd 'de' MMMM, yyyy 'às' HH:mm", { locale: ptBR })}
                   </span>
                 </div>
                 <h4 className="text-lg font-display font-bold group-hover:text-primary transition-colors">
                   {item.title}
                 </h4>
-                <p className="text-sm text-foreground/60 line-clamp-1 italic">
+                <p className="text-sm text-foreground line-clamp-1 italic">
                   {item.excerpt}
                 </p>
               </div>
@@ -66,7 +66,7 @@ export function BroadcastHistory({ history }: BroadcastHistoryProps) {
                     <Users className="h-4 w-4" />
                     <span className="text-xl font-display font-black leading-none">{item.count}</span>
                   </div>
-                  <p className="text-[10px] uppercase font-bold text-foreground/40 tracking-widest">Alcance</p>
+                  <p className="text-[10px] uppercase font-bold text-foreground tracking-widest">Alcance</p>
                 </div>
 
                 <div className="text-center">
@@ -74,7 +74,7 @@ export function BroadcastHistory({ history }: BroadcastHistoryProps) {
                     <CheckCircle2 className="h-4 w-4" />
                     <span className="text-[10px] font-bold uppercase">Enviado</span>
                   </div>
-                  <p className="text-[10px] uppercase font-bold text-foreground/40 tracking-widest">Status</p>
+                  <p className="text-[10px] uppercase font-bold text-foreground tracking-widest">Status</p>
                 </div>
 
                 {item.batch_id && (

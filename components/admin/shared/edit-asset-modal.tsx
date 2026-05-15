@@ -178,7 +178,7 @@ export function EditAssetModal({
                 className="h-full w-full object-cover"
               />
             </div>
-            <p className="text-xs text-foreground/40 break-all">{asset.image_url}</p>
+            <p className="text-xs text-foreground break-all">{asset.image_url}</p>
           </div>
 
           {/* Formulário */}
@@ -334,7 +334,7 @@ export function EditAssetModal({
             <AlertDialogTitle className="text-2xl font-display font-black uppercase italic tracking-tight">
               Excluir Memória
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-base text-foreground/60">
+            <AlertDialogDescription className="text-base text-foreground">
               Você tem certeza que deseja excluir permanentemente esta imagem do acervo? 
               Esta ação não pode ser desfeita.
             </AlertDialogDescription>

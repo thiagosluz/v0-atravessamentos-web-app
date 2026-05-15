@@ -47,9 +47,9 @@ export function UrlModal({
           className="relative w-full max-w-sm rounded-2xl border border-border bg-card p-5 shadow-2xl"
         >
           <div className="mb-4 flex items-center justify-between">
-            <h3 className="text-sm font-bold uppercase tracking-widest text-foreground/70">{title}</h3>
+            <h3 className="text-sm font-bold uppercase tracking-widest text-foreground">{title}</h3>
             <button onClick={onClose} className="rounded-full p-1 hover:bg-muted transition-colors">
-              <X className="h-4 w-4 text-foreground/40" />
+              <X className="h-4 w-4 text-foreground" />
             </button>
           </div>
           <div className="space-y-4">

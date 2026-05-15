@@ -99,7 +99,7 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
             </div>
           ) : (
             <div className="py-24 text-center">
-              <p className="text-foreground/40 text-lg">
+              <p className="text-foreground text-lg">
                 Nenhum projeto encontrado
                 {q ? ` para "${q}"` : ""}
                 {category ? ` na categoria ${category}` : ""}.

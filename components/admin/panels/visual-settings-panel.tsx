@@ -167,7 +167,7 @@ export function VisualSettingsPanel({ siteSettings }: VisualSettingsPanelProps) 
           
           <div className="grid gap-6 sm:grid-cols-3">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground/70">Anos de Travessia</label>
+              <label className="text-sm font-medium text-foreground">Anos de Travessia</label>
               <Input 
                 value={settings.stats_years || ""} 
                 onChange={(e) => setSettings(prev => ({ ...prev, stats_years: e.target.value }))}
@@ -176,7 +176,7 @@ export function VisualSettingsPanel({ siteSettings }: VisualSettingsPanelProps) 
               <p className="text-[10px] text-muted-foreground italic">Deixe vazio para ocultar</p>
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground/70">Projetos Realizados</label>
+              <label className="text-sm font-medium text-foreground">Projetos Realizados</label>
               <Input 
                 value={settings.stats_projects || ""} 
                 onChange={(e) => setSettings(prev => ({ ...prev, stats_projects: e.target.value }))}
@@ -185,7 +185,7 @@ export function VisualSettingsPanel({ siteSettings }: VisualSettingsPanelProps) 
               <p className="text-[10px] text-muted-foreground italic">Deixe vazio para ocultar</p>
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground/70">Cidades Alcançadas</label>
+              <label className="text-sm font-medium text-foreground">Cidades Alcançadas</label>
               <Input 
                 value={settings.stats_cities || ""} 
                 onChange={(e) => setSettings(prev => ({ ...prev, stats_cities: e.target.value }))}

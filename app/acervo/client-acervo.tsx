@@ -45,7 +45,7 @@ export function ClientAcervo() {
     return (
       <div className="flex flex-col items-center justify-center py-24 gap-4">
         <Loader2 className="h-12 w-12 animate-spin text-primary/40" />
-        <p className="text-sm font-display italic text-foreground/50">Abrindo os baús da memória...</p>
+        <p className="text-sm font-display italic text-foreground">Abrindo os baús da memória...</p>
       </div>
     )
   }
@@ -53,7 +53,7 @@ export function ClientAcervo() {
   if (assets.length === 0) {
     return (
       <div className="text-center py-24 border-2 border-dashed border-border rounded-3xl">
-        <p className="text-foreground/50 italic">O acervo está sendo curado. Volte em breve.</p>
+        <p className="text-foreground italic">O acervo está sendo curado. Volte em breve.</p>
       </div>
     )
   }
@@ -66,7 +66,7 @@ export function ClientAcervo() {
           onClick={() => setFilter(null)}
           className={cn(
             "rounded-full border px-6 py-2 text-sm font-medium transition-all",
-            !filter ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground/60 border-border hover:border-primary/40"
+            !filter ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:border-primary/40"
           )}
         >
           Todos
@@ -77,7 +77,7 @@ export function ClientAcervo() {
             onClick={() => setFilter(tag)}
             className={cn(
               "rounded-full border px-6 py-2 text-sm font-medium transition-all",
-              filter === tag ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground/60 border-border hover:border-primary/40"
+              filter === tag ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:border-primary/40"
             )}
           >
             #{tag}

@@ -59,19 +59,19 @@ export function DiaryFilters({ categories, currentCategory, currentQ }: DiaryFil
     <div className={cn("mb-12 space-y-4 transition-opacity", isPending && "opacity-50")}>
       {/* Busca */}
       <form onSubmit={handleSearch} className="relative">
-        <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground/40" />
+        <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground" />
         <input
           name="q"
           type="search"
           defaultValue={currentQ}
           placeholder="Buscar no diário…"
-          className="h-12 w-full rounded-full border border-border bg-card pl-11 pr-12 text-sm text-foreground placeholder:text-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all"
+          className="h-12 w-full rounded-full border border-border bg-card pl-11 pr-12 text-sm text-foreground placeholder:text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all"
         />
         {currentQ && (
           <button
             type="button"
             onClick={handleClear}
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-foreground/40 hover:text-foreground"
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-foreground hover:text-foreground"
             aria-label="Limpar busca"
           >
             <X className="h-4 w-4" />
@@ -86,7 +86,7 @@ export function DiaryFilters({ categories, currentCategory, currentQ }: DiaryFil
           data-active={!currentCategory}
           className={cn(
             "rounded-full border border-border px-4 py-1.5 text-xs font-semibold uppercase tracking-widest transition-all",
-            "text-foreground/60 hover:border-foreground/30 hover:text-foreground",
+            "text-foreground hover:border-foreground/30 hover:text-foreground",
             !currentCategory && "border-foreground bg-foreground text-background"
           )}
         >
@@ -103,8 +103,8 @@ export function DiaryFilters({ categories, currentCategory, currentQ }: DiaryFil
               className={cn(
                 "rounded-full border px-4 py-1.5 text-xs font-semibold uppercase tracking-widest transition-all",
                 isActive
-                  ? `border-${color}-500/30 bg-${color}-500/10 text-${color}-600 dark:text-${color}-400`
-                  : "border-border text-foreground/60 hover:border-foreground/30 hover:text-foreground"
+                  ? `border-${color}-500/40 bg-${color}-500/10 text-${color}-700 dark:text-${color}-400`
+                  : "border-border text-foreground hover:border-foreground/30 hover:text-foreground"
               )}
             >
               {cat.name}
@@ -115,7 +115,7 @@ export function DiaryFilters({ categories, currentCategory, currentQ }: DiaryFil
         {hasFilter && (
           <button
             onClick={handleClear}
-            className="ml-auto flex items-center gap-1.5 text-xs text-foreground/40 hover:text-foreground transition-colors"
+            className="ml-auto flex items-center gap-1.5 text-xs text-foreground hover:text-foreground transition-colors"
           >
             <X className="h-3 w-3" />
             Limpar filtros

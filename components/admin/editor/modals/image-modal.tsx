@@ -79,7 +79,7 @@ export function ImageUploadModal({
           className="relative w-full max-w-sm rounded-2xl border border-border bg-card p-5 shadow-2xl"
         >
           <div className="mb-4 flex items-center justify-between">
-            <h3 className="text-sm font-bold uppercase tracking-widest text-foreground/70">
+            <h3 className="text-sm font-bold uppercase tracking-widest text-foreground">
               Inserir Imagem Editorial
             </h3>
             <button
@@ -87,13 +87,13 @@ export function ImageUploadModal({
               disabled={loading}
               className="rounded-full p-1 hover:bg-muted transition-colors"
             >
-              <X className="h-4 w-4 text-foreground/40" />
+              <X className="h-4 w-4 text-foreground" />
             </button>
           </div>
 
           <div className="space-y-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-foreground/50">Legenda (Opcional)</label>
+              <label className="text-xs font-semibold text-foreground">Legenda (Opcional)</label>
               <Input
                 placeholder="Ex: Detalhe da obra América Invertida..."
                 value={caption}
@@ -112,14 +112,14 @@ export function ImageUploadModal({
               {loading ? (
                 <div className="flex flex-col items-center">
                   <Loader2 className="h-8 w-8 text-primary animate-spin mb-2" />
-                  <p className="text-xs font-medium text-foreground/60 text-center">
+                  <p className="text-xs font-medium text-foreground text-center">
                     Enviando para o Storage...
                   </p>
                 </div>
               ) : (
                 <>
-                  <Upload className="h-8 w-8 text-foreground/30 mb-2" />
-                  <p className="text-xs text-foreground/50 text-center">
+                  <Upload className="h-8 w-8 text-foreground mb-2" />
+                  <p className="text-xs text-foreground text-center">
                     Clique ou arraste para enviar (Máx 2MB)
                   </p>
                   <input

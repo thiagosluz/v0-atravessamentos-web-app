@@ -17,7 +17,7 @@ export function NewsletterHeader({ onBroadcast, isBroadcasting }: NewsletterHead
           <Mail className="h-5 w-5 text-primary" />
           Gestão de Newsletter
         </h3>
-        <p className="text-sm text-foreground/60">Acompanhe seus assinantes e envie novidades.</p>
+        <p className="text-sm text-foreground">Acompanhe seus assinantes e envie novidades.</p>
       </div>
       <Button 
         onClick={onBroadcast} 

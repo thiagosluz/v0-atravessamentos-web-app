@@ -42,7 +42,7 @@ function DiaryEntry({
   const getCategoryColor = (catName: string) => {
     const cat = categories.find(c => c.name === catName)
     const color = cat?.color || "primary"
-    return `bg-${color}-500/10 text-${color}-600 dark:text-${color}-400 border border-${color}-500/20`
+    return `bg-${color}-500/10 text-${color}-700 dark:text-${color}-400 border border-${color}-500/20`
   }
 
   return (
@@ -70,10 +70,10 @@ function DiaryEntry({
               >
                 {post.category}
               </span>
-              <time className="text-xs text-foreground/50 tabular-nums">
+              <time className="text-xs text-foreground tabular-nums">
                 {formatDate(post.date)}
               </time>
-              <span className="inline-flex items-center gap-1 text-xs text-foreground/40">
+              <span className="inline-flex items-center gap-1 text-xs text-foreground">
                 <Clock className="h-3 w-3" />
                 {post.readTime}
               </span>
@@ -85,7 +85,7 @@ function DiaryEntry({
             </h2>
 
             {/* Excerpt */}
-            <p className="text-foreground/65 leading-relaxed line-clamp-3 text-sm md:text-base text-pretty">
+            <p className="text-foreground leading-relaxed line-clamp-3 text-sm md:text-base text-pretty">
               {post.excerpt}
             </p>
 

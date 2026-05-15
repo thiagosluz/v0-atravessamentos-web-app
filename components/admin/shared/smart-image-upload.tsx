@@ -154,10 +154,10 @@ export function SmartImageUpload({ value, onChange }: SmartImageUploadProps) {
               {isProcessing ? <Loader2 className="h-8 w-8 animate-spin" /> : <Upload className="h-8 w-8" />}
             </div>
             <div className="text-center">
-              <p className="font-bold text-foreground/80">
+              <p className="font-bold text-foreground">
                 {isProcessing ? "Processando imagem..." : "Upload da Imagem de SEO"}
               </p>
-              <p className="text-xs text-foreground/40 mt-1 uppercase tracking-widest font-semibold">
+              <p className="text-xs text-foreground mt-1 uppercase tracking-widest font-semibold">
                 Qualquer formato • Ajuste automático • Máx 5MB
               </p>
             </div>

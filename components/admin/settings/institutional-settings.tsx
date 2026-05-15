@@ -22,7 +22,7 @@ export function InstitutionalSettings({ settings, setSettings }: InstitutionalSe
           <Globe className="h-5 w-5 text-primary" />
           Identidade Institucional
         </h3>
-        <p className="text-sm text-foreground/60 mt-1">
+        <p className="text-sm text-foreground mt-1">
           Textos exibidos no rodapé e em metadados globais.
         </p>
       </div>
@@ -46,7 +46,7 @@ export function InstitutionalSettings({ settings, setSettings }: InstitutionalSe
           placeholder="Descrição principal que representa o coletivo em todo o site..."
           className="h-24 resize-none"
         />
-        <p className="text-xs text-foreground/40">
+        <p className="text-xs text-foreground">
           Aparece nos resultados de busca do Google (120-160 caracteres).
         </p>
       </div>
@@ -57,7 +57,7 @@ export function InstitutionalSettings({ settings, setSettings }: InstitutionalSe
           value={settings.og_image_url || ""}
           onChange={(url) => setSettings({ ...settings, og_image_url: url })}
         />
-        <p className="text-xs text-foreground/40">
+        <p className="text-xs text-foreground">
           Aparece no WhatsApp e Redes Sociais. Qualquer imagem enviada será automaticamente
           centralizada com fundo borrado no tamanho ideal (1200x630px).
         </p>
@@ -76,10 +76,10 @@ export function InstitutionalSettings({ settings, setSettings }: InstitutionalSe
 
       <div className="mt-8 pt-8 border-t border-border/50">
         <div className="mb-6">
-          <h4 className="text-sm font-bold uppercase tracking-widest text-foreground/70">
+          <h4 className="text-sm font-bold uppercase tracking-widest text-foreground">
             Prévia da Identidade Digital
           </h4>
-          <p className="text-xs text-foreground/40 mt-1">
+          <p className="text-xs text-foreground mt-1">
             Veja como o Coletivo aparece no mundo digital.
           </p>
         </div>

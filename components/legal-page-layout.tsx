@@ -30,7 +30,7 @@ export function LegalPageLayout({
     <article className="animate-in fade-in slide-in-from-bottom-4 duration-1000">
       <Link 
         href="/" 
-        className="inline-flex items-center gap-2 text-sm font-medium text-foreground/50 hover:text-primary transition-colors mb-8 group"
+        className="inline-flex items-center gap-2 text-sm font-medium text-foreground hover:text-primary transition-colors mb-8 group"
       >
         <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
         Voltar ao início
@@ -57,7 +57,7 @@ export function LegalPageLayout({
       />
 
       {formattedDate && (
-        <div className="mt-12 pt-8 border-t border-border/50 italic text-sm text-foreground/50">
+        <div className="mt-12 pt-8 border-t border-border/50 italic text-sm text-foreground">
           Última atualização: {formattedDate}
         </div>
       )}

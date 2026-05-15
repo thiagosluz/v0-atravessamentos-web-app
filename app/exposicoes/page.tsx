@@ -70,7 +70,7 @@ export default async function ExposicoesPage() {
                   <h2 className="font-display text-3xl md:text-4xl font-bold group-hover:text-primary transition-colors">
                     {ex.title}
                   </h2>
-                  <p className="text-lg text-foreground/60 italic line-clamp-2 leading-relaxed">
+                  <p className="text-lg text-foreground italic line-clamp-2 leading-relaxed">
                     {ex.description}
                   </p>
                 </div>
@@ -78,7 +78,7 @@ export default async function ExposicoesPage() {
             ))
           ) : (
             <div className="col-span-full py-24 text-center border-2 border-dashed border-border rounded-[3rem]">
-              <p className="text-foreground/40 italic">As cortinas estão fechadas. Novas exposições em breve.</p>
+              <p className="text-foreground italic">As cortinas estão fechadas. Novas exposições em breve.</p>
             </div>
           )}
         </div>

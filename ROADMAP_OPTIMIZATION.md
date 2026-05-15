@@ -138,5 +138,10 @@ Este documento consolida as recomendações de arquitetura, performance e tratam
 - **Resultado:** Aumento do potencial de engajamento através do componente "Leituras Relacionadas" ao final de cada post.
 - **Testes:** Suítes de E2E e Unitárias atualizadas para cobrir o ciclo de vida das tags.
 
+### 🧪 Testes de Integração e Acessibilidade (Fase B)
+- **Implementação:** Criação de testes de comportamento para `AdminSidebar` e `CookieConsent` usando Vitest e React Testing Library com mocks de animação.
+- **Acessibilidade:** Implementação do atributo `aria-current="page"` na Sidebar administrativa para navegação assistiva.
+- **Resultado:** Validação de 8 cenários críticos de UI (links ativos, persistência de localStorage e visibilidade controlada).
+
 ---
 *Documento atualizado em 14/05/2026.*

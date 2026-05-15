@@ -23,7 +23,7 @@ export function ClientExhibitionDetail({ assets }: { assets: any[] }) {
   if (!assets || assets.length === 0) {
     return (
       <div className="text-center py-24 border-2 border-dashed border-border rounded-3xl">
-        <p className="text-foreground/50 italic">Esta sala está sendo preparada para visitação.</p>
+        <p className="text-foreground italic">Esta sala está sendo preparada para visitação.</p>
       </div>
     )
   }

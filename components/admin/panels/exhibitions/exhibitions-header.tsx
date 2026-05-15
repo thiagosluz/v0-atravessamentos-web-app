@@ -16,7 +16,7 @@ export function ExhibitionsHeader({ onAdd }: ExhibitionsHeaderProps) {
           <GalleryVertical className="h-5 w-5 text-primary" />
           Salas de Curadoria
         </h3>
-        <p className="text-sm text-foreground/60">Crie narrativas visuais a partir do seu acervo.</p>
+        <p className="text-sm text-foreground">Crie narrativas visuais a partir do seu acervo.</p>
       </div>
       <Button onClick={onAdd} className="rounded-xl bg-primary text-primary-foreground">
         <Plus className="mr-2 h-4 w-4" />

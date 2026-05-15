@@ -48,7 +48,7 @@ export default async function ExhibitionDetailPage({ params }: PageProps) {
             {exhibition.title}
           </h1>
           <div className="h-1 w-24 bg-primary mx-auto rounded-full" />
-          <p className="text-xl md:text-2xl text-foreground/70 italic leading-relaxed font-light">
+          <p className="text-xl md:text-2xl text-foreground italic leading-relaxed font-light">
             {exhibition.description}
           </p>
         </div>

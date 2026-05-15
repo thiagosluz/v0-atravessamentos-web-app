@@ -19,7 +19,7 @@ export function LegalSettings({ settings, setSettings }: LegalSettingsProps) {
           <Shield className="h-5 w-5 text-primary" />
           Links Legais
         </h3>
-        <p className="text-sm text-foreground/60 mt-1">Páginas de conformidade e transparência.</p>
+        <p className="text-sm text-foreground mt-1">Páginas de conformidade e transparência.</p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">

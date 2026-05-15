@@ -40,7 +40,7 @@ export function PageHeader({ label, title, description, className }: PageHeaderP
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.8 }}
-          className="text-xl md:text-2xl text-foreground/70 leading-relaxed max-w-2xl text-pretty"
+          className="text-xl md:text-2xl text-foreground leading-relaxed max-w-2xl text-pretty"
           data-testid="page-header-description"
         >
           {description}

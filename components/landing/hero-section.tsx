@@ -39,7 +39,7 @@ export function HeroSection({ settings }: { settings?: SiteSettings }) {
             className="relative z-20 font-display text-[clamp(2.2rem,11.5vw,9.5rem)] font-bold leading-[0.85] tracking-[-0.04em] md:-mr-48 lg:-mr-64"
           >
             <span className="block">COLETIVO</span>
-            <span className="block italic font-light text-primary mt-2 md:[text-shadow:_-1px_-1px_0_#fff,_1px_-1px_0_#fff,_-1px_1px_0_#fff,_1px_1px_0_#fff]">
+            <span className="block italic font-light text-primary mt-2">
               Atravessamentos
             </span>
           </motion.h1>
@@ -48,7 +48,7 @@ export function HeroSection({ settings }: { settings?: SiteSettings }) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="mt-8 max-w-xl text-lg leading-relaxed text-foreground/80 md:text-xl text-pretty"
+            className="mt-8 max-w-xl text-lg leading-relaxed text-foreground md:text-xl text-pretty"
           >
             Corpo coletivo que escuta, sonha e age.
             <span className="block font-display italic text-foreground">
@@ -86,7 +86,7 @@ export function HeroSection({ settings }: { settings?: SiteSettings }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.7 }}
-            className="mt-12 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs uppercase tracking-widest text-foreground/60"
+            className="mt-12 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs uppercase tracking-widest text-foreground"
           >
             <span>Educação</span>
             <span className="h-1 w-1 rounded-full bg-foreground/40" />

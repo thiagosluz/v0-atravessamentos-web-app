@@ -67,7 +67,7 @@ export function ProjectPanel({
           </div>
           <div className="min-w-0">
             <p className="truncate font-medium">{p.title}</p>
-            <p className="truncate text-xs text-foreground/60 md:hidden">
+            <p className="truncate text-xs text-foreground md:hidden">
               {p.category} · {p.year}
             </p>
           </div>
@@ -80,7 +80,7 @@ export function ProjectPanel({
       label: "Atualizado",
       sortable: true,
       render: (p) => (
-        <span className="text-sm text-foreground/65">
+        <span className="text-sm text-foreground">
           {new Date(p.updatedAt).toLocaleDateString("pt-BR")}
         </span>
       ),
@@ -94,7 +94,7 @@ export function ProjectPanel({
           <h2 className="font-display text-lg font-bold tracking-tight md:text-xl">
             Projetos recentes
           </h2>
-          <p className="mt-1 text-sm text-foreground/65">
+          <p className="mt-1 text-sm text-foreground">
             Gerencie publicações, rascunhos e revisões do coletivo.
           </p>
         </div>

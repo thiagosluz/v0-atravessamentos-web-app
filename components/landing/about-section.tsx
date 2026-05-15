@@ -25,7 +25,7 @@ export function AboutSection({ settings }: { settings?: SiteSettings }) {
             Habitar as <span className="italic font-light">frestas</span>, romper as fronteiras.
           </h2>
 
-          <div className="mt-10 space-y-6 text-lg leading-relaxed text-foreground/85 md:text-xl">
+          <div className="mt-10 space-y-6 text-lg leading-relaxed text-foreground md:text-xl">
             <p>
               Atravessamentos é um corpo coletivo. Somos professoras, artistas, pesquisadoras, mães,
               cineastas, dissidentes — gente que se recusou a caber no que estava posto.
@@ -137,7 +137,7 @@ function Stat({ number, label }: { number: string; label: string }) {
   return (
     <div className="border-t-2 border-foreground/20 pt-3">
       <div className="font-display text-3xl font-bold tracking-tight md:text-4xl">{number}</div>
-      <div className="mt-1 text-xs leading-tight text-foreground/70">{label}</div>
+      <div className="mt-1 text-xs leading-tight text-foreground">{label}</div>
     </div>
   )
 }

@@ -68,7 +68,7 @@ export default async function BlogPostPage({ params }: Props) {
       <div className="mx-auto max-w-4xl px-4 pt-8 md:px-8">
         <Link
           href="/#diario"
-          className="inline-flex items-center gap-2 text-sm text-foreground/50 transition-colors hover:text-foreground"
+          className="inline-flex items-center gap-2 text-sm text-foreground transition-colors hover:text-foreground"
         >
           <ArrowLeft className="h-4 w-4" />
           Diário de Travessia
@@ -87,7 +87,7 @@ export default async function BlogPostPage({ params }: Props) {
           >
             {post.category}
           </span>
-          <span className="text-sm text-foreground/50">{formatDate(post.date)}</span>
+          <span className="text-sm text-foreground">{formatDate(post.date)}</span>
         </div>
 
         {/* Title */}
@@ -96,7 +96,7 @@ export default async function BlogPostPage({ params }: Props) {
         </h1>
 
         {/* Byline */}
-        <div className="mt-6 flex flex-wrap items-center gap-4 border-b border-border pb-6 text-sm text-foreground/60">
+        <div className="mt-6 flex flex-wrap items-center gap-4 border-b border-border pb-6 text-sm text-foreground">
           <span className="inline-flex items-center gap-1.5">
             <User className="h-4 w-4" />
             {post.author}
@@ -122,18 +122,18 @@ export default async function BlogPostPage({ params }: Props) {
 
         {/* Excerpt / Content */}
         <div className="mt-10 space-y-6">
-          <p className="text-xl font-medium leading-relaxed text-foreground/80 md:text-2xl">
+          <p className="text-xl font-medium leading-relaxed text-foreground md:text-2xl">
             {post.excerpt}
           </p>
 
           {post.content ? (
             <SafeHTML 
               content={post.content} 
-              className="prose prose-lg max-w-none text-foreground/80 leading-relaxed"
+              className="prose prose-lg max-w-none text-foreground leading-relaxed"
             />
           ) : (
             <div className="rounded-2xl border border-dashed border-border bg-muted/40 p-8 text-center">
-              <p className="text-sm text-foreground/50">
+              <p className="text-sm text-foreground">
                 ✏️ O texto completo deste post pode ser editado pelo painel administrativo.
               </p>
             </div>
@@ -144,7 +144,7 @@ export default async function BlogPostPage({ params }: Props) {
         <div className="mt-16 border-t border-border pt-8">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-foreground/40">
+              <p className="text-xs font-semibold uppercase tracking-widest text-foreground">
                 Escrito por
               </p>
               <p className="mt-1 font-display text-xl font-bold">{post.author}</p>

@@ -77,11 +77,12 @@ export function CommandMenu() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="flex h-10 w-10 items-center justify-center rounded-full border border-foreground/20 bg-transparent text-foreground/60 transition-colors hover:bg-foreground/5 hover:text-foreground md:h-9 md:w-fit md:justify-start md:px-3 md:gap-2"
+        aria-label="Abrir busca global"
+        className="flex h-10 w-10 items-center justify-center rounded-full border border-foreground/20 bg-transparent text-foreground transition-colors hover:bg-foreground/5 hover:text-foreground md:h-9 md:w-fit md:justify-start md:px-3 md:gap-2"
       >
-        <Search className="h-4 w-4" />
+        <Search className="h-4 w-4" aria-hidden="true" />
         <span className="hidden text-sm font-medium md:inline-flex">Buscar...</span>
-        <kbd className="pointer-events-none hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100 md:inline-flex">
+        <kbd aria-hidden="true" className="pointer-events-none hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100 md:inline-flex">
           <span className="text-xs">⌘</span>K
         </kbd>
       </button>

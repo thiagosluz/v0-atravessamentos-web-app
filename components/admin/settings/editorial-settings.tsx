@@ -21,7 +21,7 @@ export function EditorialSettings({ settings, setSettings }: EditorialSettingsPr
           <FileText className="h-5 w-5 text-primary" />
           Conteúdo Editorial das Páginas Legais
         </h3>
-        <p className="text-sm text-foreground/60 mt-1">
+        <p className="text-sm text-foreground mt-1">
           Edite o texto completo que aparece nas páginas de conformidade.
         </p>
       </div>

@@ -55,7 +55,7 @@ export function MemberPanel({
           {m.tags.map((tag) => (
             <span
               key={tag}
-              className="rounded-full border border-border px-2 py-0.5 text-[10px] text-foreground/60"
+              className="rounded-full border border-border px-2 py-0.5 text-[10px] text-foreground"
             >
               {tag}
             </span>
@@ -72,7 +72,7 @@ export function MemberPanel({
           <h2 className="font-display text-lg font-bold tracking-tight md:text-xl">
             Membros do Coletivo
           </h2>
-          <p className="mt-1 text-sm text-foreground/65">Gerencie quem faz parte do Atravessamentos.</p>
+          <p className="mt-1 text-sm text-foreground">Gerencie quem faz parte do Atravessamentos.</p>
         </div>
         <MemberFormDialog onSuccess={onSuccess} categories={categories} />
       </div>
