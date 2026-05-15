@@ -13,8 +13,8 @@ test.describe('Acessibilidade Automatizada (WCAG)', () => {
   test('deve passar na auditoria de acessibilidade da Home', async ({ page }) => {
     await page.goto('/');
     
-    // Aguarda animações iniciais
-    await page.waitForTimeout(1000);
+    // Aguarda animações iniciais de entrada (hero h1, etc)
+    await page.waitForTimeout(2500);
 
     const accessibilityScanResults = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])

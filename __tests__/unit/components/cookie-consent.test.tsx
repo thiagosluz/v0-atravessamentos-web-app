@@ -2,8 +2,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent, act } from '@testing-library/react'
 import { CookieConsent } from '@/components/shared/cookie-consent'
 
-// Mock framer-motion to avoid animation issues in tests
-vi.mock('framer-motion', () => ({
+// Mock motion/react to avoid animation issues in tests
+vi.mock('motion/react', () => ({
   motion: {
     div: ({ children, ...props }: any) => <div {...props}>{children}</div>,
   },

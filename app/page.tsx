@@ -25,7 +25,7 @@ export default async function HomePage() {
   return (
     <>
       <AdminWrapper initialProjects={projects} />
-      <main>
+      <main aria-labelledby="hero-title">
         <HeroSection settings={settings} />
         <AboutSection settings={settings} />
         <ProjectsSection initialProjects={projects} categories={categories} />

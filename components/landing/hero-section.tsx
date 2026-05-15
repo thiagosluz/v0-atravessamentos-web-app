@@ -26,13 +26,14 @@ export function HeroSection({ settings }: { settings?: SiteSettings }) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="mb-6 inline-flex w-fit items-center gap-2 rounded-full border border-foreground/15 bg-background/60 px-4 py-1.5 text-xs font-medium uppercase tracking-widest backdrop-blur"
+            className="mb-6 inline-flex w-fit items-center gap-2 rounded-full border border-foreground/15 bg-background px-4 py-1.5 text-xs font-medium uppercase tracking-widest backdrop-blur"
           >
             <Sparkles className="h-3.5 w-3.5 text-primary" />
             <span>{settings?.location_text || "Coletivo nascido em Jataí — GO"}</span>
           </motion.div>
 
           <motion.h1
+            id="hero-title"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1 }}
