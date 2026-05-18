@@ -1,0 +1,16 @@
+# Configurações do pnpm v11
+# O pnpm v11 não lê mais o campo "pnpm" dentro do package.json.
+# Todas as configurações globais ou de workspace devem ser definidas aqui.
+
+peerDependencyRules:
+  ignoreMissing:
+    - eslint
+  allowAny:
+    - eslint
+
+allowBuilds:
+  "sharp": true
+  "@react-email/render": true
+  "esbuild": true
+  "@sentry/cli": true
+  "unrs-resolver": true

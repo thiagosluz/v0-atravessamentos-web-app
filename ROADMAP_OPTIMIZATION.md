@@ -106,9 +106,38 @@ Este documento consolida as recomendações de arquitetura, performance e tratam
     - Integração com a API nativa `navigator.share` em dispositivos móveis para uma experiência fluida.
     - Posicionamento Estratégico: Popover flutuante ou bloco integrado ao rodapé dos posts.
 
+
+---
+
+## 🧭 Caminhos Estratégicos (Brainstorm de Maio 2026)
+
+Definimos três caminhos de evolução com diferentes níveis de impacto e esforço para direcionar as próximas sprints do projeto:
+
+### Opção A: Resiliência Extrema e UX de Elite
+Foco total em blindar a aplicação contra falhas externas e maximizar a fluidez visual para o usuário final.
+- **Ações:** Error Boundaries granulares no admin/feed, migração completa para `next/image` e memoização estratégica de renderização de listas complexas.
+- **Prós:** Zero tela branca, LCP otimizado e fluidez ultra-premium (60 FPS).
+- **Cons:** Não traz novas features perceptíveis ao público externo imediatamente.
+- **Esforço:** Médio.
+
+### Opção B: Sistema de Compartilhamento Poético e Engajamento
+Foco em tornar o Diário e as ações do coletivo virais e propensos a compartilhamento orgânico com foco na experiência mobile.
+- **Ações:** Popover flutuante minimalista para compartilhamento rápido, geração de OpenGraph dinâmico com imagem de fundo do post e integração nativa com a API `navigator.share` do celular.
+- **Prós:** Rápido de testar, estimula a circulação dos ensaios e traz engajamento ativo.
+- **Cons:** Exige refino estético meticuloso para manter a proposta minimalista e poética.
+- **Esforço:** Baixo a Médio.
+
+### Opção C: CMS Pro com Agenda Cultural e Eventos
+Transformar a plataforma em uma central ativa de atividades e encontros para o coletivo (oficinas, projeções, residências artísticas).
+- **Ações:** Criação de calendário integrado público, nova tabela de eventos administrativa e painel de gerenciamento no CMS do admin.
+- **Prós:** Alto valor comunitário e prático para o público regional.
+- **Cons:** Requer novas tabelas no banco de dados Supabase e novas telas no admin.
+- **Esforço:** Alto.
+
 ---
 
 ## 📅 Próximos Passos Sugeridos
+
 1. **Qualidade de Testes:** Refatorar `actions.test.ts` para incluir asserções reais (Base da pirâmide).
 2. Migração para `next/image` na Timeline Pública (Alto impacto visual).
 3. Implementação de Memoization no `AdminDataTable` (Melhoria de UX no gerenciamento).
@@ -144,4 +173,5 @@ Este documento consolida as recomendações de arquitetura, performance e tratam
 - **Resultado:** Validação de 8 cenários críticos de UI (links ativos, persistência de localStorage e visibilidade controlada).
 
 ---
-*Documento atualizado em 14/05/2026.*
+*Documento atualizado em 18/05/2026.*
+

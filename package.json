@@ -44,9 +44,18 @@
     "@sentry/nextjs": "^10.53.1",
     "@supabase/ssr": "^0.10.3",
     "@supabase/supabase-js": "^2.105.4",
+    "@tiptap/extension-color": "^3.23.4",
+    "@tiptap/extension-highlight": "^3.23.4",
     "@tiptap/extension-image": "^3.23.4",
     "@tiptap/extension-link": "^3.23.4",
     "@tiptap/extension-placeholder": "^3.23.4",
+    "@tiptap/extension-table": "^3.23.4",
+    "@tiptap/extension-table-cell": "^3.23.4",
+    "@tiptap/extension-table-header": "^3.23.4",
+    "@tiptap/extension-table-row": "^3.23.4",
+    "@tiptap/extension-text-align": "^3.23.4",
+    "@tiptap/extension-text-style": "^3.23.4",
+    "@tiptap/extension-underline": "^3.23.4",
     "@tiptap/extension-youtube": "^3.23.4",
     "@tiptap/react": "^3.23.4",
     "@tiptap/starter-kit": "^3.23.4",
@@ -69,7 +78,7 @@
     "react-day-picker": "9.14.0",
     "react-dom": "19.2.6",
     "react-email": "^6.1.4",
-    "react-hook-form": "^7.75.0",
+    "react-hook-form": "^7.76.0",
     "react-resizable-panels": "^2.1.7",
     "recharts": "2.15.0",
     "resend": "^6.12.3",
@@ -97,7 +106,7 @@
     "@vitejs/plugin-react": "^6.0.2",
     "@vitest/coverage-v8": "^4.1.6",
     "dotenv": "^17.4.2",
-    "eslint": "^10.3.0",
+    "eslint": "^10.4.0",
     "eslint-config-next": "^16.2.6",
     "jsdom": "^29.1.1",
     "postcss": "^8.5.14",
@@ -109,21 +118,5 @@
   },
   "overrides": {
     "postcss": "^8.5.13"
-  },
-  "pnpm": {
-    "peerDependencyRules": {
-      "ignoreMissing": [
-        "eslint"
-      ],
-      "allowAny": [
-        "eslint"
-      ]
-    },
-    "onlyBuiltDependencies": [
-      "sharp",
-      "@react-email/render",
-      "esbuild",
-      "@sentry/cli"
-    ]
   }
 }
