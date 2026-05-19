@@ -194,7 +194,7 @@ export function MemberFormDialog({
                       className={cn(
                         "relative flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-all duration-200",
                         isSelected 
-                          ? `bg-${color}-500/20 text-${color}-700 border-${color}-500/40 ring-1 ring-${color}-500/20`
+                          ? `bg-${color}-500/20 text-${color}-800 border-${color}-500/40 ring-1 ring-${color}-500/20`
                           : "bg-muted/50 text-foreground border-border hover:bg-muted hover:text-foreground"
                       )}
                     >

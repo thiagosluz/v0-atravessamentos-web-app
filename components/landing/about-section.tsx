@@ -61,6 +61,53 @@ export function AboutSection({ settings }: { settings?: SiteSettings }) {
               <Stat number={settings.stats_cities} label="cidades alcançadas" />
             )}
           </div>
+
+          <div className="mt-12 p-6 rounded-2xl border border-primary/20 bg-primary/5 flex flex-col sm:flex-row items-center gap-6 max-w-xl">
+            <div className="flex gap-4 shrink-0">
+              <a
+                href="https://culturaviva.cultura.gov.br/certificado/143514/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition-transform hover:scale-105"
+              >
+                <img
+                  src="/images/selo-ponto-cultura.png"
+                  alt="Selo Ponto de Cultura"
+                  className="h-16 w-16 object-contain"
+                />
+              </a>
+              <a
+                href="https://culturaviva.cultura.gov.br/certificado/143513/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition-transform hover:scale-105"
+              >
+                <img
+                  src="/images/selo-edital-minc.png"
+                  alt="Selo Certificação Via Edital MinC"
+                  className="h-16 w-16 object-contain"
+                />
+              </a>
+            </div>
+            <div className="space-y-2 text-center sm:text-left">
+              <h3 className="font-display font-bold text-lg leading-tight text-foreground">
+                Ponto de Cultura Certificado
+              </h3>
+              <p className="text-sm text-foreground/80 leading-normal">
+                O Coletivo Atravessamentos é reconhecido pelo Ministério da Cultura como Ponto de Cultura (ID 13233982) sob a rede Cultura Viva.
+              </p>
+              <div className="flex flex-wrap justify-center sm:justify-start gap-x-4 gap-y-1 pt-1">
+                <a
+                  href="https://culturaviva.cultura.gov.br/agente/13233982/#info"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs font-semibold text-primary hover:underline"
+                >
+                  Ver Perfil de Agente
+                </a>
+              </div>
+            </div>
+          </div>
         </motion.div>
 
         {/* Right: collage grid */}

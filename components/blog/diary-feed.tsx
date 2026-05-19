@@ -42,7 +42,7 @@ function DiaryEntry({
   const getCategoryColor = (catName: string) => {
     const cat = categories.find(c => c.name === catName)
     const color = cat?.color || "primary"
-    return `bg-${color}-500/10 text-${color}-700 dark:text-${color}-400 border border-${color}-500/20`
+    return `bg-${color}-500/10 text-${color}-800 dark:text-${color}-400 border border-${color}-500/20`
   }
 
   return (

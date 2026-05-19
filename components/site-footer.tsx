@@ -181,6 +181,41 @@ export function SiteFooter({ settings }: SiteFooterProps) {
               {settings.location_text}
             </a>
 
+            <div className="mt-6 flex items-center gap-4 bg-background/5 p-4 rounded-xl border border-background/10 max-w-sm">
+              <div className="flex gap-2.5 shrink-0">
+                <a
+                  href="https://culturaviva.cultura.gov.br/certificado/143514/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition-transform hover:scale-105"
+                  title="Ver perfil no Cultura Viva"
+                >
+                  <img
+                    src="/images/selo-ponto-cultura.png"
+                    alt="Ponto de Cultura Certificado"
+                    className="h-10 w-10 object-contain grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-300"
+                  />
+                </a>
+                <a
+                  href="https://culturaviva.cultura.gov.br/certificado/143513/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition-transform hover:scale-105"
+                  title="Certificação Via Edital MinC"
+                >
+                  <img
+                    src="/images/selo-edital-minc.png"
+                    alt="Certificação Via Edital MinC"
+                    className="h-10 w-10 object-contain grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-300"
+                  />
+                </a>
+              </div>
+              <div className="text-xs text-background/60">
+                <p className="font-semibold text-background">Ponto de Cultura</p>
+                <p>Rede Cultura Viva • ID 13233982</p>
+              </div>
+            </div>
+
             <div className="mt-6 flex gap-2">
               {socials.map((s) => {
                 const Icon = s.icon

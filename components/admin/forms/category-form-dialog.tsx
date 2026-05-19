@@ -123,14 +123,14 @@ type ColorValue = typeof COLOR_OPTIONS[number]["value"]
 // Tailwind requires full class strings to be present in source for JIT
 const BADGE_STYLES: Record<string, string> = {
   "":       "bg-foreground/10 text-foreground border-foreground/20",
-  amber:    "bg-amber-500/15 text-amber-700 border-amber-500/30 dark:text-amber-400",
-  emerald:  "bg-emerald-500/15 text-emerald-700 border-emerald-500/30 dark:text-emerald-400",
-  cyan:     "bg-cyan-500/15 text-cyan-700 border-cyan-500/30 dark:text-cyan-400",
-  blue:     "bg-blue-500/15 text-blue-700 border-blue-500/30 dark:text-blue-400",
-  indigo:   "bg-indigo-500/15 text-indigo-700 border-indigo-500/30 dark:text-indigo-400",
-  rose:     "bg-rose-500/15 text-rose-700 border-rose-500/30 dark:text-rose-400",
-  orange:   "bg-orange-500/15 text-orange-700 border-orange-500/30 dark:text-orange-400",
-  slate:    "bg-slate-500/15 text-slate-700 border-slate-500/30 dark:text-slate-400",
+  amber:    "bg-amber-500/15 text-amber-800 border-amber-500/30 dark:text-amber-400",
+  emerald:  "bg-emerald-500/15 text-emerald-800 border-emerald-500/30 dark:text-emerald-400",
+  cyan:     "bg-cyan-500/15 text-cyan-800 border-cyan-500/30 dark:text-cyan-400",
+  blue:     "bg-blue-500/15 text-blue-800 border-blue-500/30 dark:text-blue-400",
+  indigo:   "bg-indigo-500/15 text-indigo-800 border-indigo-500/30 dark:text-indigo-400",
+  rose:     "bg-rose-500/15 text-rose-800 border-rose-500/30 dark:text-rose-400",
+  orange:   "bg-orange-500/15 text-orange-800 border-orange-500/30 dark:text-orange-400",
+  slate:    "bg-slate-500/15 text-slate-800 border-slate-500/30 dark:text-slate-400",
 }
 
 function ColorPicker({ defaultValue }: { defaultValue: string }) {

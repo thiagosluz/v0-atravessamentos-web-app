@@ -32,7 +32,7 @@ describe('getCategoryStyle', () => {
 
   it('should return correct style for post variant (default)', () => {
     const style = getCategoryStyle('Educação', mockCategories)
-    expect(style).toBe('bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20')
+    expect(style).toBe('bg-amber-500/10 text-amber-800 dark:text-amber-400 border border-amber-500/20')
   })
 
   it('should return correct style for project variant', () => {
@@ -47,7 +47,7 @@ describe('getCategoryStyle', () => {
 
   it('should return correct style for member variant', () => {
     const style = getCategoryStyle('Artistas', mockCategories, 'member')
-    expect(style).toBe('bg-rose-500/15 text-rose-700 dark:text-rose-400 border-rose-500/30')
+    expect(style).toBe('bg-rose-500/15 text-rose-800 dark:text-rose-400 border-rose-500/30')
   })
 
   it('should return correct style for member variant with primary color', () => {

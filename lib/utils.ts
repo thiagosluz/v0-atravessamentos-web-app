@@ -20,11 +20,11 @@ export function getCategoryStyle(catName: string, categories: Category[], varian
     
     case "member":
       if (color === "primary") return "bg-primary/15 text-primary border-primary/30"
-      return `bg-${color}-500/15 text-${color}-700 dark:text-${color}-400 border-${color}-500/30`
+      return `bg-${color}-500/15 text-${color}-800 dark:text-${color}-400 border-${color}-500/30`
     
     case "post":
     default:
-      return `bg-${color}-500/10 text-${color}-600 dark:text-${color}-400 border border-${color}-500/20`
+      return `bg-${color}-500/10 text-${color}-800 dark:text-${color}-400 border border-${color}-500/20`
   }
 }
 

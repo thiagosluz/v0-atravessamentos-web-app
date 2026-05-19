@@ -104,7 +104,7 @@ export function DiaryFilters({ categories, currentCategory, currentQ }: DiaryFil
               className={cn(
                 "rounded-full border px-4 py-1.5 text-xs font-semibold uppercase tracking-widest transition-all",
                 isActive
-                  ? `border-${color}-500/40 bg-${color}-500/10 text-${color}-700 dark:text-${color}-400`
+                  ? `border-${color}-500/40 bg-${color}-500/10 text-${color}-800 dark:text-${color}-400`
                   : "border-border text-foreground hover:border-foreground/30 hover:text-foreground"
               )}
             >

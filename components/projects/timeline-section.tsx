@@ -28,7 +28,7 @@ export function TimelineSection({ year, projects, isEven, categories }: Timeline
       return "bg-primary/10 text-primary border-primary/20"
     }
     
-    return `bg-${color}-500/15 text-${color}-700 dark:text-${color}-400 border-${color}-500/30`
+    return `bg-${color}-500/15 text-${color}-800 dark:text-${color}-400 border-${color}-500/30`
   }
 
   return (
