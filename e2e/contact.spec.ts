@@ -19,7 +19,7 @@ test.describe('Página de Contato - Fluxo de Mensagem', () => {
     
     // Selecionar categoria (Select do Radix/Shadcn)
     await contactForm.locator('button#category').click();
-    await page.click('div[role="option"]:has-text("Parceria")');
+    await page.getByRole('option', { name: /parceria/i }).first().click();
 
     await contactForm.locator('input[name="subject"]').fill('Assunto Teste Playwright');
     await contactForm.locator('textarea[name="message"]').fill('Esta é uma mensagem de teste automatizada gerada pelo Playwright.');
@@ -31,7 +31,7 @@ test.describe('Página de Contato - Fluxo de Mensagem', () => {
     // Se o Resend falhar por conta do e-mail de teste (403), o toast de erro aparecerá.
     // Para o teste passar no CI/Dev sem precisar de domínio verificado, 
     // verificamos se algum feedback de toast apareceu (sucesso ou erro de validação do resend).
-    await expect(page.locator('[role="status"], [role="alert"]').first()).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('[role="status"], [role="alert"]').first()).toBeVisible({ timeout: 15000 });
   });
 
   test('não deve enviar se o honeypot for preenchido (bot check)', async ({ page }) => {
@@ -41,13 +41,20 @@ test.describe('Página de Contato - Fluxo de Mensagem', () => {
     await contactForm.locator('input[name="name"]').fill('Bot Teste');
     await contactForm.locator('input[name="email"]').fill('bot@spam.com');
     
+    // Selecionar categoria para evitar validação de campo obrigatório pelo navegador
+    await contactForm.locator('button#category').click();
+    await page.getByRole('option', { name: /parceria/i }).first().click();
+    
+    await contactForm.locator('input[name="subject"]').fill('Assunto Bot');
+    await contactForm.locator('textarea[name="message"]').fill('Mensagem de bot spam.');
+    
     // Forçar preenchimento do honeypot
     await contactForm.locator('input[name="website"]').fill('http://spam.com', { force: true });
 
     await contactForm.locator('button[type="submit"]').click();
 
-    // O honeypot deve retornar sucesso silencioso ou o form deve ser resetado
-    await expect(page.locator('[role="status"], [role="alert"]').first()).toBeVisible();
+    // O honeypot deve retornar sucesso silencioso e exibir toast de sucesso ou erro
+    await expect(page.locator('[role="status"], [role="alert"]').first()).toBeVisible({ timeout: 15000 });
   });
 
   test.skip('deve bloquear envios excessivos (Rate Limiting)', async ({ page }) => {

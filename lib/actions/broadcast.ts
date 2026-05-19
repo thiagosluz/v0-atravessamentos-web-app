@@ -41,7 +41,7 @@ export async function broadcastNews(props: BroadcastNewsProps): Promise<ActionRe
     }
 
     // 2. Preparar o e-mail (React Email para HTML)
-    const FROM_EMAIL = "Coletivo Atravessamentos <onboarding@resend.dev>"
+    const FROM_EMAIL = "Coletivo Atravessamentos <contato@coletivoatravessamentos.com.br>"
     
     const emails = await Promise.all(subscribers
       .filter(contact => {

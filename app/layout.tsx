@@ -19,7 +19,7 @@ const bricolage = Bricolage_Grotesque({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://atravessamentos.com.br'),
+  metadataBase: new URL('https://coletivoatravessamentos.com.br'),
   title: {
     default: "Atravessamentos — Coletivo de educação, arte e justiça social",
     template: "%s | Atravessamentos"
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'pt_BR',
-    url: 'https://atravessamentos.com.br',
+    url: 'https://coletivoatravessamentos.com.br',
     siteName: 'Atravessamentos',
     title: 'Atravessamentos — Coletivo de educação, arte e justiça social',
     description: 'Corpo coletivo que escuta, sonha e age. Travessia, afeto, política e criação em Jataí-GO.',

@@ -55,11 +55,11 @@ export async function sendContactMessage(formData: FormData) {
 
     // 4. Get destination email from settings
     const settings = await getSiteSettings()
-    const destination = settings.contact_email || "contato@atravessamentos.com.br"
+    const destination = settings.contact_email || "contato@coletivoatravessamentos.com.br"
 
     // 4. Send email via Resend
     const { data, error } = await resend.emails.send({
-      from: "Atravessamentos <onboarding@resend.dev>", // Usar onboarding no início ou domínio verificado
+      from: "Atravessamentos <contato@coletivoatravessamentos.com.br>", // Usar domínio verificado
       to: [destination],
       subject: `[${validated.category}] ${validated.subject}`,
       replyTo: validated.email,

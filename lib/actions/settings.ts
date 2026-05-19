@@ -49,7 +49,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       location_url: "https://maps.google.com/?q=Jataí+GO",
       instagram_url: "#",
       youtube_url: "#",
-      contact_email: "contato@atravessamentos.com.br",
+      contact_email: "contato@coletivoatravessamentos.com.br",
       whatsapp_number: null,
       privacy_policy_url: "/privacidade",
       terms_url: "/termos",

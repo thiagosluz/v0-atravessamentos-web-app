@@ -27,7 +27,7 @@ async function main() {
     const toEmail = "coletivoatravessamentosapp@gmail.com"
 
     const { data, error } = await resend.emails.send({
-      from: "Atravessamentos <onboarding@resend.dev>",
+      from: "Atravessamentos <contato@coletivoatravessamentos.com.br>",
       to: [toEmail],
       subject: "🎨 Teste de Layout: Nova Newsletter Atravessamentos",
       html: html,

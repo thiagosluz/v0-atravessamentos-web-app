@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/admin/', '/login/'], // Protege áreas sensíveis da indexação
     },
-    sitemap: 'https://atravessamentos.com.br/sitemap.xml',
+    sitemap: 'https://coletivoatravessamentos.com.br/sitemap.xml',
   }
 }

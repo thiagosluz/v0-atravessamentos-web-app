@@ -3,7 +3,7 @@ import { getProjectIds } from "@/lib/actions/projects"
 import { getBlogPostSlugs } from "@/lib/actions/blog-posts"
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://atravessamentos.com.br'
+  const baseUrl = 'https://coletivoatravessamentos.com.br'
 
   // Páginas Estáticas
   const routes = [

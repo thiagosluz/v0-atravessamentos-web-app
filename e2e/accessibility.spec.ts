@@ -26,6 +26,9 @@ test.describe('Acessibilidade Automatizada (WCAG)', () => {
   test('deve passar na auditoria de acessibilidade do Diário', async ({ page }) => {
     await page.goto('/diario');
     
+    // Aguarda estabilização da renderização e aplicação de estilos do Tailwind
+    await page.waitForTimeout(2000);
+    
     const accessibilityScanResults = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa'])
       .analyze();

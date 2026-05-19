@@ -65,6 +65,7 @@ test.describe('CMS - Fluxo de Conteúdo', () => {
       await memberRow.getByLabel('Excluir membro').click();
       
       await page.click('button:has-text("Excluir")'); // Botão do AlertDialog
+      await expect(page.locator('text=Confirmar Exclusão')).not.toBeVisible();
       await expect(page.locator('table')).not.toContainText(memberName);
     });
   });
@@ -128,6 +129,7 @@ test.describe('CMS - Fluxo de Conteúdo', () => {
       await postRow.getByLabel('Excluir post').click();
       
       await page.click('button:has-text("Excluir")');
+      await expect(page.locator('text=Confirmar Exclusão')).not.toBeVisible();
       await expect(page.locator('table')).not.toContainText(postTitle);
     });
   });

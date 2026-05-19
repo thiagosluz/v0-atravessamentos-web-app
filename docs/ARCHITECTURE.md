@@ -130,7 +130,7 @@ O projeto utiliza uma estratégia de "Perceived Performance" (Performance Perceb
 
 A aplicação é otimizada para visibilidade máxima:
 - **Sitemap Dinâmico**: Gerado em `app/sitemap.ts`, indexando automaticamente novos projetos e posts.
-- **MetadataBase**: Configurado em `app/layout.tsx` para o domínio `atravessamentos.com.br`.
+- **MetadataBase**: Configurado em `app/layout.tsx` para o domínio `coletivoatravessamentos.com.br`.
 - **OpenGraph Dinâmico**: Cada post do blog e projeto gera metadados específicos para redes sociais (WhatsApp, Instagram, etc) via `generateMetadata`.
 
 ---

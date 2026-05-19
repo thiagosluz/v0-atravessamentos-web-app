@@ -80,6 +80,7 @@ test.describe('CMS - Ciclo de Vida de Projetos', () => {
       await projectRow.getByLabel('Excluir projeto').click();
       
       await page.click('button:has-text("Excluir")');
+      await expect(page.locator('text=Confirmar Exclusão')).not.toBeVisible();
       await expect(page.locator('table')).not.toContainText(projectTitle);
     });
   });

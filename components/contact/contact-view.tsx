@@ -170,10 +170,10 @@ export function ContactView({ settings }: ContactViewProps) {
 
 function SocialLink({ href, icon: Icon, label }: { href: string | null; icon: any; label: string }) {
   if (!href || href === "#") return null
-  
+
   return (
-    <a 
-      href={href} 
+    <a
+      href={href}
       aria-label={label}
       target="_blank"
       rel="noopener"

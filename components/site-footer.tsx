@@ -150,7 +150,7 @@ export function SiteFooter({ settings }: SiteFooterProps) {
                   {isSubmitting ? "Assinando…" : "Assinar"}
                 </Button>
               </div>
-              <p className="text-xs text-background/55">
+              <p className="text-xs text-background/80">
                 Ao assinar, você concorda com nossa política de privacidade.
               </p>
             </form>
@@ -175,7 +175,7 @@ export function SiteFooter({ settings }: SiteFooterProps) {
               href={settings.location_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-4 inline-flex items-center gap-2 text-sm text-background/60 hover:text-background transition-colors"
+              className="mt-4 inline-flex items-center gap-2 text-sm text-background/75 hover:text-background transition-colors"
             >
               <MapPin className="h-4 w-4" />
               {settings.location_text}
@@ -210,7 +210,7 @@ export function SiteFooter({ settings }: SiteFooterProps) {
                   />
                 </a>
               </div>
-              <div className="text-xs text-background/60">
+              <div className="text-xs text-background/75">
                 <p className="font-semibold text-background">Ponto de Cultura</p>
                 <p>Rede Cultura Viva • ID 13233982</p>
               </div>
@@ -235,7 +235,7 @@ export function SiteFooter({ settings }: SiteFooterProps) {
 
           {footerLinks.map((group) => (
             <div key={group.title} className="md:col-span-2">
-              <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-background/50">
+              <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-background/75">
                 {group.title}
               </h3>
               <ul className="mt-4 space-y-2.5">
@@ -255,7 +255,7 @@ export function SiteFooter({ settings }: SiteFooterProps) {
         </div>
 
         {/* Bottom: legal */}
-        <div className="flex flex-col items-start justify-between gap-4 border-t border-background/15 pt-8 text-xs text-background/55 md:flex-row md:items-center">
+        <div className="flex flex-col items-start justify-between gap-4 border-t border-background/15 pt-8 text-xs text-background/80 md:flex-row md:items-center">
           <p suppressHydrationWarning>© {new Date().getFullYear()} Coletivo Atravessamentos. Feito com afeto e disputa.</p>
           <div className="flex flex-wrap gap-x-5 gap-y-1">
             <a href={settings.privacy_policy_url} className="hover:text-background">
