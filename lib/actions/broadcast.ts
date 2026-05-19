@@ -43,11 +43,36 @@ export async function broadcastNews(props: BroadcastNewsProps): Promise<ActionRe
     // 2. Preparar o e-mail (React Email para HTML)
     const FROM_EMAIL = "Coletivo Atravessamentos <contato@coletivoatravessamentos.com.br>"
     
+    // Identifica se estamos rodando em ambiente de testes ou desenvolvimento local
+    const isTestOrDev = 
+      process.env.NODE_ENV === 'development' || 
+      process.env.NODE_ENV === 'test' || 
+      process.env.PLAYWRIGHT_TEST === 'true' ||
+      process.env.NEXT_PUBLIC_APP_URL?.includes("localhost") ||
+      process.env.NEXT_PUBLIC_APP_URL?.includes("127.0.0.1") ||
+      !process.env.NEXT_PUBLIC_APP_URL
+    
     const emails = await Promise.all(subscribers
       .filter(contact => {
-        if (FROM_EMAIL.includes("onboarding@resend.dev")) {
-          return contact.email === "coletivoatravessamentosapp@gmail.com"
+        const email = contact.email.toLowerCase()
+        
+        // Bloqueio de segurança em ambiente de desenvolvimento/testes
+        if (isTestOrDev) {
+          const isAllowedTestEmail = 
+            email === "coletivoatravessamentosapp@gmail.com" ||
+            email === "contato@coletivoatravessamentos.com.br" ||
+            email.endsWith("@example.com") ||
+            email.endsWith("@exemplo.com") ||
+            email.includes("teste") ||
+            email.includes("test")
+          return isAllowedTestEmail
         }
+
+        // Se usar o e-mail de onboarding do Resend (mesmo em produção), só enviar para o e-mail do dono da conta
+        if (FROM_EMAIL.includes("onboarding@resend.dev")) {
+          return email === "coletivoatravessamentosapp@gmail.com"
+        }
+        
         return true
       })
       .map(async (contact) => {

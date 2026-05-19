@@ -1,48 +1,53 @@
-# Implementation Plan - Documentation Synchronization
+# Plano de Resolução: Erro 404 no Painel Admin (GET /admin)
 
-This document outlines the strategy for updating the codebase documentation to reflect recent architectural changes, testing improvements, and accessibility guidelines.
+> **Contexto**: O usuário reportou um erro `GET /admin 404` com o seguinte log de tempo:
+> `GET /admin 404 in 124ms (next.js: 9ms, proxy.ts: 85ms, application-code: 30ms)`
 
-## 🏗️ Architectural Context
-The project underwent a significant refactoring of the administrative area, standardizing hooks, server actions, and component organization. The testing strategy also evolved from basic smoke tests to assertive unit tests.
+---
 
-## 🎯 Goals
-1. Synchronize `ARCHITECTURE.md` with the new file structure.
-2. Update `DEVELOPER_GUIDE.md` with the new testing protocols.
-3. Update `COMPONENTS.md` to reflect the functional modularization of the Admin Dashboard.
-4. Refresh `README.md` with current project status and commands.
+## 🔍 Análise de Causa Raiz
 
-## 📂 Targeted Files
-- `README.md`
-- `docs/ARCHITECTURE.md`
-- `docs/COMPONENTS.md`
-- `docs/DEVELOPER_GUIDE.md`
-- `docs/ADMIN_GUIDE.md`
+Abaixo estão as hipóteses mais prováveis para o erro `404` no painel administrativo `/admin`:
 
-## 🗓️ Phases
+1. **Falha Silenciosa em `proxy.ts` (Edge Runtime)**:
+   - A chamada `await supabase.auth.getUser()` em `/proxy.ts` é executada sem um bloco `try-catch`.
+   - Se as credenciais do Supabase estiverem ausentes no ambiente ou se o banco de dados falhar/estiver indisponível temporariamente, a função lançará uma exceção não tratada na Edge Runtime, fazendo com que o Next.js falhe e retorne um erro genérico de recurso não encontrado (404) ou 500.
+2. **Corrupção de Cache do Next.js (`.next`)**:
+   - Alterações profundas recentes em Server Actions, hooks customizados (`useAsyncData`), e rotas podem gerar inconsistências no cache de compilação do Next.js 16, resultando em 404s fantasmas em rotas dinâmicas.
+3. **Loop de Redirecionamento ou Estado de Cookie Inválido**:
+   - Um token JWT expirado ou corrompido no cookie do Supabase pode causar comportamentos anômalos no middleware (`proxy.ts`), falhando na obtenção do usuário e gerando rotas não resolvidas.
 
-### Phase 1: Structural Synchronization
-- **ARCHITECTURE.md**: 
-    - Update directory tree (new `components/admin` modules).
-    - Document `useAdminForm` hook pattern.
-    - Document Zod validation layer in Server Actions.
-- **COMPONENTS.md**: 
-    - Map `panels/`, `forms/`, `shared/`, `table/` inside admin.
+---
 
-### Phase 2: Developer Experience (DX)
-- **DEVELOPER_GUIDE.md**:
-    - Add `pnpm vitest` instructions.
-    - Document the Supabase mock pattern for unit tests.
-    - Update contribution guidelines.
-- **README.md**:
-    - Update test command section.
-    - Add link to the new `ROADMAP_OPTIMIZATION.md`.
+## 🛠️ Plano de Ação em 3 Fases
 
-### Phase 3: Operational Update
-- **ADMIN_GUIDE.md**:
-    - Review dashboard screenshots/descriptions (if applicable).
-    - Update mentions of "Bulk Actions" and "Status Management".
+### Fase 1: Análise e Robustez do Middleware (`proxy.ts`)
+- Adicionar um bloco `try-catch` robusto em `proxy.ts` para capturar falhas na inicialização do Supabase ou na busca do usuário.
+- Se houver falha de rede ou de autenticação, o middleware deve redirecionar com segurança para `/login` (ou permitir a requisição continuar e ser tratada no cliente), em vez de quebrar e retornar 404.
 
-## 🧪 Verification
-- [ ] Run `npx tsc --noEmit` to ensure no typos in docs (if they contain code snippets).
-- [ ] Verify all relative file links in markdown.
-- [ ] Confirm consistency with `ROADMAP_OPTIMIZATION.md`.
+### Fase 2: Diagnóstico de Ambiente e Limpeza de Cache
+- Validar as variáveis de ambiente do Supabase (`.env.local`).
+- Executar uma limpeza profunda do diretório `.next` para eliminar quaisquer artefatos de build antigos ou corrompidos.
+- Reiniciar o servidor de desenvolvimento (`pnpm dev`).
+
+### Fase 3: Verificação Técnica Completa
+- Executar checagens de tipos com o compilador do TypeScript.
+- Executar os testes E2E do Playwright para garantir que o fluxo de autenticação e navegação para o painel admin esteja 100% verde.
+
+---
+
+## 🎼 Agentes Orquestrados Propostos (Fase 2)
+
+| Agente | Escopo de Ação |
+|--------|----------------|
+| `debugger` | Investigar as variáveis de ambiente e o fluxo de autenticação. |
+| `frontend-specialist` | Ajustar o `proxy.ts` para torná-lo resiliente a falhas e erros de conexão. |
+| `test-engineer` | Rodar os testes de acessibilidade e E2E pós-correção. |
+
+---
+
+## 🚦 Critérios de Aceitação
+
+- [x] A rota `/admin` carrega com sucesso (retorna status `200` se autenticado, ou `307/302` se não autenticado).
+- [x] O arquivo `proxy.ts` possui tratamento de erro de conexão com Supabase.
+- [x] Toda a suíte de testes E2E do Playwright roda e passa sem regressões.

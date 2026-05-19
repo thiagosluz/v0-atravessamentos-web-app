@@ -108,16 +108,39 @@ export async function getNewsletterSubscribers(): Promise<ActionResponse<Newslet
   }
 }
 
-export async function getBroadcastHistory(): Promise<ActionResponse<NewsletterBroadcast[]>> {
+export async function getBroadcastHistory(
+  page: number = 1,
+  limit: number = 5
+): Promise<ActionResponse<{ broadcasts: NewsletterBroadcast[]; totalCount: number }>> {
   try {
     const supabase = createAdminClient()
+    
+    // 1. Obter a contagem total exata de registros
+    const { count, error: countError } = await supabase
+      .from("newsletter_broadcasts")
+      .select("*", { count: "exact", head: true })
+      
+    if (countError) throw countError
+
+    // 2. Buscar os dados com paginação usando range
+    const from = (page - 1) * limit
+    const to = from + limit - 1
+    
     const { data, error } = await supabase
       .from("newsletter_broadcasts")
       .select("*")
       .order("created_at", { ascending: false })
+      .range(from, to)
 
     if (error) throw error
-    return { success: true, data: data || [] }
+    
+    return { 
+      success: true, 
+      data: {
+        broadcasts: data || [],
+        totalCount: count || 0
+      }
+    }
   } catch (error: any) {
     console.error("Erro ao buscar histórico de broadcast:", error)
     return { success: false, error: error.message }

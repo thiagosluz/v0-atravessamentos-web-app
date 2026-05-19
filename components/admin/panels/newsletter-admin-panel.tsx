@@ -35,6 +35,8 @@ export function NewsletterAdminPanel() {
   const [isBroadcasting, setIsBroadcasting] = React.useState(false)
   const [subscriberToRemove, setSubscriberToRemove] = React.useState<string | null>(null)
   const [showBroadcastConfirm, setShowBroadcastConfirm] = React.useState(false)
+  const [historyPage, setHistoryPage] = React.useState(1)
+  const historyLimit = 5
   const { toast } = useToast()
 
   // Uso do hook customizado useAsyncData para simplificar o fetch-and-state
@@ -48,20 +50,24 @@ export function NewsletterAdminPanel() {
     { immediate: activeTab === "subscribers" }
   )
 
+  const fetchHistoryFn = React.useCallback(() => {
+    return getBroadcastHistory(historyPage, historyLimit)
+  }, [historyPage])
+
   const { 
-    data: history, 
+    data: historyData, 
     isLoading: loadingHistory, 
     refresh: refreshHistory 
-  } = useAsyncData<NewsletterBroadcast[]>(
-    getBroadcastHistory, 
+  } = useAsyncData<{ broadcasts: NewsletterBroadcast[]; totalCount: number }>(
+    fetchHistoryFn, 
     { immediate: activeTab === "history" }
   )
 
-  // Sincroniza o carregamento baseado na aba ativa
+  // Sincroniza o carregamento baseado na aba ativa ou na mudança de página do histórico
   React.useEffect(() => {
     if (activeTab === "subscribers" && !subscribers) refreshSubscribers()
-    if (activeTab === "history" && !history) refreshHistory()
-  }, [activeTab, subscribers, history, refreshSubscribers, refreshHistory])
+    if (activeTab === "history" && !historyData) refreshHistory()
+  }, [activeTab, subscribers, historyData, refreshSubscribers, refreshHistory, historyPage])
 
   const isLoading = activeTab === "subscribers" ? loadingSubscribers : loadingHistory
 
@@ -156,7 +162,13 @@ export function NewsletterAdminPanel() {
                 onRemove={handleRemove} 
               />
             ) : (
-              <BroadcastHistory history={history || []} />
+              <BroadcastHistory 
+                history={historyData?.broadcasts || []} 
+                currentPage={historyPage}
+                totalCount={historyData?.totalCount || 0}
+                limit={historyLimit}
+                onPageChange={setHistoryPage}
+              />
             )}
           </div>
         )}

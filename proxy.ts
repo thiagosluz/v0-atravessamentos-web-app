@@ -23,16 +23,24 @@ export async function proxy(request: NextRequest) {
     },
   )
 
-  const { data: { user } } = await supabase.auth.getUser()
+  try {
+    const { data: { user } } = await supabase.auth.getUser()
 
-  // Protect /admin — redirect to login if not authenticated
-  if (!user && request.nextUrl.pathname.startsWith("/admin")) {
-    return NextResponse.redirect(new URL("/login", request.url))
-  }
+    // Protect /admin — redirect to login if not authenticated
+    if (!user && request.nextUrl.pathname.startsWith("/admin")) {
+      return NextResponse.redirect(new URL("/login", request.url))
+    }
 
-  // If logged in and visiting /login, redirect to admin
-  if (user && request.nextUrl.pathname === "/login") {
-    return NextResponse.redirect(new URL("/admin", request.url))
+    // If logged in and visiting /login, redirect to admin
+    if (user && request.nextUrl.pathname === "/login") {
+      return NextResponse.redirect(new URL("/admin", request.url))
+    }
+  } catch (error) {
+    console.error("Erro na validação de sessão no proxy:", error)
+    // Em caso de erro ao obter o usuário, se estiver na área administrativa, redireciona para o login por segurança
+    if (request.nextUrl.pathname.startsWith("/admin")) {
+      return NextResponse.redirect(new URL("/login", request.url))
+    }
   }
 
   return supabaseResponse

@@ -41,6 +41,7 @@ export function SubscriberList({ subscribers, onRemove }: SubscriberListProps) {
             className="pl-10 rounded-xl"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            aria-label="Buscar assinante na lista"
           />
         </div>
       </div>
@@ -74,6 +75,7 @@ export function SubscriberList({ subscribers, onRemove }: SubscriberListProps) {
                       size="icon" 
                       className="h-8 w-8 text-destructive hover:text-destructive/20"
                       onClick={() => onRemove(s.email)}
+                      aria-label={`Remover ${s.email} da lista de assinantes`}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>

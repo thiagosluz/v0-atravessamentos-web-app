@@ -209,6 +209,7 @@ export function AdminDashboard(props: AdminDashboardProps) {
               onClick={() => signOut()}
               className="h-8 w-8 rounded-lg hover:bg-red-500/10 hover:text-red-600 transition-colors flex items-center justify-center text-foreground"
               title="Sair"
+              aria-label="Sair da conta"
             >
               <LogOut className="h-4 w-4" />
             </button>
@@ -223,7 +224,7 @@ export function AdminDashboard(props: AdminDashboardProps) {
              {/* Mobile Menu Trigger */}
              <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                <SheetTrigger asChild>
-                 <Button variant="ghost" size="icon" className="md:hidden">
+                 <Button variant="ghost" size="icon" className="md:hidden" aria-label="Abrir menu de navegação lateral">
                    <Menu className="h-5 w-5" />
                  </Button>
                </SheetTrigger>
@@ -325,6 +326,7 @@ export function AdminDashboard(props: AdminDashboardProps) {
                          onClick={() => signOut()}
                          className="h-8 w-8 rounded-lg hover:bg-red-500/10 hover:text-red-600 transition-colors flex items-center justify-center text-foreground"
                          title="Sair"
+                         aria-label="Sair da conta"
                        >
                          <LogOut className="h-4 w-4" />
                        </button>
@@ -364,7 +366,10 @@ export function AdminDashboard(props: AdminDashboardProps) {
             
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="h-10 w-10 rounded-2xl bg-muted/30 border border-border/40 flex items-center justify-center overflow-hidden hover:border-primary/40 transition-colors">
+                <button 
+                  className="h-10 w-10 rounded-2xl bg-muted/30 border border-border/40 flex items-center justify-center overflow-hidden hover:border-primary/40 transition-colors"
+                  aria-label="Menu do perfil do usuário"
+                >
                   {user?.user_metadata?.avatar_url ? (
                     <img src={user.user_metadata.avatar_url} alt="" width={40} height={40} className="h-full w-full object-cover" />
                   ) : (
