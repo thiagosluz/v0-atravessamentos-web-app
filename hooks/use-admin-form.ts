@@ -4,8 +4,9 @@ import { useToast } from "@/hooks/use-toast"
 interface ExecuteActionOptions<T> {
   /**
    * A função assíncrona que realiza a mutação no backend.
+   * Suporta tanto o contrato legado { error?: string } quanto o novo { success, error?, data? }.
    */
-  actionFn: () => Promise<{ error?: string; [key: string]: any }>
+  actionFn: () => Promise<{ error?: string; success?: boolean; data?: any; [key: string]: any }>
   /**
    * Função para gerar o objeto otimista caso a mutação tenha sucesso.
    * Recebe o retorno do backend (útil para pegar IDs recém-criados).
@@ -33,13 +34,26 @@ export function useAdminForm() {
     try {
       const result = await options.actionFn()
 
-      if (result?.error) {
-        setError(result.error)
+      // Suporta ambos os contratos:
+      // Legado: { error?: string }
+      // safeAction: { success: boolean, error?: string, data?: T }
+      const hasError = result?.error || (result?.success === false)
+
+      if (hasError) {
+        const errorMessage = result.error || "Erro inesperado ao processar a ação."
+        setError(errorMessage)
+        toast({
+          title: "Erro na operação",
+          description: errorMessage,
+          variant: "destructive",
+        })
         setPending(false)
         return
       }
 
-      const optimisticData = options.onSuccessCallback(result)
+      // Extrair dados do resultado (suporta ambos os contratos)
+      const resultData = result?.data ?? result
+      const optimisticData = options.onSuccessCallback(resultData)
       const message = options.successMessage(optimisticData)
 
       toast({
@@ -49,12 +63,18 @@ export function useAdminForm() {
       
       options.onComplete(optimisticData)
     } catch (err: any) {
-      setError(err.message || "Erro inesperado")
+      const errorMessage = err.message || "Erro inesperado"
+      setError(errorMessage)
+      toast({
+        title: "Erro na operação",
+        description: errorMessage,
+        variant: "destructive",
+      })
     } finally {
-      // O pending false é garantido pelo finally
       setPending(false)
     }
   }
 
   return { executeAction, pending, error, setError }
 }
+

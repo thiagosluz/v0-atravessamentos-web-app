@@ -35,7 +35,7 @@ describe('Hook: useAdminForm', () => {
     expect(actionFn).toHaveBeenCalled();
   });
 
-  it('deve capturar erros da actionFn', async () => {
+  it('deve capturar erros da actionFn e disparar toast destrutivo', async () => {
     const { result } = renderHook(() => useAdminForm());
     
     const actionFn = vi.fn().mockResolvedValue({ error: 'Erro de Banco' });
@@ -51,7 +51,11 @@ describe('Hook: useAdminForm', () => {
 
     expect(result.current.error).toBe('Erro de Banco');
     expect(result.current.pending).toBe(false);
-    expect(mockToast).not.toHaveBeenCalled();
+    expect(mockToast).toHaveBeenCalledWith({
+      title: 'Erro na operação',
+      description: 'Erro de Banco',
+      variant: 'destructive',
+    });
   });
 
   it('deve disparar toast e onComplete em caso de sucesso', async () => {

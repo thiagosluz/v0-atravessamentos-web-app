@@ -4,18 +4,18 @@ Este documento consolida as recomendações de arquitetura, performance e tratam
 
 ---
 
-## 1. 🛡️ Tratamento de Erros e Resiliência
+## 1. 🛡️ Tratamento de Erros e Resiliência ✅
 **Objetivo:** Garantir que a aplicação não quebre silenciosamente e que o usuário tenha feedback claro em qualquer cenário de falha.
 
-### A. Error Boundaries Granulares
-- **Onde:** `OverviewPanel` (Gráficos), `AdminDataTable`, `GalleryGrid`.
-- **Ação:** Envolver componentes pesados ou dependentes de APIs externas em `ErrorBoundary` locais para evitar que uma falha isolada derrube a página inteira.
+### A. Error Boundaries Granulares ✅
+- **Onde:** Todos os 10 painéis do Admin (Visão Geral, Projetos, Diário, Membros, Perfil, Configurações, Visual, Acervo, Exposições, Newsletter).
+- **Implementação:** Cada painel possui seu próprio `<ErrorBoundary>` com nome descritivo. Falhas isoladas (ex: gráfico recharts no Overview) não derrubam o painel inteiro. O `componentDidCatch` reporta diretamente ao Sentry com component stack.
 
-### B. Padronização de Respostas (Server Actions)
-- **Ação:** Implementar um wrapper universal para as ações que capture erros inesperados e dispare um `toast` global, reduzindo o boilerplate de `try/catch` nos formulários.
+### B. Padronização de Respostas (Server Actions) ✅
+- **Implementação:** Criação do wrapper universal `safeAction()` em `lib/utils/safe-action.ts`. Refatoração de `projects-admin.ts`, `blog-admin.ts` e `members-admin.ts`. Toast de erro automático global via `useAdminForm`.
 
-### C. Observabilidade
-- **Ação:** Integrar um serviço de monitoramento (ex: Sentry) no `app/error.tsx` para capturar falhas em produção sem depender de relatos manuais dos usuários.
+### C. Observabilidade ✅
+- **Implementação:** Sentry integrado em `app/error.tsx` (barreira de rotas) e `app/global-error.tsx` (barreira sistêmica). User Feedback Dialog (`Sentry.showReportDialog`) disponível para relatos de erro.
 
 ---
 
@@ -148,6 +148,12 @@ Transformar a plataforma em uma central ativa de atividades e encontros para o c
 ---
 
 ## ✅ Funcionalidades Concluídas (Maio 2026)
+
+### 🛡️ Error Boundaries Granulares e Wrapper safeAction
+- **Error Boundaries**: Migração do ErrorBoundary único no admin para 10 boundaries individuais, um por painel, com nomes descritivos (ex: "Visão Geral", "Acervo", "Newsletter"). O `componentDidCatch` envia exceções ao Sentry com component stack trace completo.
+- **Wrapper `safeAction()`**: Criação de utilitário universal em `lib/utils/safe-action.ts` que encapsula `try/catch`, validação Zod e retorno estruturado `{ success, error?, data? }`. Refatoração completa de `projects-admin.ts`, `blog-admin.ts` e `members-admin.ts`.
+- **Toast de Erro Automático**: O hook `useAdminForm` agora dispara toasts destrutivos automaticamente em caso de erro, eliminando a necessidade de renderização manual em cada formulário.
+- **Resultado**: Seção 1 do Roadmap (Tratamento de Erros e Resiliência) 100% concluída. Zero boilerplate duplicado nas Server Actions.
 
 ### 📬 Observabilidade e Captura Resiliente de Erros (Sentry)
 - **Implementação**: Integração direta do SDK `@sentry/nextjs` em `app/error.tsx` (barreira de erro em nível de rotas), capturando exceções silenciosas no cliente e anexando automaticamente identificadores de ambiente e metadados (`digest`).

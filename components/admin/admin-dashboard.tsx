@@ -86,6 +86,9 @@ export function AdminDashboard(props: AdminDashboardProps) {
     handleEditItem,
     handleDeleteTrigger,
     confirmDelete,
+    handleBulkDeleteProjects,
+    handleBulkDeleteBlog,
+    handleBulkDeleteMembers,
     setSearchEditItem
   } = useAdminState(props)
 
@@ -410,87 +413,106 @@ export function AdminDashboard(props: AdminDashboardProps) {
               </div>
             )}
             
-            <ErrorBoundary name={active}>
-              <React.Suspense fallback={
+            
+            <React.Suspense fallback={
               <div className="flex items-center justify-center h-[60vh]">
                 <Loader2 className="h-8 w-8 animate-spin text-primary/40" />
               </div>
             }>
               {active === "overview" && (
-                <OverviewPanel 
-                  user={user}
-                  projects={localProjects}
-                  blogPosts={localBlogPosts}
-                  members={localMembers}
-                  categories={initialCategories}
-                  setActive={setActive}
-                />
+                <ErrorBoundary name="Visão Geral">
+                  <OverviewPanel 
+                    user={user}
+                    projects={localProjects}
+                    blogPosts={localBlogPosts}
+                    members={localMembers}
+                    categories={initialCategories}
+                    setActive={setActive}
+                  />
+                </ErrorBoundary>
               )}
 
               {active === "projects" && (
-                <ProjectPanel 
-                  projects={localProjects}
-                  totalCount={projectsData.count}
-                  currentPage={currentPage.projects}
-                  categories={initialCategories}
-                  onSuccess={handleProjectSuccess}
-                  onEdit={(id) => handleEditItem("project", id)}
-                  onDelete={(id) => handleDeleteTrigger("project", id)}
-                  onDeleteBulk={async () => {}}
-                />
+                <ErrorBoundary name="Projetos">
+                  <ProjectPanel 
+                    projects={localProjects}
+                    totalCount={projectsData.count}
+                    currentPage={currentPage.projects}
+                    categories={initialCategories}
+                    onSuccess={handleProjectSuccess}
+                    onEdit={(id) => handleEditItem("project", id)}
+                    onDelete={(id) => handleDeleteTrigger("project", id)}
+                    onDeleteBulk={handleBulkDeleteProjects}
+                  />
+                </ErrorBoundary>
               )}
 
               {active === "blog" && (
-                <BlogPanel 
-                  posts={localBlogPosts}
-                  totalCount={blogPostsData.count}
-                  currentPage={currentPage.blog}
-                  categories={initialCategories}
-                  onSuccess={handleBlogSuccess}
-                  onEdit={(id) => handleEditItem("blog", id)}
-                  onDelete={(id) => handleDeleteTrigger("blog", id)}
-                  onDeleteBulk={async () => {}}
-                />
+                <ErrorBoundary name="Diário">
+                  <BlogPanel 
+                    posts={localBlogPosts}
+                    totalCount={blogPostsData.count}
+                    currentPage={currentPage.blog}
+                    categories={initialCategories}
+                    onSuccess={handleBlogSuccess}
+                    onEdit={(id) => handleEditItem("blog", id)}
+                    onDelete={(id) => handleDeleteTrigger("blog", id)}
+                    onDeleteBulk={handleBulkDeleteBlog}
+                  />
+                </ErrorBoundary>
               )}
 
               {active === "members" && (
-                <MemberPanel 
-                  members={localMembers}
-                  totalCount={membersData.count}
-                  currentPage={currentPage.members}
-                  categories={initialCategories}
-                  onSuccess={handleMemberSuccess}
-                  onEdit={(id) => handleEditItem("member", id)}
-                  onDelete={(id) => handleDeleteTrigger("member", id)}
-                  onDeleteBulk={async () => {}}
-                />
+                <ErrorBoundary name="Membros">
+                  <MemberPanel 
+                    members={localMembers}
+                    totalCount={membersData.count}
+                    currentPage={currentPage.members}
+                    categories={initialCategories}
+                    onSuccess={handleMemberSuccess}
+                    onEdit={(id) => handleEditItem("member", id)}
+                    onDelete={(id) => handleDeleteTrigger("member", id)}
+                    onDeleteBulk={handleBulkDeleteMembers}
+                  />
+                </ErrorBoundary>
               )}
 
               {active === "profile" && (
-                <ProfilePanel user={user} />
+                <ErrorBoundary name="Perfil">
+                  <ProfilePanel user={user} />
+                </ErrorBoundary>
               )}
 
               {active === "settings" && (
-                <SettingsPanel siteSettings={siteSettings} categories={initialCategories} />
+                <ErrorBoundary name="Configurações">
+                  <SettingsPanel siteSettings={siteSettings} categories={initialCategories} />
+                </ErrorBoundary>
               )}
 
               {active === "visual" && (
-                <VisualSettingsPanel siteSettings={siteSettings} />
+                <ErrorBoundary name="Visual">
+                  <VisualSettingsPanel siteSettings={siteSettings} />
+                </ErrorBoundary>
               )}
 
               {active === "acervo" && (
-                <GalleryAdminPanel />
+                <ErrorBoundary name="Acervo">
+                  <GalleryAdminPanel />
+                </ErrorBoundary>
               )}
 
               {active === "exhibitions" && (
-                <ExhibitionsAdminPanel />
+                <ErrorBoundary name="Exposições">
+                  <ExhibitionsAdminPanel />
+                </ErrorBoundary>
               )}
 
               {active === "newsletter" && (
-                <NewsletterAdminPanel />
+                <ErrorBoundary name="Newsletter">
+                  <NewsletterAdminPanel />
+                </ErrorBoundary>
               )}
             </React.Suspense>
-          </ErrorBoundary>
         </div>
       </div>
 

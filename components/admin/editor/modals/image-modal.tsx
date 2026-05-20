@@ -54,8 +54,8 @@ export function ImageUploadModal({
         return
       }
 
-      if (result.url) {
-        onUpload(result.url, caption)
+      if (result.data?.url) {
+        onUpload(result.data.url, caption)
         setCaption("")
         setLoading(false)
       }

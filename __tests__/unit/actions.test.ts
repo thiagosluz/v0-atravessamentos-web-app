@@ -110,11 +110,11 @@ describe('Server Actions - Business Logic Coverage', () => {
     expect(deleteResult.success).toBe(true);
     expect(mockSupabase.delete).toHaveBeenCalled();
 
-    // Error Case
+    // Error Case: safeAction propaga a mensagem original do Supabase
     mockError = { message: 'DB Error' };
     const errResult = await createProject(fd);
-    expect(errResult.success).toBeFalsy();
-    expect(errResult.error).toBe('Erro ao salvar no banco de dados.');
+    expect(errResult.success).toBe(false);
+    expect(errResult.error).toBe('DB Error');
   });
 
   it('Blog: CRUD e Validacoes', async () => {
@@ -134,11 +134,11 @@ describe('Server Actions - Business Logic Coverage', () => {
     expect(dupResult.success).toBeFalsy();
     expect(dupResult.error?.toLowerCase()).toContain('já existe');
 
-    // Generic Error
+    // Generic Error: safeAction propaga a mensagem original
     mockError = { message: 'Unexpected' };
     const errResult = await updateBlogPost('id', fd);
-    expect(errResult.success).toBeFalsy();
-    expect(errResult.error).toBe('Não foi possível atualizar o post.');
+    expect(errResult.success).toBe(false);
+    expect(errResult.error).toBe('Unexpected');
   });
 
   it('Categorias e Membros: CRUD', async () => {
@@ -152,10 +152,10 @@ describe('Server Actions - Business Logic Coverage', () => {
     expect(memberResult.success).toBe(true);
     expect(mockSupabase.from).toHaveBeenCalledWith('members');
 
-    // Error
+    // Error: safeAction propaga a mensagem original
     mockError = { message: 'Delete Failed' };
     const delResult = await deleteMember('id');
-    expect(delResult.success).toBeFalsy();
-    expect(delResult.error).toBe('Não foi possível excluir o membro.');
+    expect(delResult.success).toBe(false);
+    expect(delResult.error).toBe('Delete Failed');
   });
 });

@@ -1,9 +1,9 @@
 import * as React from "react"
 import { useToast } from "@/hooks/use-toast"
 import { type Project, type Member, type BlogPost, type AdminDashboardProps } from "@/types/admin"
-import { deleteProject } from "@/lib/actions/projects-admin"
-import { deleteMember } from "@/lib/actions/members-admin"
-import { deleteBlogPost } from "@/lib/actions/blog-admin"
+import { deleteProject, deleteProjectsBulk } from "@/lib/actions/projects-admin"
+import { deleteMember, deleteMembersBulk } from "@/lib/actions/members-admin"
+import { deleteBlogPost, deleteBlogPostsBulk } from "@/lib/actions/blog-admin"
 
 export function useAdminState(props: AdminDashboardProps) {
   const [active, setActive] = React.useState("overview")
@@ -110,6 +110,48 @@ export function useAdminState(props: AdminDashboardProps) {
     [searchEditItem, localBlogPosts]
   )
 
+  const handleBulkDeleteProjects = React.useCallback(async (ids: string[]) => {
+    try {
+      const res = await deleteProjectsBulk(ids)
+      if (res.success) {
+        setLocalProjects(prev => prev.filter(p => !ids.includes(p.id)))
+        toast({ title: `${ids.length} projeto(s) excluído(s) com sucesso` })
+      } else {
+        toast({ title: res.error || "Erro ao excluir projetos", variant: "destructive" })
+      }
+    } catch {
+      toast({ title: "Erro na exclusão em massa", variant: "destructive" })
+    }
+  }, [toast])
+
+  const handleBulkDeleteBlog = React.useCallback(async (ids: string[]) => {
+    try {
+      const res = await deleteBlogPostsBulk(ids)
+      if (res.success) {
+        setLocalBlogPosts(prev => prev.filter(p => !ids.includes(p.id)))
+        toast({ title: `${ids.length} post(s) excluído(s) com sucesso` })
+      } else {
+        toast({ title: res.error || "Erro ao excluir posts", variant: "destructive" })
+      }
+    } catch {
+      toast({ title: "Erro na exclusão em massa", variant: "destructive" })
+    }
+  }, [toast])
+
+  const handleBulkDeleteMembers = React.useCallback(async (ids: string[]) => {
+    try {
+      const res = await deleteMembersBulk(ids)
+      if (res.success) {
+        setLocalMembers(prev => prev.filter(m => !ids.includes(m.id)))
+        toast({ title: `${ids.length} membro(s) excluído(s) com sucesso` })
+      } else {
+        toast({ title: res.error || "Erro ao excluir membros", variant: "destructive" })
+      }
+    } catch {
+      toast({ title: "Erro na exclusão em massa", variant: "destructive" })
+    }
+  }, [toast])
+
   return {
     active,
     setActive,
@@ -127,6 +169,9 @@ export function useAdminState(props: AdminDashboardProps) {
     handleEditItem,
     handleDeleteTrigger,
     confirmDelete,
+    handleBulkDeleteProjects,
+    handleBulkDeleteBlog,
+    handleBulkDeleteMembers,
     setSearchEditItem
   }
 }

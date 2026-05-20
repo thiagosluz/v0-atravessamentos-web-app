@@ -6,6 +6,8 @@ import {
   batchUploadGalleryImages, 
   getGalleryTags, 
   createGalleryTag,
+  deleteGalleryTag,
+  countGalleryTagUsage,
   getGalleryAssets,
   getProjectsForSelect
 } from "@/lib/actions/gallery"
@@ -68,6 +70,21 @@ export function GalleryAdminPanel() {
     }
   }
 
+  async function handleDeleteTag(tagId: string, tagName: string) {
+    const res = await deleteGalleryTag(tagId, tagName)
+    if (res.success) {
+      const updatedTags = await getGalleryTags()
+      setTags(updatedTags)
+      toast({ title: `Tag "${tagName}" excluída com sucesso` })
+    } else {
+      toast({ title: "Erro ao excluir tag", description: res.error, variant: "destructive" })
+    }
+  }
+
+  async function handleCountTagUsage(tagName: string) {
+    return countGalleryTagUsage(tagName)
+  }
+
   async function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const files = e.target.files
     if (!files || files.length === 0) return
@@ -117,9 +134,12 @@ export function GalleryAdminPanel() {
         />
 
         <TagManagement 
+          tags={tags}
           newTag={newTag}
           setNewTag={setNewTag}
           onCreateTag={handleCreateTag}
+          onDeleteTag={handleDeleteTag}
+          onCountUsage={handleCountTagUsage}
         />
 
         <AssetGrid 

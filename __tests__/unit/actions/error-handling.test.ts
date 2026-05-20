@@ -40,7 +40,7 @@ describe('Server Actions Error Handling', () => {
     expect(result.error).toContain('Dados inválidos')
   })
 
-  it('should return friendly message for Supabase connection errors', async () => {
+  it('should propagate Supabase error message via safeAction', async () => {
     const formData = new FormData()
     formData.append('title', 'Projeto Teste')
     formData.append('category', 'Educação')
@@ -55,7 +55,8 @@ describe('Server Actions Error Handling', () => {
     })
 
     const result = await createProject(formData)
-    expect(result.error).toBe('Erro ao salvar no banco de dados.')
+    // safeAction propaga a mensagem original do erro do Supabase
+    expect(result.error).toBe('Failed to fetch')
   })
 
   it('should catch unexpected exceptions', async () => {

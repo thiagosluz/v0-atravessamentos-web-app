@@ -67,6 +67,58 @@ export async function getGalleryTags() {
   return data
 }
 
+// Contar quantos assets usam uma tag específica
+export async function countGalleryTagUsage(tagName: string): Promise<number> {
+  const supabase = createAdminClient()
+  const { count, error } = await supabase
+    .from("gallery_assets")
+    .select("id", { count: "exact", head: true })
+    .contains("tags", [tagName])
+
+  if (error) return 0
+  return count ?? 0
+}
+
+// Excluir tag de galeria e remover referências dos assets
+export async function deleteGalleryTag(tagId: string, tagName: string): Promise<ActionResponse> {
+  try {
+    await ensureAdmin()
+    const supabase = createAdminClient()
+
+    // Buscar todos os assets que usam esta tag
+    const { data: affectedAssets } = await supabase
+      .from("gallery_assets")
+      .select("id, tags")
+      .contains("tags", [tagName])
+
+    // Remover a tag do array de cada asset afetado
+    if (affectedAssets?.length) {
+      for (const asset of affectedAssets) {
+        const updatedTags = (asset.tags as string[]).filter(t => t !== tagName)
+        await supabase
+          .from("gallery_assets")
+          .update({ tags: updatedTags })
+          .eq("id", asset.id)
+      }
+    }
+
+    // Excluir a tag da tabela categories
+    const { error } = await supabase
+      .from("categories")
+      .delete()
+      .eq("id", tagId)
+
+    if (error) throw error
+
+    revalidatePath("/acervo")
+    revalidatePath("/admin")
+    await redis.del("gallery_assets_all")
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
+}
+
 // Upload em lote (Batch Upload)
 export async function batchUploadGalleryImages(formData: FormData): Promise<ActionResponse> {
   try {
