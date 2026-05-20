@@ -48,12 +48,31 @@ Para exibir conteúdo HTML proveniente do editor Tiptap, utilize o utilitário d
 
 ---
 
-## 🔢 Paginação Server-Side
+## 🔢 Paginação Server-Side e Assíncrona
 
-O projeto utiliza paginação baseada em URL para as listagens administrativas e públicas.
-- **Componente**: `<Pagination />` em `components/admin/pagination.tsx`.
-- **Lógica**: A página (ex: `/admin`) captura os `searchParams` e os injeta nas Server Actions.
-- **Consultas**: Utilize `page` e `limit` para calcular o `.range(start, end)` nas chamadas ao Supabase.
+O projeto utiliza dois padrões de paginação para otimizar a performance e evitar listas infinitas:
+1. **Baseada em URL**: Para listagens públicas e painéis administrativos tradicionais. A rota captura os `searchParams` e os injeta na Server Action (ex: `.range(start, end)`).
+2. **Reativa/Assíncrona**: Para listagens dinâmicas onde não queremos recarregar a rota inteira (ex: Histórico de Transmissões da Newsletter).
+   - **Hook**: `useAsyncData` (em `hooks/use-async-data.ts`) gerencia loading, erros e re-busca automática baseado em estado de página reativo.
+   - **Componente**: Controles acessíveis (`<nav aria-label="...">` com `aria-current="page"`) para troca de página sem interrupções.
+
+---
+
+## ♿ Padrões de Acessibilidade (WCAG)
+
+Para garantir que a plataforma Atravessamentos passe com sucesso nas auditorias automatizadas de acessibilidade (Axe/WCAG 2.1 AA) e proporcione uma navegação excelente:
+- **Botões e Links com Ícones**: Qualquer botão ou link que contenha apenas ícones (ex: botão de deletar, paginações com setas, links externos como o do Resend) **deve** possuir um atributo `aria-label` explícito e autoexplicativo em português.
+- **Navegação**: Agrupamentos de controles de paginação **devem** ser estruturados usando a tag `<nav>` com `aria-label` descritivo.
+- **Semântica e Estado**: Links ou botões de páginas ativas devem receber `aria-current="page"` para informar leitores de tela sobre a localização atual do foco.
+- **Formulários**: Todos os inputs devem ter um rótulo associado (`<label>` ou `aria-label`).
+
+---
+
+## 🛡️ Segurança de Ambiente e Evitação de Spam
+
+Para impedir o envio acidental de e-mails de teste para assinantes reais da newsletter em ambientes locais ou E2E:
+- A função de disparo de transmissões (`broadcastNews`) conta com detecção de ambiente.
+- Se executada sob `localhost`, ambiente de desenvolvimento (`development`) ou sob execução do Playwright, a lista de contatos do Resend é automaticamente filtrada, limitando o envio apenas para e-mails de teste específicos e mocks, blindando os assinantes legítimos.
 
 ---
 

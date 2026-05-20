@@ -55,7 +55,7 @@ export function SiteHeader({ onOpenAdmin }: SiteHeaderProps) {
             <span className="font-display text-lg font-bold leading-none">A</span>
           </span>
           <span className="font-display text-base font-bold tracking-tight md:text-lg">
-            atravessamentos
+            Atravessamentos
           </span>
         </Link>
 

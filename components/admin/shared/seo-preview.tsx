@@ -11,7 +11,7 @@ interface SEOPreviewProps {
   url?: string
 }
 
-export function SEOPreview({ title, description, imageUrl, url = "https://atravessamentos.art" }: SEOPreviewProps) {
+export function SEOPreview({ title, description, imageUrl, url = "https://www.coletivoatravessamentos.com.br/" }: SEOPreviewProps) {
   return (
     <div className="grid gap-8 md:grid-cols-2">
       {/* Google Preview */}
@@ -52,7 +52,7 @@ export function SEOPreview({ title, description, imageUrl, url = "https://atrave
             </div>
           )}
           <div className="p-4 bg-muted/30">
-            <div className="text-[12px] text-foreground uppercase tracking-wider mb-1">ATRAVESSAMENTOS.ART</div>
+            <div className="text-[12px] text-foreground uppercase tracking-wider mb-1">coletivoatravessamentos.com.br</div>
             <h4 className="text-[16px] font-bold text-foreground mb-1 line-clamp-1">
               {title || "Título da Travessia"}
             </h4>

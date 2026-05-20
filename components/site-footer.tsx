@@ -165,7 +165,7 @@ export function SiteFooter({ settings }: SiteFooterProps) {
                 <span className="font-display text-2xl font-bold leading-none">A</span>
               </span>
               <span className="font-display text-2xl font-bold tracking-tight">
-                atravessamentos
+                Atravessamentos
               </span>
             </a>
             <p className="mt-5 max-w-md text-base text-background/70">

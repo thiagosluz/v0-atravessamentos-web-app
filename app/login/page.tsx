@@ -42,7 +42,7 @@ export default async function LoginPage() {
               <span className="font-display text-xl font-bold leading-none text-primary-foreground">A</span>
             </span>
             <span className="font-display text-lg font-bold tracking-tight">
-              atravessamentos
+              Atravessamentos
             </span>
           </a>
 

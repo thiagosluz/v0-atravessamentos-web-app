@@ -104,7 +104,7 @@ O painel central (`OverviewPanel`) utiliza uma arquitetura de agregação de dad
 ## Autenticação e proteção de rotas
 
 - **Supabase Auth** para login e sessão (cookies geridos pelo cliente SSR em `lib/supabase/server.ts`).
-- **Middleware Nativo (`middleware.ts`)**: Implementado na raiz do projeto para proteção global de rotas. Ele gerencia redirecionamentos automáticos (Ex: `/admin` -> `/login` sem sessão).
+- **Middleware Nativo do Next.js 16 (`proxy.ts`)**: O projeto adota a nova convenção de middleware `proxy.ts` do Next.js 16 executada na Edge Runtime. Ele gerencia cookies de sessão com segurança, protege rotas administrativas (`/admin`), lida com redirecionamentos inteligentes de/para `/login`, e possui tratamento de erros com blocos `try-catch` resilientes a falhas de conexão de rede ou do provedor de banco de dados.
 - **RLS**: As políticas no Postgres continuam importantes para acesso direto ao Supabase; o app também usa **service role** em várias actions críticas.
 
 ---
@@ -141,7 +141,8 @@ O fluxo de contato utiliza uma arquitetura híbrida para máxima resiliência e 
 - **Fluxo de Dados**: `Formulário (Client)` -> `Server Action (Server)` -> `Supabase (DB)` -> `Resend (Email)`.
 - **Persistência**: Todas as mensagens são salvas na tabela `contact_messages` via **Service Role**, permitindo que o coletivo tenha um backup caso o e-mail não chegue.
 - **Anti-Spam**: Proteção multicamada com **Honeypot** (campo invisível), **Zod Validation** e **Rate Limiting via Redis** (5 requisições / 10 segundos por IP).
-- **Entrega**: Integração com a API do **Resend** para entrega de e-mails transacionais com templates HTML limpos.
+- **Entrega e Blindagem em Desenvolvimento/Testes**: Integração com a API do **Resend** para entrega de e-mails transacionais.
+  - **Filtro Automático de Ambiente**: Disparos de newsletter (`broadcastNews()`) iniciados localmente (`localhost`), em ambiente de desenvolvimento ou através do executor do Playwright filtram automaticamente os destinatários. Apenas e-mails de teste autorizados ou domínios de mock recebem as transmissões, assegurando que assinantes reais nunca sejam impactados por disparos acidentais durante testes locais de E2E.
 
 #### 📝 Estrutura de Conteúdo (Pattern: Excerpt vs Content)
 Tanto no **Blog (Diário)** quanto em **Projetos**, utilizamos um padrão de separação de dados:
