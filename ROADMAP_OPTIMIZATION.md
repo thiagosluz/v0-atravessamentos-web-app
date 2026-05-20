@@ -149,6 +149,11 @@ Transformar a plataforma em uma central ativa de atividades e encontros para o c
 
 ## ✅ Funcionalidades Concluídas (Maio 2026)
 
+### 📬 Observabilidade e Captura Resiliente de Erros (Sentry)
+- **Implementação**: Integração direta do SDK `@sentry/nextjs` em `app/error.tsx` (barreira de erro em nível de rotas), capturando exceções silenciosas no cliente e anexando automaticamente identificadores de ambiente e metadados (`digest`).
+- **User Feedback Dialog**: Adicionado suporte ao formulário nativo de reporte de problemas da dashboard do Sentry (`Sentry.showReportDialog`), ativado através de um botão secundário dinâmico no `ErrorLayout` ("Reportar problema").
+- **Resultado**: Zero lacunas de observabilidade de exceções no cliente em produção, permitindo diagnóstico imediato com o relato direto de usuários ou membros do coletivo.
+
 ### 🧩 Estabilização de Layout e Resiliência da Sidebar
 - **Implementação:** Refatoração de contêineres Flexbox da Sidebar (Desktop/Mobile) adotando estratégias de restrição (`min-h-0` e `overflow-y-auto`).
 - **Resultado:** Menu de navegação perfeitamente rolável, mantendo o logo (Header) e as opções de perfil (Footer) sempre visíveis e alinhados, sem empurrar componentes para fora da tela.

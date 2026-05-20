@@ -1,8 +1,8 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
+import * as Sentry from "@sentry/nextjs"
 import { ErrorLayout } from "@/components/ui/error-layout"
-import { RefreshCcw } from "lucide-react"
 
 export default function Error({
   error,
@@ -11,10 +11,28 @@ export default function Error({
   error: Error & { digest?: string }
   reset: () => void
 }) {
+  const [eventId, setEventId] = useState<string | null>(null)
+
   useEffect(() => {
-    // Log do erro para monitoramento (Sentry ou console em dev)
+    // Log do erro local
     console.error("Erro capturado:", error)
+
+    // Reportar erro para o Sentry
+    Sentry.withScope((scope) => {
+      if (error.digest) {
+        scope.setTag("digest", error.digest)
+      }
+      scope.setTag("error_boundary", "route-level")
+      const id = Sentry.captureException(error)
+      setEventId(id)
+    })
   }, [error])
+
+  const handleFeedback = () => {
+    if (eventId) {
+      Sentry.showReportDialog({ eventId })
+    }
+  }
 
   return (
     <ErrorLayout
@@ -25,6 +43,14 @@ export default function Error({
         label: "Tentar novamente",
         onClick: () => reset()
       }}
+      secondaryAction={
+        eventId
+          ? {
+              label: "Reportar problema",
+              onClick: handleFeedback,
+            }
+          : undefined
+      }
     />
   )
 }

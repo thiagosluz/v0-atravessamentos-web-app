@@ -16,9 +16,14 @@ interface ErrorLayoutProps {
     onClick?: () => void
     href?: string
   }
+  secondaryAction?: {
+    label: string
+    onClick?: () => void
+    href?: string
+  }
 }
 
-export function ErrorLayout({ code, title, message, action }: ErrorLayoutProps) {
+export function ErrorLayout({ code, title, message, action, secondaryAction }: ErrorLayoutProps) {
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-background flex items-center justify-center p-6">
       {/* Mesh Gradient Background */}
@@ -70,6 +75,18 @@ export function ErrorLayout({ code, title, message, action }: ErrorLayoutProps) 
               <Button onClick={action.onClick} size="lg" className="rounded-full px-8 h-12 bg-primary text-primary-foreground hover:scale-105 transition-transform flex items-center gap-2">
                 {code === "500" || code === "!!!" ? <RefreshCcw className="w-4 h-4" /> : <Home className="w-4 h-4" />}
                 {action.label}
+              </Button>
+            ) : null}
+
+            {secondaryAction?.href ? (
+              <Button asChild variant="outline" size="lg" className="rounded-full px-8 h-12 border-foreground/10 hover:bg-foreground/5 transition-colors">
+                <Link href={secondaryAction.href} className="flex items-center gap-2">
+                  {secondaryAction.label}
+                </Link>
+              </Button>
+            ) : secondaryAction?.onClick ? (
+              <Button onClick={secondaryAction.onClick} variant="outline" size="lg" className="rounded-full px-8 h-12 border-foreground/10 hover:bg-foreground/5 transition-colors flex items-center gap-2">
+                {secondaryAction.label}
               </Button>
             ) : null}
 
