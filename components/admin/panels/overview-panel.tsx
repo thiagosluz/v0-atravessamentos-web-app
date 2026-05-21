@@ -246,8 +246,8 @@ export function OverviewPanel({ user, projects, blogPosts, members, categories, 
                 <Sparkles className="h-3.5 w-3.5" />
                 Dica Pro
               </h4>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Use <kbd className="px-1.5 py-0.5 rounded bg-muted border border-border font-mono text-[10px] text-foreground font-bold">{isMac ? "Cmd+K" : "Ctrl+K"}</kbd> para buscar ou mudar de aba instantaneamente.
+              <p className="text-xs text-foreground leading-relaxed">
+                Use <kbd className="px-1.5 py-0.5 rounded bg-foreground text-background font-mono text-[10px] font-bold shadow-sm">{isMac ? "Cmd+K" : "Ctrl+K"}</kbd> para buscar ou mudar de aba instantaneamente.
               </p>
             </div>
             <div className="absolute -right-4 -bottom-4 opacity-10 group-hover:opacity-20 transition-opacity">

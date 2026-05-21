@@ -11,6 +11,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog"
 import { cn } from "@/lib/utils"
@@ -117,6 +118,9 @@ export function ExhibitionFormDialog({
           <DialogTitle className="font-display text-2xl">
             {initialData ? "Refinar Exposição" : "Inaugurar Nova Sala"}
           </DialogTitle>
+          <DialogDescription className="sr-only">
+            Preencha os detalhes para {initialData ? "refinar a exposição" : "inaugurar uma nova sala"} no acervo.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="flex-1 overflow-y-auto p-6">

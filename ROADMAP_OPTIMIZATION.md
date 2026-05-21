@@ -144,6 +144,7 @@ Transformar a plataforma em uma central ativa de atividades e encontros para o c
 4. **Auditoria de Contraste:** Ajustar tokens de cores para conformidade WCAG (Inclusão).
 5. Adição de Error Boundaries nos gráficos do Overview (Resiliência).
 6. **Sistema de Compartilhamento:** Implementar o protótipo de "Copiar Link" nos posts (Engajamento).
+7. **Floating UI Kit:** Expandir o componente `FloatingInput` para `FloatingTextarea` e `FloatingSelect`, aplicando-os gradualmente em formulários públicos (Contato, Inscrição) para criar uma identidade visual sofisticada e acessível.
 
 ---
 
@@ -184,5 +185,5 @@ Transformar a plataforma em uma central ativa de atividades e encontros para o c
 - **Resultado:** Validação de 8 cenários críticos de UI (links ativos, persistência de localStorage e visibilidade controlada).
 
 ---
-*Documento atualizado em 18/05/2026.*
+*Documento atualizado em 21/05/2026.*
 

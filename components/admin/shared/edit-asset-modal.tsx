@@ -10,6 +10,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog"
 import {
@@ -166,6 +167,9 @@ export function EditAssetModal({
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="font-display text-2xl">Curadoria de Memória</DialogTitle>
+          <DialogDescription className="sr-only">
+            Formulário para editar os metadados e tags de uma imagem do acervo.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="grid gap-6 py-4 md:grid-cols-2">

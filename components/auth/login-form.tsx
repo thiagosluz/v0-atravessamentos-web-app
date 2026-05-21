@@ -4,6 +4,7 @@ import * as React from "react"
 import { motion } from "motion/react"
 import { signIn } from "@/lib/actions/auth"
 import { Input } from "@/components/ui/input"
+import { FloatingInput } from "@/components/ui/floating-input"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Eye, EyeOff, Sparkles } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -35,53 +36,41 @@ export function LoginForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       {/* Email */}
-      <div className="space-y-2">
-        <label
-          htmlFor="login-email"
-          className="text-xs font-semibold uppercase tracking-[0.2em] text-foreground"
-        >
-          E-mail
-        </label>
-        <Input
-          id="login-email"
-          name="email"
-          type="email"
-          required
-          autoComplete="email"
-          placeholder="sua@email.com"
-          disabled={pending}
-          className="h-12 rounded-none border-0 border-b-2 border-foreground/20 bg-transparent px-0 text-base placeholder:text-foreground focus-visible:border-primary focus-visible:ring-0 focus-visible:ring-offset-0 transition-colors"
-        />
-      </div>
+      {/* Email */}
+      <FloatingInput
+        id="login-email"
+        name="email"
+        type="email"
+        required
+        autoComplete="email"
+        label="E-mail corporativo"
+        disabled={pending}
+        className="h-14 w-full rounded-lg border-foreground/20 bg-transparent px-4 pb-2 pt-6 text-base placeholder:text-transparent focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary transition-all"
+        labelClassName="left-4 text-foreground/60 peer-focus:text-primary peer-focus:-translate-y-3.5 peer-focus:bg-background peer-focus:px-1"
+      />
 
       {/* Password */}
-      <div className="space-y-2">
-        <label
-          htmlFor="login-password"
-          className="text-xs font-semibold uppercase tracking-[0.2em] text-foreground"
+      {/* Password */}
+      <div className="relative">
+        <FloatingInput
+          id="login-password"
+          name="password"
+          type={showPassword ? "text" : "password"}
+          required
+          autoComplete="current-password"
+          label="Sua senha"
+          disabled={pending}
+          className="h-14 w-full rounded-lg border-foreground/20 bg-transparent px-4 pr-12 pb-2 pt-6 text-base placeholder:text-transparent focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary transition-all"
+          labelClassName="left-4 text-foreground/60 peer-focus:text-primary peer-focus:-translate-y-3.5 peer-focus:bg-background peer-focus:px-1"
+        />
+        <button
+          type="button"
+          onClick={() => setShowPassword((v) => !v)}
+          className="absolute right-4 top-1/2 -translate-y-1/2 text-foreground/50 hover:text-foreground transition-colors z-20"
+          aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
         >
-          Senha
-        </label>
-        <div className="relative">
-          <Input
-            id="login-password"
-            name="password"
-            type={showPassword ? "text" : "password"}
-            required
-            autoComplete="current-password"
-            placeholder="••••••••"
-            disabled={pending}
-            className="h-12 rounded-none border-0 border-b-2 border-foreground/20 bg-transparent px-0 pr-10 text-base placeholder:text-foreground focus-visible:border-primary focus-visible:ring-0 focus-visible:ring-offset-0 transition-colors"
-          />
-          <button
-            type="button"
-            onClick={() => setShowPassword((v) => !v)}
-            className="absolute right-0 top-1/2 -translate-y-1/2 text-foreground hover:text-foreground transition-colors"
-            aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
-          >
-            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-          </button>
-        </div>
+          {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+        </button>
       </div>
 
       {/* Error */}

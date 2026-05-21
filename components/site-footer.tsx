@@ -4,6 +4,7 @@ import * as React from "react"
 import { Instagram, Mail, MapPin, Youtube } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { FloatingInput } from "@/components/ui/floating-input"
 import { ClientOnly } from "@/components/client-only"
 
 import { type SiteSettings } from "@/lib/actions/settings"
@@ -128,17 +129,16 @@ export function SiteFooter({ settings }: SiteFooterProps) {
                 <input name="website" type="text" tabIndex={-1} autoComplete="off" />
               </div>
 
-              <label htmlFor="newsletter-email" className="sr-only">
-                E-mail
-              </label>
               <div className="flex flex-col gap-3 sm:flex-row">
-                <Input
+                <FloatingInput
                   id="newsletter-email"
                   name="email"
                   type="email"
                   required
-                  placeholder="seu@email.com"
-                  className="h-12 flex-1 rounded-full border-background/20 bg-background/5 text-background placeholder:text-background/50 focus-visible:ring-primary"
+                  label="Digite seu e-mail"
+                  containerClassName="flex-1"
+                  className="h-12 w-full rounded-full border-background/20 bg-background/5 text-background placeholder:text-transparent focus-visible:ring-primary"
+                  labelClassName="text-background/50 left-5 peer-focus:text-background/90 peer-focus:-translate-y-4 peer-focus:bg-foreground peer-focus:px-1"
                 />
                 <Button
                   type="submit"
