@@ -13,7 +13,8 @@ import {
   UserCircle,
   LogOut,
   ChevronRight,
-  Menu
+  Menu,
+  Activity
 } from "lucide-react"
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
@@ -23,6 +24,7 @@ import { signOut } from "@/lib/actions/auth"
 
 // Painéis
 import { OverviewPanel } from "./panels/overview-panel"
+import { AnalyticsPanel } from "./panels/analytics-panel"
 import { ProjectPanel } from "./panels/project-panel"
 import { BlogPanel } from "./panels/blog-panel"
 import { MemberPanel } from "./panels/member-panel"
@@ -129,6 +131,12 @@ export function AdminDashboard(props: AdminDashboardProps) {
         {/* Nav Area - Scrollable */}
         <div className="flex-1 overflow-y-auto min-h-0 scrollbar-hide px-6 py-2">
           <nav className="space-y-1.5 pb-4">
+            <SidebarItem 
+              icon={<Activity className="h-4 w-4" />} 
+              label="Radar (Analytics)" 
+              active={active === "analytics"} 
+              onClick={() => setActive("analytics")} 
+            />
             <SidebarItem 
               icon={<LayoutDashboard className="h-4 w-4" />} 
               label="Visão Geral" 
@@ -248,6 +256,12 @@ export function AdminDashboard(props: AdminDashboardProps) {
                    <div className="flex-1 overflow-y-auto min-h-0 scrollbar-hide px-6 py-2">
                      <nav className="space-y-1.5 pb-4">
                        <SidebarItem 
+                         icon={<Activity className="h-4 w-4" />} 
+                         label="Radar (Analytics)" 
+                         active={active === "analytics"} 
+                         onClick={() => { setActive("analytics"); setIsMobileMenuOpen(false); }} 
+                       />
+                       <SidebarItem 
                          icon={<LayoutDashboard className="h-4 w-4" />} 
                          label="Visão Geral" 
                          active={active === "overview"} 
@@ -349,7 +363,8 @@ export function AdminDashboard(props: AdminDashboardProps) {
                </button>
                <ChevronRight className="h-3 w-3" />
                <span className="text-[#333]">
-                 {active === "overview" ? "Visão Geral" : 
+                 {active === "analytics" ? "Radar do Coletivo" :
+                  active === "overview" ? "Visão Geral" : 
                   active === "projects" ? "Projetos" :
                   active === "blog" ? "Diário" :
                   active === "members" ? "Membros" :
@@ -419,6 +434,12 @@ export function AdminDashboard(props: AdminDashboardProps) {
                 <Loader2 className="h-8 w-8 animate-spin text-primary/40" />
               </div>
             }>
+              {active === "analytics" && (
+                <ErrorBoundary name="Radar Analytics">
+                  <AnalyticsPanel />
+                </ErrorBoundary>
+              )}
+
               {active === "overview" && (
                 <ErrorBoundary name="Visão Geral">
                   <OverviewPanel 

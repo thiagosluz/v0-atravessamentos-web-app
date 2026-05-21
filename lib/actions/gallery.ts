@@ -9,6 +9,26 @@ import { type ActionResponse, type GalleryAssetUpdateData } from "@/types/admin"
 import { headers } from "next/headers"
 import crypto from "crypto"
 
+// Helper: Gravação Assíncrona no Radar do Coletivo (Analytics)
+// Usamos "Fire and Forget" para não atrasar a resposta da API ao usuário final
+function logAnalyticsEvent(eventType: "like" | "unlike" | "view", assetId: string, ip: string) {
+  try {
+    const supabase = createAdminClient()
+    const userHash = crypto.createHash('sha256').update(ip).digest('hex')
+    
+    // Promessa flutuante - não damos await!
+    supabase.from("analytics_events").insert({
+      event_type: eventType,
+      asset_id: assetId,
+      user_hash: userHash
+    }).then(({ error }) => {
+      if (error) console.error("[Analytics Error]", error)
+    })
+  } catch (err) {
+    // Silencia erros para nunca quebrar o fluxo principal
+  }
+}
+
 // Helper para upload de imagem
 async function uploadToGallery(supabase: any, file: File) {
   if (!file || file.size === 0) return null
@@ -239,6 +259,9 @@ export async function likeGalleryAsset(id: string): Promise<ActionResponse & { u
     revalidatePath("/acervo")
     await redis.del("gallery_assets_all")
     
+    // Registrar evento na Máquina do Tempo (Radar do Coletivo)
+    logAnalyticsEvent("like", id, ip)
+    
     // Gerar token de segurança (HMAC) para permitir descurtir
     const timestamp = Date.now()
     const secret = process.env.SUPABASE_JWT_SECRET || process.env.NEXTAUTH_SECRET || "atravessamentos-secret"
@@ -300,6 +323,9 @@ export async function unlikeGalleryAsset(id: string, undoToken: string): Promise
     
     revalidatePath("/acervo")
     await redis.del("gallery_assets_all")
+    
+    // Registrar evento na Máquina do Tempo (Radar do Coletivo)
+    logAnalyticsEvent("unlike", id, ip)
     
     return { success: true, count: newLikes }
   } catch (error: any) {
