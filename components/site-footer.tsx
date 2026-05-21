@@ -13,7 +13,6 @@ const footerLinks = [
   {
     title: "Coletivo",
     links: [
-      { name: "Home", href: "/#topo" },
       { name: "Sobre", href: "/#sobre" },
       { name: "Membros", href: "/#coletivo" },
       { name: "Diário", href: "/diario" },
@@ -114,7 +113,7 @@ export function SiteFooter({ settings }: SiteFooterProps) {
             <h2 className="font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl text-balance">
               Vamos atravessar <span className="italic font-light">juntas e juntos</span>?
             </h2>
-            <p className="mt-5 max-w-xl text-lg text-background/75 md:text-xl">
+            <p className="mt-5 max-w-[65ch] text-lg text-background/75 md:text-xl">
               Receba notícias, editais e ensaios do coletivo direto no seu e-mail. Sem spam, com
               afeto.
             </p>
@@ -168,18 +167,20 @@ export function SiteFooter({ settings }: SiteFooterProps) {
                 Atravessamentos
               </span>
             </a>
-            <p className="mt-5 max-w-md text-base text-background/70">
+            <p className="mt-5 max-w-[65ch] text-base text-background/70">
               {settings.footer_description}
             </p>
-            <a
-              href={settings.location_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-4 inline-flex items-center gap-2 text-sm text-background/75 hover:text-background transition-colors"
-            >
-              <MapPin className="h-4 w-4" />
-              {settings.location_text}
-            </a>
+            <address className="not-italic">
+              <a
+                href={settings.location_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 inline-flex min-h-[44px] items-center gap-2 text-sm text-background/75 hover:text-background transition-colors"
+              >
+                <MapPin className="h-4 w-4" />
+                {settings.location_text}
+              </a>
+            </address>
 
             <div className="mt-6 flex items-center gap-4 bg-background/5 p-4 rounded-xl border border-background/10 max-w-sm">
               <div className="flex gap-2.5 shrink-0">
@@ -238,18 +239,20 @@ export function SiteFooter({ settings }: SiteFooterProps) {
               <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-background/75">
                 {group.title}
               </h3>
-              <ul className="mt-4 space-y-2.5">
-                {group.links.map((link) => (
-                  <li key={link.name}>
-                    <Link
-                      href={link.href}
-                      className="text-base text-background/85 transition-colors hover:text-primary"
-                    >
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+              <nav aria-label={group.title}>
+                <ul className="mt-2 space-y-1">
+                  {group.links.map((link) => (
+                    <li key={link.name}>
+                      <Link
+                        href={link.href}
+                        className="inline-flex min-h-[44px] items-center text-base text-background/85 transition-colors hover:text-primary"
+                      >
+                        {link.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
             </div>
           ))}
         </div>
@@ -257,21 +260,44 @@ export function SiteFooter({ settings }: SiteFooterProps) {
         {/* Bottom: legal */}
         <div className="flex flex-col items-start justify-between gap-4 border-t border-background/15 pt-8 text-xs text-background/80 md:flex-row md:items-center">
           <p suppressHydrationWarning>© {new Date().getFullYear()} Coletivo Atravessamentos. Feito com afeto e disputa.</p>
-          <div className="flex flex-wrap gap-x-5 gap-y-1">
-            <a href={settings.privacy_policy_url} className="hover:text-background">
+          <nav aria-label="Links legais" className="flex flex-wrap gap-x-5 gap-y-1">
+            <a href={settings.privacy_policy_url} className="inline-flex min-h-[44px] items-center hover:text-background">
               Política de privacidade
             </a>
-            <a href={settings.terms_url} className="hover:text-background">
+            <a href={settings.terms_url} className="inline-flex min-h-[44px] items-center hover:text-background">
               Termos
             </a>
-            <a href={settings.accessibility_url} className="hover:text-background">
+            <a href={settings.accessibility_url} className="inline-flex min-h-[44px] items-center hover:text-background">
               Acessibilidade
             </a>
-            <a href="/admin" className="hover:text-background">
+            <a href="/admin" className="inline-flex min-h-[44px] items-center hover:text-background">
               Área Restrita
             </a>
-          </div>
+          </nav>
         </div>
+
+        {/* Schema.org JSON-LD para SEO Institucional/Local */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "NGO",
+              "name": "Coletivo Atravessamentos",
+              "url": "https://coletivoatravessamentos.com.br",
+              "description": settings.footer_description,
+              "email": settings.contact_email,
+              "address": {
+                "@type": "PostalAddress",
+                "streetAddress": settings.location_text
+              },
+              "sameAs": [
+                settings.instagram_url,
+                settings.youtube_url
+              ].filter(Boolean)
+            })
+          }}
+        />
       </div>
     </footer>
   )
