@@ -14,7 +14,8 @@ import {
   LogOut,
   ChevronRight,
   Menu,
-  Activity
+  Activity,
+  Palette
 } from "lucide-react"
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
@@ -197,6 +198,12 @@ export function AdminDashboard(props: AdminDashboardProps) {
               active={active === "settings"} 
               onClick={() => setActive("settings")} 
             />
+            <SidebarItem 
+              icon={<Palette className="h-4 w-4" />} 
+              label="Identidade Visual" 
+              active={active === "visual"} 
+              onClick={() => setActive("visual")} 
+            />
           </nav>
         </div>
 
@@ -320,6 +327,12 @@ export function AdminDashboard(props: AdminDashboardProps) {
                          label="Configurações" 
                          active={active === "settings"} 
                          onClick={() => { setActive("settings"); setIsMobileMenuOpen(false); }} 
+                       />
+                       <SidebarItem 
+                         icon={<Palette className="h-4 w-4" />} 
+                         label="Identidade Visual" 
+                         active={active === "visual"} 
+                         onClick={() => { setActive("visual"); setIsMobileMenuOpen(false); }} 
                        />
                      </nav>
                    </div>

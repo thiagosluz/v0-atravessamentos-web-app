@@ -7,7 +7,7 @@ export type SearchResult = {
   title: string
   subtitle?: string
   image?: string
-  type: "project" | "member" | "blog"
+  type: "project" | "member" | "blog" | "gallery" | "exhibition"
   href: string
 }
 
@@ -38,8 +38,18 @@ export async function globalSearch(query: string, isAdmin: boolean = false): Pro
     blogQuery = blogQuery.eq("status", "Publicado")
   }
 
+  let exhibitionsQuery = supabase
+    .from("exhibitions")
+    .select("id, title, description, cover_image, slug")
+    .or(`title.ilike.${q},description.ilike.${q}`)
+    .limit(5)
+
+  if (!isAdmin) {
+    exhibitionsQuery = exhibitionsQuery.eq("status", "Publicado")
+  }
+
   // Buscas paralelas
-  const [projectsRes, membersRes, blogRes] = await Promise.all([
+  const [projectsRes, membersRes, blogRes, galleryRes, exhibitionsRes] = await Promise.all([
     projectsQuery,
     supabase
       .from("members")
@@ -47,6 +57,12 @@ export async function globalSearch(query: string, isAdmin: boolean = false): Pro
       .or(`name.ilike.${q},bio.ilike.${q}`)
       .limit(5),
     blogQuery,
+    supabase
+      .from("gallery_assets")
+      .select("id, title, description, image_url")
+      .or(`title.ilike.${q},description.ilike.${q}`)
+      .limit(5),
+    exhibitionsQuery,
   ])
 
   const results: SearchResult[] = []
@@ -88,6 +104,34 @@ export async function globalSearch(query: string, isAdmin: boolean = false): Pro
         image: b.cover_image,
         type: "blog" as const,
         href: `/diario/${b.slug}`,
+      }))
+    )
+  }
+
+  // Mapear Acervo (Galeria)
+  if (galleryRes.data) {
+    results.push(
+      ...galleryRes.data.map((g) => ({
+        id: g.id,
+        title: g.title,
+        subtitle: g.description?.substring(0, 60) + "...",
+        image: g.image_url,
+        type: "gallery" as const,
+        href: `/acervo`,
+      }))
+    )
+  }
+
+  // Mapear Exposições
+  if (exhibitionsRes.data) {
+    results.push(
+      ...exhibitionsRes.data.map((e) => ({
+        id: e.id,
+        title: e.title,
+        subtitle: e.description?.substring(0, 60) + "...",
+        image: e.cover_image,
+        type: "exhibition" as const,
+        href: `/exposicoes/${e.slug}`,
       }))
     )
   }

@@ -10,6 +10,11 @@ import {
   Users,
   UserCircle,
   ExternalLink,
+  Activity,
+  Library,
+  Mail,
+  Image as ImageIcon,
+  Palette
 } from "lucide-react"
 import { useDebounce } from "@/hooks/use-debounce"
 import { globalSearch, type SearchResult } from "@/lib/actions/search"
@@ -115,14 +120,34 @@ export function AdminCommandMenu({ setActive, onEditItem }: AdminCommandMenuProp
                 <Users className="mr-2 h-4 w-4" />
                 <span>Membros</span>
               </CommandItem>
+              <CommandItem onSelect={() => runCommand(() => setActive("acervo"))}>
+                <Library className="mr-2 h-4 w-4" />
+                <span>Acervo Vivo</span>
+              </CommandItem>
+              <CommandItem onSelect={() => runCommand(() => setActive("exhibitions"))}>
+                <ImageIcon className="mr-2 h-4 w-4" />
+                <span>Exposições</span>
+              </CommandItem>
               <CommandItem onSelect={() => runCommand(() => setActive("blog"))}>
                 <BookOpen className="mr-2 h-4 w-4" />
-                <span>Blog</span>
+                <span>Diário</span>
+              </CommandItem>
+              <CommandItem onSelect={() => runCommand(() => setActive("newsletter"))}>
+                <Mail className="mr-2 h-4 w-4" />
+                <span>Newsletter</span>
               </CommandItem>
               <CommandSeparator />
+              <CommandItem onSelect={() => runCommand(() => setActive("analytics"))}>
+                <Activity className="mr-2 h-4 w-4 text-primary" />
+                <span className="font-bold text-primary">Radar do Coletivo</span>
+              </CommandItem>
               <CommandItem onSelect={() => runCommand(() => setActive("settings"))}>
                 <Settings className="mr-2 h-4 w-4" />
                 <span>Configurações</span>
+              </CommandItem>
+              <CommandItem onSelect={() => runCommand(() => setActive("visual"))}>
+                <Palette className="mr-2 h-4 w-4" />
+                <span>Identidade Visual</span>
               </CommandItem>
               <CommandItem onSelect={() => runCommand(() => setActive("profile"))}>
                 <UserCircle className="mr-2 h-4 w-4" />
@@ -170,13 +195,41 @@ export function AdminCommandMenu({ setActive, onEditItem }: AdminCommandMenuProp
           )}
  
           {blogPosts.length > 0 && (
-            <CommandGroup heading="Editar Blog">
+            <CommandGroup heading="Editar Diário">
               {blogPosts.map((item) => (
                 <CommandItem
                   key={item.id}
                   onSelect={() => runCommand(() => onEditItem("blog", item.id))}
                 >
                   <BookOpen className="mr-2 h-4 w-4" />
+                  <span>{item.title}</span>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          )}
+ 
+          {results.filter(r => r.type === "gallery").length > 0 && (
+            <CommandGroup heading="Obras do Acervo">
+              {results.filter(r => r.type === "gallery").map((item) => (
+                <CommandItem
+                  key={item.id}
+                  onSelect={() => runCommand(() => setActive("acervo"))}
+                >
+                  <ImageIcon className="mr-2 h-4 w-4" />
+                  <span>{item.title}</span>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          )}
+
+          {results.filter(r => r.type === "exhibition").length > 0 && (
+            <CommandGroup heading="Exposições">
+              {results.filter(r => r.type === "exhibition").map((item) => (
+                <CommandItem
+                  key={item.id}
+                  onSelect={() => runCommand(() => setActive("exhibitions"))}
+                >
+                  <ImageIcon className="mr-2 h-4 w-4 text-primary" />
                   <span>{item.title}</span>
                 </CommandItem>
               ))}
