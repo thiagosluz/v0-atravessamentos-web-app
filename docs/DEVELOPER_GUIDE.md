@@ -64,7 +64,9 @@ Para garantir que a plataforma Atravessamentos passe com sucesso nas auditorias 
 - **Botões e Links com Ícones**: Qualquer botão ou link que contenha apenas ícones (ex: botão de deletar, paginações com setas, links externos como o do Resend) **deve** possuir um atributo `aria-label` explícito e autoexplicativo em português.
 - **Navegação**: Agrupamentos de controles de paginação **devem** ser estruturados usando a tag `<nav>` com `aria-label` descritivo.
 - **Semântica e Estado**: Links ou botões de páginas ativas devem receber `aria-current="page"` para informar leitores de tela sobre a localização atual do foco.
-- **Formulários**: Todos os inputs devem ter um rótulo associado (`<label>` ou `aria-label`).
+- **Formulários**: Todos os inputs devem ter um rótulo associado. Para formulários novos ou refatorados, prefira o componente `FloatingInput` (`components/ui/floating-input.tsx`), que já inclui a linkagem `<label htmlFor>` automaticamente.
+- **Modais (Dialog)**: Todo `<DialogContent>` do Radix UI **deve** conter um `<DialogDescription>`. Se a descrição não for visualmente desejada, use a classe `sr-only` para ocultá-la visualmente enquanto mantém a acessibilidade para leitores de tela. A ausência gera warnings no console e reprova auditorias WCAG.
+- **Contraste de Cores**: Evitar `text-muted-foreground` sobre fundos coloridos ou com opacidade. Sempre garantir ratio mínimo de **4.5:1** (WCAG AA). Preferir `text-foreground` sobre fundos temáticos.
 
 ---
 

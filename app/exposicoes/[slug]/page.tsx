@@ -6,6 +6,8 @@ import { getSiteSettings } from "@/lib/actions/settings"
 import { ClientExhibitionDetail } from "@/app/exposicoes/[slug]/client-exhibition"
 import { notFound } from "next/navigation"
 import { BackButton } from "@/components/ui/back-button"
+import Link from "next/link"
+import { Maximize2 } from "lucide-react"
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -51,6 +53,16 @@ export default async function ExhibitionDetailPage({ params }: PageProps) {
           <p className="text-xl md:text-2xl text-foreground italic leading-relaxed font-light">
             {exhibition.description}
           </p>
+          
+          <div className="pt-4 flex justify-center">
+            <Link 
+              href={`/exposicoes/${slug}/apresentacao`}
+              className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-6 py-3 text-sm font-medium text-primary transition-all hover:bg-primary hover:text-primary-foreground"
+            >
+              <Maximize2 className="h-4 w-4" />
+              Modo Apresentação
+            </Link>
+          </div>
         </div>
 
         {/* Grid de Ativos Curados (Client Component para interatividade) */}

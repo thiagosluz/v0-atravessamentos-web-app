@@ -66,6 +66,7 @@ O painel de **Acervo** foi projetado para ser um repositório centralizado de to
 - **Upload em Lote**: Você pode enviar até 20 fotos simultaneamente. Basta arrastar os arquivos para a zona tracejada.
 - **Hashtags Conceituais**: Gerencie tags globais que ajudam a organizar o acervo por temas (ex: #cerrado, #performance).
 - **Curadoria Sequencial**: Ao clicar em uma imagem do acervo, você abre um modal de edição que permite navegar rapidamente para a próxima foto, facilitando a catalogação em massa.
+- **Favoritos do Público**: Os visitantes podem "curtir" anonimamente as obras através de um botão de coração (protegido contra spam por `localStorage`). A popularidade dos itens ajudará a guiar futuras curadorias.
 
 ## 🏛️ Exposições (Salas de Curadoria)
 
@@ -74,12 +75,16 @@ Nesta seção, você cria as narrativas visuais do site. Uma exposição é uma 
 - **Layout Padronizado**: Assim como o restante do dashboard, este painel utiliza um cabeçalho claro e amplo espaçamento para facilitar a gestão das salas.
 - **Mesa de Curadoria**: Ao criar ou editar uma exposição, você verá um mural com todas as fotos do seu acervo. Basta selecionar as que deseja "pendurar" na sala virtual.
 - **Status de Inauguração**: Use o status "Publicado" para tornar a exposição visível no site público ou "Rascunho" para continuar trabalhando na curadoria.
+- **Modo Apresentação**: Toda exposição publicada possui um link "Modo Apresentação" na sua página pública, permitindo a exibição imersiva em tela cheia com autoplay (ajustável para 5s, 10s ou 15s), ideal para eventos, projetores ou TVs na galeria física.
+- **Geração de QR Code**: No grid de exposições do painel admin, você pode clicar no ícone de QR Code para gerar e baixar automaticamente um código PNG. Isso facilita a divulgação impressa (cartazes, catálogos) direcionando o público direto para a exposição virtual.
 
 ## 👥 Gestão de Membros
 
 A aba **Membros** permite gerenciar a equipe e os integrantes do coletivo, mantendo o histórico de suas trajetórias sempre atualizado.
 
 - **Minibio Rica (Editor Tiptap):** O campo de biografia utiliza o mesmo editor de texto avançado do Diário. Isso significa que você pode adicionar formatação, listas, itálico e negrito na biografia de cada integrante para criar narrativas mais imersivas.
+- **Vínculo com Projetos:** No formulário de "Projetos" (aba Projetos), você pode selecionar múltiplos membros que participaram da ação. Esse vínculo alimentará o histórico do membro automaticamente.
+- **Portfólio em PDF:** Na lista de membros do painel admin, você verá um botão de exportação ao lado de cada integrante. O sistema gera instantaneamente um arquivo PDF profissional, contendo foto, biografia limpa (sem HTML), contatos e a lista completa de projetos vinculados àquele integrante.
 - **Currículo Lattes:** Na aba de contatos, é possível fornecer o link oficial do Currículo Lattes do membro. Caso preenchido, um ícone de livro aberto (📖) aparecerá automaticamente na página de perfil público do membro no site.
 - **Categorização:** Assim como no Diário, os membros recebem "tags" (Ex: Educadoras, Artistas) que influenciam na cor do badge exibido no portal.
 

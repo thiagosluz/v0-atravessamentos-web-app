@@ -61,6 +61,7 @@ Projetos e ações do coletivo.
 | `year` | int | Usado na linha do tempo / filtros |
 | `status` | text | `Ativo` \| `Concluído` \| `Em Desenvolvimento` (conforme Zod Schema no admin) |
 | `category` | text | Nome da categoria |
+| `member_ids` | text[] | IDs dos membros vinculados ao projeto |
 | `cover_image` | text | URL opcional |
 | `updated_at` | timestamptz | Atualizado nas mutações → ordenação em `getProjects` |
 
@@ -132,6 +133,41 @@ Persistência das mensagens enviadas pelo formulário de contato público.
 | `status` | text | `Lido` \| `Respondido` |
 
 As mensagens são gravadas via **Admin Client** (Service Role) a partir da Server Action `sendContactMessage`, ignorando RLS para garantir a captura do contato mesmo sem autenticação do remetente.
+
+---
+
+### `gallery_assets`
+
+Obras e itens visuais do Acervo Vivo.
+
+| Coluna | Tipo | Notas |
+|--------|------|--------|
+| `id` | uuid | PK |
+| `title` | text | Título da obra/foto |
+| `description` | text | Opcional |
+| `image_url` | text | URL da imagem |
+| `location` | text | Opcional |
+| `project_id` | uuid | Opcional, vínculo com `projects` |
+| `tags` | text[] | Tags visuais para filtragem |
+| `likes` | int | Contador de curtidas públicas anônimas |
+| `created_at` | timestamptz | |
+
+---
+
+### `exhibitions`
+
+Narrativas visuais e Salas de Curadoria (Exposições virtuais).
+
+| Coluna | Tipo | Notas |
+|--------|------|--------|
+| `id` | uuid | PK |
+| `title` | text | Nome da Exposição |
+| `slug` | text | Único, URL da exposição |
+| `description` | text | Texto poético/curatorial |
+| `cover_image` | text | URL da capa da exposição |
+| `asset_ids` | text[] | Lista ordenada de IDs referenciando `gallery_assets` |
+| `status` | text | `Publicado` \| `Rascunho` |
+| `created_at` | timestamptz | |
 
 ---
 

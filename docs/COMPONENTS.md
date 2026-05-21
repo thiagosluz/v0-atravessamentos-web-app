@@ -95,6 +95,40 @@ O `BackgroundBlobs` é responsável pela atmosfera imersiva e orgânica das pág
 
 ---
 
+## ✏️ FloatingInput (Formulários Premium)
+
+O `FloatingInput` é o componente padrão para campos de texto em formulários novos ou refatorados. Ele implementa um rótulo animado (floating label) usando CSS puro via a diretiva `peer` do Tailwind.
+
+### Funcionamento Técnico (CSS Peer)
+O componente utiliza uma técnica de "label flutuante" sem JavaScript para a animação:
+
+1.  **Placeholder Invisível**: O `<input>` recebe `placeholder=" "` (espaço). Isso permite ao CSS detectar se o campo está vazio ou preenchido.
+2.  **Animação via `peer`**: O `<label>` é posicionado como irmão do input e utiliza os seletores `peer-placeholder-shown` e `peer-focus` para alternar entre os estados "dentro do campo" (escala 100%) e "flutuando acima" (escala 75%).
+3.  **ID Automático**: Se nenhum `id` é fornecido via props, o componente gera um automaticamente com `React.useId()`, garantindo a linkagem `htmlFor`↔`id` para acessibilidade.
+4.  **Tratamento Explícito de `disabled`**: A prop `disabled` é extraída explicitamente na desestruturação (não fica no spread `...props`) para evitar uma anomalia de SSR do Next.js que injeta `disabled=""` no HTML de forma forçada.
+
+### Props
+| Prop | Tipo | Descrição |
+|------|------|-----------|
+| `label` | `string` | Texto exibido como rótulo flutuante (obrigatório) |
+| `labelClassName` | `string?` | Classes CSS extras para o `<label>` |
+| `containerClassName` | `string?` | Classes CSS extras para o `<div>` container |
+| Demais props | `InputHTMLAttributes` | Todas as props nativas de `<input>` são suportadas via spread |
+
+### Onde está em uso:
+- **Login** (`components/auth/login-form.tsx`): Campos de e-mail e senha.
+- **Footer** (`components/site-footer.tsx`): Campo de inscrição na Newsletter.
+
+### Expansão Planejada (Floating UI Kit):
+- `FloatingTextarea` — Variante para campos de texto longo.
+- `FloatingSelect` — Variante para dropdowns.
+- Migração gradual dos formulários de Contato e Inscrição em páginas públicas.
+
+### Localização:
+`components/ui/floating-input.tsx`
+
+---
+
 ## 🛠️ Organização Modular (Admin)
 
 Recentemente, refatoramos o diretório `components/admin/` para uma estrutura funcional, visando escalabilidade:
@@ -102,7 +136,7 @@ Recentemente, refatoramos o diretório `components/admin/` para uma estrutura fu
 - **`forms/`**: Contém os formulários complexos de edição e criação (ex: `ProjectForm`, `BlogPostForm`). Utilizam o hook `useAdminForm`.
 - **`panels/`**: Componentes de alto nível que compõem as telas principais (ex: `OverviewPanel`, `SettingsPanel`).
 - **`table/`**: Toda a lógica de listagem, incluindo `AdminDataTable`, `TableHeader` e ações em lote.
-- **`shared/`**: Componentes reutilizáveis específicos do admin, como diálogos de confirmação e inputs customizados.
+- **`shared/`**: Componentes reutilizáveis específicos do admin, como diálogos de confirmação, modais de curadoria (`EditAssetModal`) e inputs customizados.
 
 ---
 
@@ -111,3 +145,4 @@ Ao criar novas funcionalidades administrativas:
 1. Verifique se o componente deve ser um **Form** (mutação) ou um **Panel** (visualização).
 2. Utilize o hook `useAdminForm` para gerenciar o estado da mutação e feedbacks (toast).
 3. Siga o padrão poético: `PageHeader` para o título e `BackgroundBlobs` para a atmosfera.
+4. **Formulários novos**: Prefira `FloatingInput` em vez de `Input` + `Label` separados para manter a identidade visual sofisticada.

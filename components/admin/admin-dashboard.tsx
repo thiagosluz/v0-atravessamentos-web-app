@@ -439,6 +439,7 @@ export function AdminDashboard(props: AdminDashboardProps) {
                     totalCount={projectsData.count}
                     currentPage={currentPage.projects}
                     categories={initialCategories}
+                    members={membersData.data}
                     onSuccess={handleProjectSuccess}
                     onEdit={(id) => handleEditItem("project", id)}
                     onDelete={(id) => handleDeleteTrigger("project", id)}
@@ -523,6 +524,7 @@ export function AdminDashboard(props: AdminDashboardProps) {
             onOpenChange={(open: boolean) => !open && setSearchEditItem(null)}
             initialData={projectToEdit}
             categories={initialCategories}
+            members={membersData.data}
             onSuccess={handleProjectSuccess}
           />
         )}

@@ -18,6 +18,7 @@ export async function createProject(formData: FormData) {
         description: formData.get("description") as string,
         year: formData.get("year") as string,
         status: formData.get("status") as any,
+        member_ids: formData.get("member_ids") ? (formData.get("member_ids") as string).split(",").map(id => id.trim()).filter(Boolean) : [],
       }
 
       const validated = projectSchema.parse(rawData)
@@ -55,6 +56,7 @@ export async function updateProject(id: string, formData: FormData) {
         description: formData.get("description") as string,
         year: formData.get("year") as string,
         status: formData.get("status") as any,
+        member_ids: formData.get("member_ids") ? (formData.get("member_ids") as string).split(",").map(id => id.trim()).filter(Boolean) : [],
       }
 
       const validated = projectSchema.parse(rawData)

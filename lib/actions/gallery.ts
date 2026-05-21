@@ -6,6 +6,8 @@ import { redis } from "@/lib/redis"
 import { ensureAdmin } from "@/lib/utils/auth-guard"
 import { galleryAssetSchema, galleryTagSchema } from "@/lib/validations"
 import { type ActionResponse, type GalleryAssetUpdateData } from "@/types/admin"
+import { headers } from "next/headers"
+import crypto from "crypto"
 
 // Helper para upload de imagem
 async function uploadToGallery(supabase: any, file: File) {
@@ -193,6 +195,113 @@ export async function deleteGalleryAsset(id: string): Promise<ActionResponse> {
     revalidatePath("/admin")
     await redis.del("gallery_assets_all")
     return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
+}
+
+// Favoritar ativo (público - protegido contra spam por IP)
+export async function likeGalleryAsset(id: string): Promise<ActionResponse & { undoToken?: string }> {
+  try {
+    const headersList = await headers()
+    const ip = headersList.get("x-forwarded-for") || headersList.get("x-real-ip") || "unknown"
+
+    // Rate Limiting (máximo 20 curtidas por minuto por IP)
+    const rateLimitKey = `rate_limit:like:${ip}`
+    const currentRequests = await redis.incr(rateLimitKey)
+    if (currentRequests === 1) {
+      await redis.expire(rateLimitKey, 60)
+    }
+    if (currentRequests > 20) {
+      throw new Error("Muitas requisições. Tente novamente mais tarde.")
+    }
+
+    const supabase = createAdminClient() // Bypassa RLS
+    
+    // Ler o valor atual
+    const { data: asset, error: fetchError } = await supabase
+      .from("gallery_assets")
+      .select("likes")
+      .eq("id", id)
+      .single()
+      
+    if (fetchError || !asset) throw new Error("Ativo não encontrado")
+    
+    const newLikes = (asset.likes || 0) + 1
+
+    const { error: updateError } = await supabase
+      .from("gallery_assets")
+      .update({ likes: newLikes })
+      .eq("id", id)
+
+    if (updateError) throw updateError
+    
+    revalidatePath("/acervo")
+    await redis.del("gallery_assets_all")
+    
+    // Gerar token de segurança (HMAC) para permitir descurtir
+    const timestamp = Date.now()
+    const secret = process.env.SUPABASE_JWT_SECRET || process.env.NEXTAUTH_SECRET || "atravessamentos-secret"
+    const dataToSign = `${id}:${timestamp}:${ip}`
+    const hmac = crypto.createHmac("sha256", secret).update(dataToSign).digest("hex")
+    const undoToken = `${timestamp}.${hmac}`
+    
+    return { success: true, count: newLikes, undoToken }
+  } catch (error: any) {
+    return { success: false, error: error.message }
+  }
+}
+
+// Desfazer favorito (público - bloqueado com assinatura de segurança)
+export async function unlikeGalleryAsset(id: string, undoToken: string): Promise<ActionResponse> {
+  try {
+    if (!undoToken) throw new Error("Token de segurança ausente")
+
+    const headersList = await headers()
+    const ip = headersList.get("x-forwarded-for") || headersList.get("x-real-ip") || "unknown"
+
+    // Validar assinatura criptográfica
+    const [timestampStr, hmac] = undoToken.split(".")
+    if (!timestampStr || !hmac) throw new Error("Token inválido")
+
+    const timestamp = parseInt(timestampStr, 10)
+    const secret = process.env.SUPABASE_JWT_SECRET || process.env.NEXTAUTH_SECRET || "atravessamentos-secret"
+    const dataToSign = `${id}:${timestamp}:${ip}`
+    const expectedHmac = crypto.createHmac("sha256", secret).update(dataToSign).digest("hex")
+
+    if (hmac !== expectedHmac) {
+      throw new Error("Tentativa de fraude detectada: Assinatura inválida")
+    }
+
+    // Validação de tempo NO SERVIDOR (Hard Limit de 15 segundos + 2s de tolerância de rede)
+    if (Date.now() - timestamp > 17000) {
+      throw new Error("A janela de tempo para desfazer a curtida expirou")
+    }
+
+    // Executar ação no banco
+    const supabase = createAdminClient()
+    const { data: asset, error: fetchError } = await supabase
+      .from("gallery_assets")
+      .select("likes")
+      .eq("id", id)
+      .single()
+      
+    if (fetchError || !asset) throw new Error("Ativo não encontrado")
+    
+    // Não pode ficar negativo
+    const newLikes = Math.max(0, (asset.likes || 0) - 1)
+
+    const { error: updateError } = await supabase
+      .from("gallery_assets")
+      .update({ likes: newLikes })
+      .eq("id", id)
+
+    if (updateError) throw updateError
+    
+    revalidatePath("/acervo")
+    await redis.del("gallery_assets_all")
+    
+    return { success: true, count: newLikes }
   } catch (error: any) {
     return { success: false, error: error.message }
   }

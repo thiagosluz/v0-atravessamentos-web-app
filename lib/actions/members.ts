@@ -63,6 +63,13 @@ export async function getMemberById(id: string) {
     .eq("author", data.name)
     .order("date", { ascending: false })
 
+  // Busca os projetos onde o membro participou (usando contains com array)
+  const { data: projectsData } = await supabase
+    .from("projects")
+    .select("*")
+    .contains("member_ids", [id])
+    .order("year", { ascending: false })
+
   const member: Member = {
     id: data.id,
     name: data.name,
@@ -77,5 +84,9 @@ export async function getMemberById(id: string) {
     phone: data.phone,
   }
 
-  return { member, relatedPosts: postsData || [] }
+  return { 
+    member, 
+    relatedPosts: postsData || [],
+    relatedProjects: projectsData || []
+  }
 }

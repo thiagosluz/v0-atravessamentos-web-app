@@ -54,6 +54,7 @@ export const projectSchema = z.object({
   description: z.string().optional().or(z.literal("")),
   year: z.string().regex(/^\d{4}$/, "Ano inválido"),
   status: z.enum(["Publicado", "Rascunho", "Em revisão"]),
+  member_ids: z.array(z.string()).optional(),
 })
 
 // Esquema para Contato

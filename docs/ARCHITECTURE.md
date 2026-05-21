@@ -123,6 +123,7 @@ O projeto utiliza uma estratégia de "Perceived Performance" (Performance Perceb
 - **Transições de Página**: Implementadas via `app/template.tsx` com `motion/react`, garantindo um fade-in orgânico em cada navegação.
 - **Skeletons**: Áreas de alto impacto como o Dashboard, Arquivo de Projetos e Diário utilizam esqueletos de carregamento que espelham o layout real para evitar Layout Shifts.
 - **Micro-interações**: Toggle de tema orbital e feedbacks visuais em botões elevam a sensação de produto premium.
+- **Floating UI Kit**: Formulários sofisticados utilizam o componente `FloatingInput` (`components/ui/floating-input.tsx`), que implementa labels animados via CSS `peer` sem JavaScript. Já em uso no Login e Newsletter do Footer, com expansão planejada para `FloatingTextarea` e `FloatingSelect`.
 
 ---
 

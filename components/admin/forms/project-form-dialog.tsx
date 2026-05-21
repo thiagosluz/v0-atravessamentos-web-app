@@ -11,12 +11,14 @@ import { AnimatedAdminModal } from "../shared/animated-admin-modal"
 import { useAdminForm } from "@/hooks/use-admin-form"
 
 import { type Category } from "@/lib/actions/categories"
+import { type Member } from "@/lib/mock-data"
 
 const STATUSES = ["Publicado", "Rascunho", "Em revisão"] as const
 
 interface ProjectFormDialogProps {
   initialData?: any
   categories: Category[]
+  members?: Member[]
   onSuccess: (project: any, isEdit: boolean) => void
   open?: boolean
   onOpenChange?: (open: boolean) => void
@@ -25,6 +27,7 @@ interface ProjectFormDialogProps {
 export function ProjectFormDialog({ 
   initialData, 
   categories, 
+  members = [],
   onSuccess,
   open: controlledOpen,
   onOpenChange: setControlledOpen
@@ -34,6 +37,7 @@ export function ProjectFormDialog({
   const setOpen = setControlledOpen !== undefined ? setControlledOpen : setInternalOpen
   const [status, setStatus] = React.useState<string>(initialData?.status || "Rascunho")
   const [editorContent, setEditorContent] = React.useState<string>(initialData?.description || "")
+  const [selectedMembers, setSelectedMembers] = React.useState<string[]>(initialData?.member_ids || [])
   const { executeAction, pending, error } = useAdminForm()
 
   // Resetar formulário quando abrir
@@ -41,9 +45,11 @@ export function ProjectFormDialog({
     if (open && !initialData) {
       setEditorContent("")
       setStatus("Rascunho")
+      setSelectedMembers([])
     } else if (open && initialData) {
       setEditorContent(initialData.description || "")
       setStatus(initialData.status || "Rascunho")
+      setSelectedMembers(initialData.member_ids || [])
     }
   }, [open, initialData])
 
@@ -54,6 +60,9 @@ export function ProjectFormDialog({
 
     const formData = new FormData(e.currentTarget)
     formData.set("status", status)
+    if (selectedMembers.length > 0) {
+      formData.set("member_ids", selectedMembers.join(","))
+    }
     
     executeAction({
       actionFn: () => isEdit ? updateProject(initialData.id, formData) : createProject(formData),
@@ -195,6 +204,37 @@ export function ProjectFormDialog({
                         {s}
                       </button>
                     ))}
+                  </div>
+                </div>
+
+                {/* Members */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold uppercase tracking-widest text-foreground">
+                    Membros Vinculados
+                  </label>
+                  <div className="max-h-[120px] overflow-y-auto rounded-md border border-border bg-background/50 p-2 space-y-1">
+                    {members.map((member) => (
+                      <label key={member.id} className="flex items-center gap-2 cursor-pointer p-1 hover:bg-muted rounded-sm">
+                        <input
+                          type="checkbox"
+                          checked={selectedMembers.includes(member.id)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedMembers([...selectedMembers, member.id])
+                            } else {
+                              setSelectedMembers(selectedMembers.filter(id => id !== member.id))
+                            }
+                          }}
+                          disabled={pending}
+                          className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                        />
+                        <span className="text-sm text-foreground">{member.name}</span>
+                        <span className="text-xs text-muted-foreground">({member.role})</span>
+                      </label>
+                    ))}
+                    {members.length === 0 && (
+                      <p className="text-xs text-muted-foreground p-2">Nenhum membro cadastrado.</p>
+                    )}
                   </div>
                 </div>
 

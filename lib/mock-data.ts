@@ -14,6 +14,7 @@ export interface Project {
   coverImage: string
   year: number
   status: ProjectStatus
+  memberIds?: string[]
   updatedAt: string
 }
 

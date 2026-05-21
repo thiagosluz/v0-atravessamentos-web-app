@@ -6,6 +6,7 @@ import { type Category } from "@/lib/actions/categories"
 import { AdminDataTable, type Column } from "../table/admin-data-table"
 import { MemberFormDialog } from "../forms/member-form-dialog"
 import { Pagination } from "../shared/pagination"
+import { PDFDownloadButton } from "../pdf/pdf-download-button"
 
 interface MemberPanelProps {
   members: Member[]
@@ -60,6 +61,15 @@ export function MemberPanel({
               {tag}
             </span>
           ))}
+        </div>
+      ),
+    },
+    {
+      id: "actions",
+      label: "",
+      render: (m) => (
+        <div className="flex justify-end">
+          <PDFDownloadButton member={m} />
         </div>
       ),
     },

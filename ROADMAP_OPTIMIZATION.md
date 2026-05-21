@@ -50,17 +50,19 @@ Este documento consolida as recomendações de arquitetura, performance e tratam
 ## 4. ♿ Acessibilidade (A11y)
 **Objetivo:** Garantir que a aplicação seja inclusiva, navegável por teclado e compreensível por tecnologias assistivas (WCAG).
 
-### A. Contraste e Legibilidade
+### A. Contraste e Legibilidade ✅ (Parcial)
 - **Ação:** Revisar o uso de opacidades (`text-foreground/30`, `/50`). Substituir por cores sólidas que garantam um ratio de contraste mínimo de 4.5:1 (WCAG AA).
 - **Onde:** Labels de categorias, metadados de posts no Diário e legendas no Admin.
+- **Progresso:** Corrigido o contraste do card "Dica Pro" no OverviewPanel (`text-muted-foreground` → `text-foreground`, `bg-muted` → `bg-foreground text-background`). Auditoria axe-core passando.
 
 ### B. Navegação por Teclado e Focus Management
 - **Focus Trap:** Implementar captura de foco em modais e no menu mobile para evitar que o foco "escape" para o fundo da página.
 - **Aria Current:** Adicionar `aria-current="page"` nos links ativos da sidebar e navegação principal.
 
-### C. Semântica e Rótulos
+### C. Semântica e Rótulos ✅ (Parcial)
 - **Hierarquia:** Substituir `span` e `div` por tags de cabeçalho (`h2`, `h3`) em seções de navegação e títulos de blocos.
 - **Accessible Labels:** Garantir que botões de ícone (ThemeToggle, Fechar Menu) tenham `aria-label` descritivos e que o Logo tenha um texto alternativo oculto ("Início").
+- **DialogDescription:** Implementado `<DialogDescription className="sr-only">` em todos os modais do admin (ExhibitionFormDialog, EditAssetModal) para conformidade com o Radix UI e leitores de tela.
 
 ---
 
@@ -144,7 +146,7 @@ Transformar a plataforma em uma central ativa de atividades e encontros para o c
 4. **Auditoria de Contraste:** Ajustar tokens de cores para conformidade WCAG (Inclusão).
 5. Adição de Error Boundaries nos gráficos do Overview (Resiliência).
 6. **Sistema de Compartilhamento:** Implementar o protótipo de "Copiar Link" nos posts (Engajamento).
-7. **Floating UI Kit:** Expandir o componente `FloatingInput` para `FloatingTextarea` e `FloatingSelect`, aplicando-os gradualmente em formulários públicos (Contato, Inscrição) para criar uma identidade visual sofisticada e acessível.
+7. **Floating UI Kit (Em Andamento):** O componente `FloatingInput` já está implementado e em uso no Login e Newsletter do Footer. Próximos passos: expandir para `FloatingTextarea` e `FloatingSelect`, e migrar formulários públicos (Contato, Inscrição).
 
 ---
 
@@ -183,6 +185,14 @@ Transformar a plataforma em uma central ativa de atividades e encontros para o c
 - **Implementação:** Criação de testes de comportamento para `AdminSidebar` e `CookieConsent` usando Vitest e React Testing Library com mocks de animação.
 - **Acessibilidade:** Implementação do atributo `aria-current="page"` na Sidebar administrativa para navegação assistiva.
 - **Resultado:** Validação de 8 cenários críticos de UI (links ativos, persistência de localStorage e visibilidade controlada).
+
+### 🚀 Funcionalidades Bônus de Expansão e Engajamento
+- **Vínculo Membro-Projeto**: Multiselect no painel de projetos para associar obras aos membros do coletivo.
+- **Portfólios em PDF (Membros)**: Geração client-side (via `react-pdf`) de currículos/portfólios diretamente pelo admin, listando bio, contato e projetos vinculados de forma estilizada.
+- **Modo Apresentação (Exposições)**: Visualização imersiva fullscreen (slideshow com autoplay configurável) focado na exibição em eventos/galerias.
+- **QR Codes Dinâmicos**: Botão dedicado no grid de exposições para gerar e baixar QR Codes, facilitando o acesso presencial.
+- **Curtidas Anônimas (Acervo)**: Botão de "favoritar" obras públicas com proteção anti-spam via `localStorage` e otimização por Server Action sem RLS block.
+- **Resultado:** Maior interação pública, ferramentas úteis para produção (PDF/QR) e ampliação da capacidade exibicional da plataforma.
 
 ---
 *Documento atualizado em 21/05/2026.*

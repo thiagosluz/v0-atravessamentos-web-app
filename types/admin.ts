@@ -80,6 +80,7 @@ export interface GalleryAsset {
   location?: string | null
   project_id?: string | null
   tags: string[]
+  likes?: number
   created_at: string
   project?: {
     title: string

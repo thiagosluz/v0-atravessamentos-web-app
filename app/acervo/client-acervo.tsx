@@ -4,8 +4,8 @@ import * as React from "react"
 import { motion, AnimatePresence } from "motion/react"
 import { OrganicImage } from "@/components/ui/organic-image"
 import { cn } from "@/lib/utils"
-import { getGalleryAssets } from "@/lib/actions/gallery"
-import { Loader2 } from "lucide-react"
+import { getGalleryAssets, likeGalleryAsset, unlikeGalleryAsset } from "@/lib/actions/gallery"
+import { Loader2, Heart } from "lucide-react"
 import { ArtisticLightbox } from "@/components/gallery/artistic-lightbox"
 
 import { type GalleryAsset } from "@/types/admin"
@@ -17,6 +17,12 @@ export function ClientAcervo() {
   const [isLoading, setIsLoading] = React.useState(true)
   const [selectedAssetIndex, setSelectedAssetIndex] = React.useState<number | null>(null)
   
+  interface LikeData {
+    timestamp: number
+    token?: string
+  }
+  const [likedAssets, setLikedAssets] = React.useState<Record<string, LikeData>>({})
+
   React.useEffect(() => {
     async function load() {
       const data = await getGalleryAssets()
@@ -24,7 +30,91 @@ export function ClientAcervo() {
       setIsLoading(false)
     }
     load()
+    
+    // Load likes from local storage
+    const savedLikes = localStorage.getItem("atravessamentos_likes")
+    if (savedLikes) {
+      try {
+        const parsed = JSON.parse(savedLikes)
+          // Migration from old formats
+          let migrated: Record<string, LikeData> = {}
+          
+          if (Array.isArray(parsed)) {
+            // Oldest format (Array of IDs)
+            migrated = parsed.reduce((acc, id) => {
+              acc[id] = { timestamp: 0 }
+              return acc
+            }, {} as Record<string, LikeData>)
+          } else {
+            // Check if it's the intermediate format (Record<string, number>) or new format
+            Object.entries(parsed).forEach(([id, value]) => {
+              if (typeof value === "number") {
+                migrated[id] = { timestamp: value }
+              } else {
+                migrated[id] = value as LikeData
+              }
+            })
+          }
+          setLikedAssets(migrated)
+          localStorage.setItem("atravessamentos_likes", JSON.stringify(migrated))
+      } catch (e) {
+        console.error("Failed to parse likes", e)
+      }
+    }
   }, [])
+
+  const handleLike = async (e: React.MouseEvent, id: string) => {
+    e.stopPropagation() // Prevent opening lightbox
+    
+    const now = Date.now()
+    const likeData = likedAssets[id]
+
+    if (likeData !== undefined) {
+      // Already liked
+      const isUndoable = likeData.timestamp > 0 && (now - likeData.timestamp < 15000)
+      
+      if (isUndoable && likeData.token) {
+        // Optimistic unlike
+        setLikedAssets(prev => {
+          const next = { ...prev }
+          delete next[id]
+          localStorage.setItem("atravessamentos_likes", JSON.stringify(next))
+          return next
+        })
+        setAssets(prev => prev.map(asset => 
+          asset.id === id ? { ...asset, likes: Math.max(0, (asset.likes || 0) - 1) } : asset
+        ))
+        await unlikeGalleryAsset(id, likeData.token)
+      }
+      return
+    }
+
+    // New Like (Optimistic update)
+    setLikedAssets(prev => {
+      const next = { ...prev, [id]: { timestamp: now } }
+      localStorage.setItem("atravessamentos_likes", JSON.stringify(next))
+      return next
+    })
+    
+    setAssets(prev => prev.map(asset => 
+      asset.id === id ? { ...asset, likes: (asset.likes || 0) + 1 } : asset
+    ))
+
+    // Call server action
+    const res = await likeGalleryAsset(id)
+    
+    if (res.success && res.undoToken) {
+      // Salvar o token retornado para permitir o undo
+      setLikedAssets(prev => {
+        if (prev[id]) {
+          const next = { ...prev, [id]: { timestamp: now, token: res.undoToken } }
+          localStorage.setItem("atravessamentos_likes", JSON.stringify(next))
+          return next
+        }
+        return prev
+      })
+    }
+  }
 
   const tags = Array.from(new Set(assets.flatMap(a => a.tags || [])))
   const filteredAssets = filter ? assets.filter(a => a.tags?.includes(filter)) : assets
@@ -113,6 +203,26 @@ export function ClientAcervo() {
                     {asset.title}
                   </p>
                 </div>
+                
+                {/* Like Button */}
+                <button
+                  onClick={(e) => handleLike(e, asset.id)}
+                  className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/20 backdrop-blur-md text-white transition-all hover:scale-110 active:scale-95"
+                  aria-label="Curtir obra"
+                >
+                  <Heart 
+                    className={cn(
+                      "h-5 w-5 transition-all duration-300",
+                      likedAssets[asset.id] !== undefined ? "fill-red-500 text-red-500 scale-110" : "fill-transparent hover:text-red-300"
+                    )} 
+                  />
+                  {/* Like Count */}
+                  {(asset.likes || 0) > 0 && (
+                    <span className="absolute -bottom-4 right-1 text-[10px] font-bold text-white drop-shadow-md">
+                      {asset.likes}
+                    </span>
+                  )}
+                </button>
               </div>
             </motion.div>
           ))}

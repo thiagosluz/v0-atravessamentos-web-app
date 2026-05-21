@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { type Exhibition } from "@/types/admin"
 import { cn } from "@/lib/utils"
+import { QrCodeDialog } from "../../pdf/qr-code-dialog"
 
 interface ExhibitionCardProps {
   exhibition: Exhibition
@@ -62,6 +63,10 @@ export function ExhibitionCard({ exhibition, onEdit, onDelete, onToggleStatus }:
       </div>
 
       <div className="mt-4 flex gap-2">
+        <QrCodeDialog 
+          url={`${typeof window !== "undefined" ? window.location.origin : ""}/exposicoes/${exhibition.slug}`}
+          title={exhibition.title}
+        />
         <Button variant="outline" size="sm" className="flex-1 rounded-xl" onClick={() => onEdit(exhibition)}>
           <Edit2 className="mr-2 h-3 w-3" />
           Editar

@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { type Project } from "@/lib/mock-data"
+import { type Project, type Member } from "@/lib/mock-data"
 import { type Category } from "@/lib/actions/categories"
 import { AdminDataTable, type Column } from "../table/admin-data-table"
 import { ProjectFormDialog } from "../forms/project-form-dialog"
@@ -13,6 +13,7 @@ interface ProjectPanelProps {
   totalCount: number
   currentPage: number
   categories: Category[]
+  members: Member[]
   onSuccess: (project: Project, isEdit: boolean) => void
   onEdit: (id: string) => void
   onDelete: (id: string) => void
@@ -30,6 +31,7 @@ export function ProjectPanel({
   totalCount,
   currentPage,
   categories,
+  members,
   onSuccess,
   onEdit,
   onDelete,
@@ -100,6 +102,7 @@ export function ProjectPanel({
         </div>
         <ProjectFormDialog
           categories={categories.filter((c) => c.type === "project")}
+          members={members}
           onSuccess={onSuccess}
         />
       </div>

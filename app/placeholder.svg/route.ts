@@ -61,7 +61,7 @@ export async function GET(request: NextRequest) {
   <rect width="100%" height="100%" fill="url(#grain-${seed})"/>
   <ellipse cx="${(cx1 / 100) * width}" cy="${(cy1 / 100) * height}" rx="${(r1 / 100) * width}" ry="${(r1 / 100) * width * 0.85}" fill="${accent.bg}" opacity="0.55"/>
   <ellipse cx="${(cx2 / 100) * width}" cy="${(cy2 / 100) * height}" rx="${(r2 / 100) * width}" ry="${(r2 / 100) * width * 1.1}" fill="${fg}" opacity="0.18"/>
-  <g font-family="Georgia, serif" fill="${fg}" opacity="0.9">
+  <g font-family="Helvetica, sans-serif" fill="${fg}" opacity="0.9">
     <text x="${width * 0.06}" y="${height * 0.92}" font-size="${Math.max(width * 0.03, 14)}" font-style="italic" font-weight="400">
       ${label}
     </text>
