@@ -1,26 +1,32 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
-import { PDFDownloadLink } from "@react-pdf/renderer"
-import { MemberPortfolioPDF } from "./member-portfolio-pdf"
+import React, { useState } from "react"
+import dynamic from "next/dynamic"
 import { type Member, type Project } from "@/lib/mock-data"
 import { Button } from "@/components/ui/button"
 import { FileDown, Loader2 } from "lucide-react"
 import { createBrowserClient } from "@supabase/ssr"
+
+// Importação assíncrona do componente pesado do PDF.
+// Ele só será baixado se o usuário clicar no botão e o estado "ready" for ativado!
+const PDFDownloadEngine = dynamic(() => import("./pdf-download-engine"), {
+  ssr: false,
+  loading: () => (
+    <Button disabled className="h-8 gap-1 rounded-full text-xs">
+      <Loader2 className="h-3 w-3 animate-spin" />
+      <span>Montando gerador...</span>
+    </Button>
+  ),
+})
 
 interface PDFDownloadButtonProps {
   member: Member
 }
 
 export function PDFDownloadButton({ member }: PDFDownloadButtonProps) {
-  const [isClient, setIsClient] = useState(false)
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(false)
   const [ready, setReady] = useState(false)
-
-  useEffect(() => {
-    setIsClient(true)
-  }, [])
 
   const handlePreparePDF = async () => {
     setLoading(true)
@@ -39,6 +45,9 @@ export function PDFDownloadButton({ member }: PDFDownloadButtonProps) {
       if (data) {
         setProjects(data as any)
       }
+      
+      // Ao setar como true, o React vai renderizar o <PDFDownloadEngine>
+      // O next/dynamic então iniciará o download do JS pesado do react-pdf pela rede.
       setReady(true)
     } catch (error) {
       console.error("Erro ao preparar PDF:", error)
@@ -46,8 +55,6 @@ export function PDFDownloadButton({ member }: PDFDownloadButtonProps) {
       setLoading(false)
     }
   }
-
-  if (!isClient) return null
 
   if (!ready) {
     return (
@@ -64,25 +71,5 @@ export function PDFDownloadButton({ member }: PDFDownloadButtonProps) {
     )
   }
 
-  return (
-    <PDFDownloadLink
-      document={<MemberPortfolioPDF member={member} projects={projects} />}
-      fileName={`portfolio_${member.name.toLowerCase().replace(/\\s+/g, "_")}.pdf`}
-      className="inline-flex h-8 items-center justify-center gap-1 rounded-full border border-primary bg-primary px-3 text-xs font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90"
-    >
-      {({ blob, url, loading, error }) =>
-        loading ? (
-          <>
-            <Loader2 className="h-3 w-3 animate-spin" />
-            <span>Gerando...</span>
-          </>
-        ) : (
-          <>
-            <FileDown className="h-3 w-3" />
-            <span>Baixar PDF</span>
-          </>
-        )
-      }
-    </PDFDownloadLink>
-  )
+  return <PDFDownloadEngine member={member} projects={projects} />
 }
