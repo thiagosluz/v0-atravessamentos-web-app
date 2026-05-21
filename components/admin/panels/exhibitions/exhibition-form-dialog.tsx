@@ -15,6 +15,19 @@ import {
 } from "@/components/ui/dialog"
 import { cn } from "@/lib/utils"
 import { type Exhibition, type GalleryAsset, type ExhibitionFormData } from "@/types/admin"
+import { DirectImageUpload } from "@/components/admin/shared/direct-image-upload"
+
+const generateSlug = (text: string) => {
+  return text
+    .toString()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/[^\w-]+/g, '')
+    .replace(/--+/g, '-')
+}
 
 interface ExhibitionFormDialogProps {
   open: boolean
@@ -42,6 +55,7 @@ export function ExhibitionFormDialog({
 
   const [activeFilter, setActiveFilter] = React.useState<string | null>(null)
   const [searchQuery, setSearchQuery] = React.useState("")
+  const [isSlugDirty, setIsSlugDirty] = React.useState(false)
 
   // Extrair todas as tags únicas dos ativos disponíveis
   const availableTags = React.useMemo(() => {
@@ -73,6 +87,7 @@ export function ExhibitionFormDialog({
         status: initialData.status || "Rascunho",
         asset_ids: initialData.asset_ids || []
       })
+      setIsSlugDirty(true)
     } else {
       setFormData({
         title: "",
@@ -82,6 +97,7 @@ export function ExhibitionFormDialog({
         status: "Rascunho",
         asset_ids: []
       })
+      setIsSlugDirty(false)
     }
   }, [initialData, open])
 
@@ -96,7 +112,7 @@ export function ExhibitionFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-5xl max-h-[90vh] overflow-hidden flex flex-col p-0">
+      <DialogContent className="sm:max-w-[90vw] md:max-w-[1000px] lg:max-w-[1100px] max-h-[90vh] overflow-hidden flex flex-col p-0">
         <DialogHeader className="p-6 pb-0">
           <DialogTitle className="font-display text-2xl">
             {initialData ? "Refinar Exposição" : "Inaugurar Nova Sala"}
@@ -114,7 +130,16 @@ export function ExhibitionFormDialog({
                   <Input 
                     placeholder="Ex: Entre Rios e Corpos" 
                     value={formData.title}
-                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    onChange={(e) => {
+                      const newTitle = e.target.value
+                      setFormData(prev => {
+                        const updates: any = { title: newTitle }
+                        if (!isSlugDirty) {
+                          updates.slug = generateSlug(newTitle)
+                        }
+                        return { ...prev, ...updates }
+                      })
+                    }}
                     className="rounded-xl"
                   />
                 </div>
@@ -123,30 +148,36 @@ export function ExhibitionFormDialog({
                   <Input 
                     placeholder="ex: entre-rios-e-corpos" 
                     value={formData.slug}
-                    onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                    className="rounded-xl"
+                    onChange={(e) => {
+                      setIsSlugDirty(true)
+                      setFormData({ ...formData, slug: e.target.value })
+                    }}
+                    className="rounded-xl bg-muted/50 focus:bg-background transition-colors"
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-medium">Imagem de Capa (URL)</label>
-                  <Input 
-                    placeholder="https://..." 
+                  <label className="text-xs font-medium">Capa da Exposição</label>
+                  <DirectImageUpload 
                     value={formData.cover_image}
-                    onChange={(e) => setFormData({ ...formData, cover_image: e.target.value })}
-                    className="rounded-xl"
+                    onChange={(url) => setFormData({ ...formData, cover_image: url })}
+                    recommendedText="Sugerido: 1200x800px (16:9) • Máx 5MB"
+                    aspectRatio="aspect-video"
                   />
                 </div>
                 <div className="space-y-2">
                   <label className="text-xs font-medium">Status da Sala</label>
-                  <div className="flex gap-2">
+                  <div className="flex bg-muted p-1 rounded-xl">
                     {['Rascunho', 'Publicado'].map((s) => (
                       <Button
                         key={s}
                         type="button"
-                        variant={formData.status === s ? 'default' : 'outline'}
+                        variant={formData.status === s ? 'default' : 'ghost'}
                         size="sm"
                         onClick={() => setFormData({ ...formData, status: s as any })}
-                        className="flex-1 rounded-xl"
+                        className={cn(
+                          "flex-1 rounded-lg text-xs font-bold transition-all",
+                          formData.status === s ? "shadow-sm" : "hover:bg-muted-foreground/10"
+                        )}
                       >
                         {s}
                       </Button>
@@ -154,10 +185,14 @@ export function ExhibitionFormDialog({
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-medium">Introdução Poética (Manifesto)</label>
+                  <div className="flex justify-between items-center">
+                    <label className="text-xs font-medium">Introdução Poética (Manifesto)</label>
+                    <span className="text-[10px] text-muted-foreground">{formData.description.length}/300</span>
+                  </div>
                   <Textarea 
                     placeholder="Escreva a alma desta exposição..." 
-                    className="min-h-[180px] rounded-xl resize-none"
+                    className="min-h-[140px] rounded-xl resize-none"
+                    maxLength={300}
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   />
@@ -210,7 +245,7 @@ export function ExhibitionFormDialog({
                   </div>
                 </div>
 
-                <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 overflow-y-auto max-h-[450px] pr-2 custom-scrollbar">
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 overflow-y-auto max-h-[450px] pr-2 custom-scrollbar">
                   {filteredAssets.length === 0 ? (
                     <div className="col-span-full py-12 text-center">
                       <p className="text-sm text-foreground italic">Nenhum ativo encontrado com estes filtros.</p>

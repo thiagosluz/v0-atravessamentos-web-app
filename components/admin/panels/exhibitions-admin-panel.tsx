@@ -96,6 +96,16 @@ export function ExhibitionsAdminPanel() {
     }
   }
 
+  async function handleToggleStatus(id: string, newStatus: "Publicado" | "Rascunho") {
+    const res = await updateExhibition(id, { status: newStatus } as ExhibitionFormData)
+    if (res.success) {
+      toast({ title: newStatus === "Publicado" ? "Exposição publicada!" : "Exposição recolhida para rascunho." })
+      loadData()
+    } else {
+      toast({ title: "Erro ao alterar status", description: res.error, variant: "destructive" })
+    }
+  }
+
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-24 gap-4">
@@ -112,7 +122,8 @@ export function ExhibitionsAdminPanel() {
       <ExhibitionsGrid 
         exhibitions={exhibitions} 
         onEdit={handleOpenEdit} 
-        onDelete={handleDelete} 
+        onDelete={handleDelete}
+        onToggleStatus={handleToggleStatus}
       />
 
       <ExhibitionFormDialog 

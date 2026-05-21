@@ -40,7 +40,7 @@ export async function updateExhibition(id: string, payload: ExhibitionFormData):
     if (error) throw error
     revalidatePath("/admin")
     revalidatePath("/exposicoes")
-    revalidatePath(`/exposicoes/${payload.slug}`)
+    if (payload.slug) revalidatePath(`/exposicoes/${payload.slug}`)
     return { success: true }
   } catch (error: any) {
     return { success: false, error: error.message }

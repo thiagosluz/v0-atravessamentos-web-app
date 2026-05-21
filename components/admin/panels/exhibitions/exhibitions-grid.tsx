@@ -8,9 +8,10 @@ interface ExhibitionsGridProps {
   exhibitions: Exhibition[]
   onEdit: (ex: Exhibition) => void
   onDelete: (id: string) => void
+  onToggleStatus?: (id: string, newStatus: "Publicado" | "Rascunho") => void
 }
 
-export function ExhibitionsGrid({ exhibitions, onEdit, onDelete }: ExhibitionsGridProps) {
+export function ExhibitionsGrid({ exhibitions, onEdit, onDelete, onToggleStatus }: ExhibitionsGridProps) {
   if (exhibitions.length === 0) {
     return (
       <div className="py-24 text-center">
@@ -27,7 +28,8 @@ export function ExhibitionsGrid({ exhibitions, onEdit, onDelete }: ExhibitionsGr
             key={ex.id} 
             exhibition={ex} 
             onEdit={onEdit} 
-            onDelete={onDelete} 
+            onDelete={onDelete}
+            onToggleStatus={onToggleStatus}
           />
         ))}
       </div>
