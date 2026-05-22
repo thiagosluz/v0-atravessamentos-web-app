@@ -37,7 +37,7 @@ export function ProjectFormDialog({
   const setOpen = setControlledOpen !== undefined ? setControlledOpen : setInternalOpen
   const [status, setStatus] = React.useState<string>(initialData?.status || "Rascunho")
   const [editorContent, setEditorContent] = React.useState<string>(initialData?.description || "")
-  const [selectedMembers, setSelectedMembers] = React.useState<string[]>(initialData?.member_ids || [])
+  const [selectedMembers, setSelectedMembers] = React.useState<string[]>(initialData?.memberIds || initialData?.member_ids || [])
   const { executeAction, pending, error } = useAdminForm()
 
   // Resetar formulário quando abrir
@@ -49,7 +49,7 @@ export function ProjectFormDialog({
     } else if (open && initialData) {
       setEditorContent(initialData.description || "")
       setStatus(initialData.status || "Rascunho")
-      setSelectedMembers(initialData.member_ids || [])
+      setSelectedMembers(initialData.memberIds || initialData.member_ids || [])
     }
   }, [open, initialData])
 
@@ -138,30 +138,32 @@ export function ProjectFormDialog({
                   />
                 </div>
 
-                {/* Category + Year */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="space-y-1.5">
-                    <label htmlFor="proj-category" className="text-xs font-semibold uppercase tracking-widest text-foreground">
-                      Categoria *
-                    </label>
-                      <select
-                        name="category"
-                        id="project-category"
-                        defaultValue={initialData?.category || categories[0]?.name || ""}
-                        className="flex h-10 w-full items-center justify-between rounded-md border border-border bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                        required
-                        disabled={pending}
-                      >
-                        {categories.map((c) => (
-                          <option key={c.id} value={c.name} className="bg-background text-foreground">
-                            {c.name}
-                          </option>
-                        ))}
-                      </select>
-                  </div>
+                {/* Category */}
+                <div className="space-y-1.5">
+                  <label htmlFor="proj-category" className="text-xs font-semibold uppercase tracking-widest text-foreground">
+                    Categoria *
+                  </label>
+                  <select
+                    name="category"
+                    id="project-category"
+                    defaultValue={initialData?.category || categories[0]?.name || ""}
+                    className="flex h-10 w-full items-center justify-between rounded-md border border-border bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    required
+                    disabled={pending}
+                  >
+                    {categories.map((c) => (
+                      <option key={c.id} value={c.name} className="bg-background text-foreground">
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Dates */}
+                <div className="grid grid-cols-3 gap-3">
                   <div className="space-y-1.5">
                     <label htmlFor="proj-year" className="text-xs font-semibold uppercase tracking-widest text-foreground">
-                      Ano *
+                      Ano (Legado) *
                     </label>
                     <Input
                       id="proj-year"
@@ -175,7 +177,36 @@ export function ProjectFormDialog({
                       className="h-10"
                     />
                   </div>
+                  <div className="space-y-1.5">
+                    <label htmlFor="proj-start-date" className="text-xs font-semibold uppercase tracking-widest text-foreground">
+                      Início (Opc.)
+                    </label>
+                    <Input
+                      id="proj-start-date"
+                      name="start_date"
+                      type="date"
+                      defaultValue={initialData?.start_date ? initialData.start_date.split('T')[0] : ""}
+                      disabled={pending}
+                      className="h-10"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label htmlFor="proj-end-date" className="text-xs font-semibold uppercase tracking-widest text-foreground">
+                      Fim (Opc.)
+                    </label>
+                    <Input
+                      id="proj-end-date"
+                      name="end_date"
+                      type="date"
+                      defaultValue={initialData?.end_date ? initialData.end_date.split('T')[0] : ""}
+                      disabled={pending}
+                      className="h-10"
+                    />
+                  </div>
                 </div>
+                <p className="text-[10px] text-muted-foreground -mt-2 italic">
+                  * O ciclo de vida (Em andamento / Finalizado) nas exibições públicas será calculado automaticamente se a data de Fim estiver preenchida.
+                </p>
 
                 {/* Status */}
                 <div className="space-y-1.5">

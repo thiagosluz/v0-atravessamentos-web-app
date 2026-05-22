@@ -17,6 +17,8 @@ export async function createProject(formData: FormData) {
         excerpt: formData.get("excerpt") as string,
         description: formData.get("description") as string,
         year: formData.get("year") as string,
+        start_date: formData.get("start_date") as string || null,
+        end_date: formData.get("end_date") as string || null,
         status: formData.get("status") as any,
         member_ids: formData.get("member_ids") ? (formData.get("member_ids") as string).split(",").map(id => id.trim()).filter(Boolean) : [],
       }
@@ -26,6 +28,8 @@ export async function createProject(formData: FormData) {
 
       const { data, error } = await supabase.from("projects").insert({
         ...validated,
+        start_date: validated.start_date || null,
+        end_date: validated.end_date || null,
         year: parseInt(validated.year),
         cover_image: null,
       }).select("id").single()
@@ -55,6 +59,8 @@ export async function updateProject(id: string, formData: FormData) {
         excerpt: formData.get("excerpt") as string,
         description: formData.get("description") as string,
         year: formData.get("year") as string,
+        start_date: formData.get("start_date") as string || null,
+        end_date: formData.get("end_date") as string || null,
         status: formData.get("status") as any,
         member_ids: formData.get("member_ids") ? (formData.get("member_ids") as string).split(",").map(id => id.trim()).filter(Boolean) : [],
       }
@@ -66,6 +72,8 @@ export async function updateProject(id: string, formData: FormData) {
         .from("projects")
         .update({
           ...validated,
+          start_date: validated.start_date || null,
+          end_date: validated.end_date || null,
           year: parseInt(validated.year),
           updated_at: new Date().toISOString(),
         })

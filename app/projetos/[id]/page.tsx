@@ -9,6 +9,7 @@ import { SiteFooter } from "@/components/site-footer"
 import { ProjectsSection } from "@/components/landing/projects-section"
 import { SafeHTML } from "@/components/safe-html"
 import Link from "next/link"
+import { cn, getProjectLifecycleInfo } from "@/lib/utils"
 
 interface Props {
   params: Promise<{ id: string }>
@@ -99,8 +100,20 @@ export default async function ProjectPage({ params }: Props) {
           <div className="flex flex-wrap items-center gap-3 text-sm text-background/55">
             <span className="inline-flex items-center gap-1.5">
               <Calendar className="h-3.5 w-3.5" />
-              {project.year}
+              {getProjectLifecycleInfo(project).dateString}
             </span>
+            {getProjectLifecycleInfo(project).status && (
+              <>
+                <span>·</span>
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-background/20 px-2 py-0.5">
+                  <span className={cn(
+                    "w-1.5 h-1.5 rounded-full",
+                    getProjectLifecycleInfo(project).status === "Em andamento" ? "bg-amber-400 animate-pulse" : "bg-emerald-400"
+                  )} />
+                  {getProjectLifecycleInfo(project).status}
+                </span>
+              </>
+            )}
             <span>·</span>
             <span>{project.status}</span>
             {project.updatedAt && (

@@ -94,6 +94,7 @@ Este documento consolida as recomendações de arquitetura, performance e tratam
 - **Mapa Cultural Interativo**: Visualização baseada em geolocalização para mapear os territórios onde o coletivo atua ou atuou.
 - **Busca Semântica com IA**: Integrar um sistema de busca que entenda o contexto artístico e conceitual dos projetos.
 - **Agenda e Eventos**: Calendário público integrado para divulgar oficinas, exposições e encontros futuros.
+- **Criação Rápida no Command Menu (⌘K)**: Adicionar atalhos diretos no Command Menu administrativo para "Novo Projeto", "Nova Exposição", "Novo Diário" e "Novo Membro", utilizando Estado Global (Zustand) ou Search Params na URL para acionar a abertura dos respectivos modais independentemente da aba atual.
 
 ### C. Acessibilidade Radical e Internacionalização
 - **Multi-idiomas (i18n)**: Tradução completa (Português/Inglês/Espanhol) para expansão internacional do coletivo.

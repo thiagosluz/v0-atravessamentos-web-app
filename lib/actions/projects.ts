@@ -12,7 +12,10 @@ function mapProject(p: any): Project {
     description: p.description,
     coverImage: p.cover_image,
     year: p.year,
+    start_date: p.start_date,
+    end_date: p.end_date,
     status: p.status,
+    memberIds: p.member_ids,
     updatedAt: p.updated_at,
   }
 }

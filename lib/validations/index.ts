@@ -53,6 +53,8 @@ export const projectSchema = z.object({
   excerpt: z.string().min(10, "Resumo muito curto").max(500),
   description: z.string().optional().or(z.literal("")),
   year: z.string().regex(/^\d{4}$/, "Ano inválido"),
+  start_date: z.string().optional().nullable().or(z.literal("")),
+  end_date: z.string().optional().nullable().or(z.literal("")),
   status: z.enum(["Publicado", "Rascunho", "Em revisão"]),
   member_ids: z.array(z.string()).optional(),
 })

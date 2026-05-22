@@ -13,6 +13,9 @@ export interface Project {
   description: string
   coverImage: string
   year: number
+  start_date?: string | null
+  end_date?: string | null
+  executionStatus?: "Em andamento" | "Finalizado" | "Pausado" | "Não definido"
   status: ProjectStatus
   memberIds?: string[]
   updatedAt: string

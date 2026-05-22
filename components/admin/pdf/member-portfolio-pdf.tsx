@@ -2,6 +2,7 @@ import React from "react"
 import { Document, Page, Text, View, StyleSheet, Image as PdfImage, Font, Link as PdfLink } from "@react-pdf/renderer"
 import { type Member, type Project } from "@/lib/mock-data"
 import { stripHtml } from "@/lib/utils/html-strip"
+import { getProjectLifecycleInfo } from "@/lib/utils"
 
 // As fontes não padrão não funcionam no react-pdf sem registrar as URLs .ttf
 // Vamos usar as fontes nativas seguras (Helvetica) para garantir performance e compatibilidade,
@@ -104,6 +105,18 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: "#888888",
   },
+  projectExcerpt: {
+    fontSize: 10,
+    color: "#555555",
+    marginTop: 4,
+    marginBottom: 4,
+    lineHeight: 1.4,
+  },
+  projectLink: {
+    fontSize: 9,
+    color: "#A65A3C",
+    textDecoration: "none",
+  },
   footer: {
     position: "absolute",
     bottom: 30,
@@ -124,9 +137,10 @@ const styles = StyleSheet.create({
 interface MemberPortfolioPDFProps {
   member: Member
   projects: Project[]
+  base64Avatar?: string | null
 }
 
-export const MemberPortfolioPDF = ({ member, projects }: MemberPortfolioPDFProps) => {
+export const MemberPortfolioPDF = ({ member, projects, base64Avatar }: MemberPortfolioPDFProps) => {
   const pureBio = stripHtml(member.bio)
 
   return (
@@ -142,7 +156,7 @@ export const MemberPortfolioPDF = ({ member, projects }: MemberPortfolioPDFProps
           {/* Left Column (Avatar & Contact) */}
           <View style={styles.leftCol}>
             {member.avatar && !member.avatar.includes("placeholder.svg") && (
-              <PdfImage src={member.avatar} style={styles.avatar} />
+              <PdfImage src={base64Avatar || member.avatar} style={styles.avatar} />
             )}
             
             <View style={styles.tagsContainer}>
@@ -188,12 +202,26 @@ export const MemberPortfolioPDF = ({ member, projects }: MemberPortfolioPDFProps
             {projects && projects.length > 0 && (
               <>
                 <Text style={styles.sectionTitle}>Projetos Vinculados</Text>
-                {projects.map((project) => (
-                  <View key={project.id} style={styles.projectItem}>
-                    <Text style={styles.projectTitle}>{project.title}</Text>
-                    <Text style={styles.projectMeta}>{project.category} · {project.year}</Text>
-                  </View>
-                ))}
+                {projects.map((project) => {
+                  const lifecycle = getProjectLifecycleInfo(project)
+                  const origin = typeof window !== "undefined" ? window.location.origin : ""
+                  return (
+                    <View key={project.id} style={styles.projectItem}>
+                      <Text style={styles.projectTitle}>
+                        {project.title} {lifecycle.status ? `(${lifecycle.status})` : ''}
+                      </Text>
+                      <Text style={styles.projectMeta}>{project.category} · {lifecycle.dateString}</Text>
+                      
+                      {project.excerpt && (
+                        <Text style={styles.projectExcerpt}>{project.excerpt}</Text>
+                      )}
+                      
+                      <PdfLink src={`${origin}/projetos/${project.id}`} style={styles.projectLink}>
+                        Ver projeto no site ↗
+                      </PdfLink>
+                    </View>
+                  )
+                })}
               </>
             )}
           </View>

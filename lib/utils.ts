@@ -35,3 +35,30 @@ export function stripHtml(html: string) {
   if (!html) return ""
   return html.replace(/<[^>]*>?/gm, "").trim()
 }
+
+export function getProjectLifecycleInfo(project: any) {
+  // Comportamento legado (apenas Ano)
+  if (!project.start_date) {
+    return {
+      status: null,
+      dateString: String(project.year)
+    }
+  }
+  
+  // Formatador curto (Jan, Fev...)
+  const fmt = new Intl.DateTimeFormat("pt-BR", { month: "short", year: "numeric", timeZone: "UTC" })
+  const startStr = fmt.format(new Date(project.start_date)).replace(". de ", " ")
+  
+  if (project.end_date) {
+    const endStr = fmt.format(new Date(project.end_date)).replace(". de ", " ")
+    return {
+      status: "Finalizado" as const,
+      dateString: startStr === endStr ? startStr : `${startStr} - ${endStr}`
+    }
+  }
+  
+  return {
+    status: "Em andamento" as const,
+    dateString: `${startStr} - Atual`
+  }
+}

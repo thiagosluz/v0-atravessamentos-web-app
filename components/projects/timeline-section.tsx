@@ -5,7 +5,7 @@ import { motion } from "motion/react"
 import { type Project } from "@/lib/mock-data"
 import Link from "next/link"
 import { ArrowUpRight } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { cn, getProjectLifecycleInfo } from "@/lib/utils"
 import { SafeHTML } from "@/components/safe-html"
 
 const ORGANIC_SHAPES = ["border-organic", "border-organic-2", "border-organic-3"] as const
@@ -111,14 +111,26 @@ function ProjectTimelineCard({ project, align, shape, index, getCategoryColor }:
             Usamos `filter` (brightness/saturation) como efeito de hover.
             Filters são aplicados DENTRO da layer existente, respeitando o clip.
           */}
-          {/* Badge de categoria — fora do clip para não ser cortado */}
-          <div className="mb-3">
+          {/* Badge de categoria e Status */}
+          <div className="mb-3 flex flex-wrap items-center gap-2">
             <span className={cn(
               "inline-flex rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-widest backdrop-blur-sm",
               getCategoryColor(project.category)
             )}>
               {project.category}
             </span>
+
+            {getProjectLifecycleInfo(project).status && (
+              <span className={cn(
+                "inline-flex items-center gap-1.5 rounded-full border border-border bg-background/50 px-3 py-1 text-[10px] font-bold uppercase tracking-widest backdrop-blur-sm text-foreground"
+              )}>
+                <span className={cn(
+                  "w-1.5 h-1.5 rounded-full",
+                  getProjectLifecycleInfo(project).status === "Em andamento" ? "bg-amber-500 animate-pulse" : "bg-emerald-500"
+                )} />
+                {getProjectLifecycleInfo(project).dateString}
+              </span>
+            )}
           </div>
 
           <div
