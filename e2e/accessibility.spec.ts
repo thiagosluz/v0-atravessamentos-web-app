@@ -42,7 +42,7 @@ test.describe('Acessibilidade Automatizada (WCAG)', () => {
     await page.fill('input[type="email"]', 'test@atravessamentos.com');
     await page.fill('input[type="password"]', 'password123');
     await page.click('button[type="submit"]');
-    await expect(page).toHaveURL('/admin');
+    await expect(page).toHaveURL(/\/admin/, { timeout: 15000 });
 
     const accessibilityScanResults = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa'])

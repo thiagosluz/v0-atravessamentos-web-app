@@ -95,6 +95,9 @@ Este documento consolida as recomendações de arquitetura, performance e tratam
 - **Busca Semântica com IA**: Integrar um sistema de busca que entenda o contexto artístico e conceitual dos projetos.
 - **Agenda e Eventos**: Calendário público integrado para divulgar oficinas, exposições e encontros futuros.
 - **Criação Rápida no Command Menu (⌘K)**: Adicionar atalhos diretos no Command Menu administrativo para "Novo Projeto", "Nova Exposição", "Novo Diário" e "Novo Membro", utilizando Estado Global (Zustand) ou Search Params na URL para acionar a abertura dos respectivos modais independentemente da aba atual.
+- **Gerenciador Central de Mídias (Media Library)**: Centralizar o upload e armazenamento de imagens em uma única aba, permitindo a reutilização das mídias em diferentes partes do site (Projetos, Diário, Acervo) em vez de fazer uploads duplicados por modal.
+- **Ordenação Curatorial (Drag & Drop)**: Implementar ordenação visual (arrastar e soltar) nas tabelas administrativas para dar ao administrador controle total sobre a ordem de exibição dos projetos e exposições na página inicial pública.
+- **Histórico de Atividades (Audit Trail)**: Criar uma linha do tempo no dashboard principal que registre quem criou, editou ou excluiu quais itens (ex: "Maria publicou o projeto X há 2 horas"), essencial para a gestão em equipe.
 
 ### C. Acessibilidade Radical e Internacionalização
 - **Multi-idiomas (i18n)**: Tradução completa (Português/Inglês/Espanhol) para expansão internacional do coletivo.
