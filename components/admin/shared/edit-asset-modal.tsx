@@ -152,7 +152,7 @@ export function EditAssetModal({
   }
 
   const toggleTag = (tagName: string) => {
-    const currentTags = form.getValues("tags")
+    const currentTags = form.getValues("tags") || []
     if (currentTags.includes(tagName)) {
       form.setValue("tags", currentTags.filter(t => t !== tagName))
     } else {
@@ -209,7 +209,7 @@ export function EditAssetModal({
                   <FormItem>
                     <FormLabel>Localização</FormLabel>
                     <FormControl>
-                      <Input placeholder="Ex: Alto Paraíso, GO" {...field} />
+                      <Input placeholder="Ex: Alto Paraíso, GO" {...field} value={field.value || ""} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -257,7 +257,7 @@ export function EditAssetModal({
                   {availableTags.map((tag) => (
                     <Badge
                       key={tag.id}
-                      variant={form.watch("tags").includes(tag.name) ? "default" : "outline"}
+                      variant={(form.watch("tags") || []).includes(tag.name) ? "default" : "outline"}
                       className="cursor-pointer"
                       onClick={() => toggleTag(tag.name)}
                     >

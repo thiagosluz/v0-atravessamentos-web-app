@@ -89,7 +89,7 @@ export async function sendContactMessage(formData: FormData) {
   } catch (error: any) {
     if (error instanceof z.ZodError) {
       // Retorna a mensagem de erro específica do esquema (ex: "A mensagem deve ter pelo menos 10 caracteres")
-      return { error: error.errors[0].message }
+      return { error: error.issues[0]?.message || "Erro de validação" }
     }
     console.error("Erro na Server Action de Contato:", error)
     return { error: "Ocorreu um erro inesperado." }

@@ -41,7 +41,7 @@ export async function safeAction<T extends Record<string, any>>(
     if (error instanceof z.ZodError) {
       return {
         success: false,
-        error: "Dados inválidos: " + error.errors.map((e) => e.message).join(", "),
+        error: "Dados inválidos: " + error.issues.map((e) => e.message).join(", "),
       }
     }
 

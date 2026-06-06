@@ -1,48 +1,38 @@
-# 🚨 Plano de Recuperação Pós-Atualização (Breaking Changes)
+# Plano de Refatoração: Zod 4 e React Hook Form
 
-## 🎯 Objetivo
-Analisar os erros gerados após a atualização forçada para a versão `--latest` das dependências principais e propor um plano seguro para restaurar a estabilidade do sistema.
+## Objetivo
+Resolver os erros de tipagem TypeScript introduzidos pela atualização das dependências `@hookform/resolvers`, `sonner` e `zod` para suas versões mais recentes (ex: Zod v4).
 
-## 🕵️ Análise dos Erros (Pesquisa & Diagnóstico)
+## Contexto dos Erros
+A atualização mais recente gerou 8 erros de compilação:
+1. **ZodError `errors` ausente**: No Zod v4 (ou dependendo da inferência de tipos mais restrita do TypeScript), acessar `.errors` em um erro capturado do tipo `ZodError<unknown>` passou a exigir o uso correto de propriedades e tipagens. O recomendado é usar `.issues` ou tipar corretamente `error as z.ZodError`.
+2. **React Hook Form `getValues` e `watch`**: O retorno agora prevê `undefined` caso os defaults não resolvam corretamente os arrays, gerando `currentTags is possibly 'undefined'`.
+3. **React Hook Form Input `value`**: O controle `field.value` possui tipo `string | null | undefined`, porém o `<Input />` (React 19 / HTML types) não aceita `null`.
 
-1. **`lucide-react` (Erro de Ícones Faltantes)**
-   - **Causa:** A partir da versão 1.x, a equipe do Lucide removeu **todos os ícones de marcas (Brand Icons)** por questões de direitos autorais (Instagram, Youtube, Linkedin).
-   - **Impacto:** Quebrou o rodapé, contatos e configurações do painel.
+## Proposed Changes
 
-2. **`react-resizable-panels` (Erro no PanelGroup)**
-   - **Causa:** A versão 4.x trouxe quebras de contrato graves para alinhar com padrões web. O componente `PanelGroup` foi renomeado e `PanelResizeHandle` também.
-   - **Impacto:** Quebrou o layout ajustável principal do Shadcn UI (`components/ui/resizable.tsx`).
+### Component Name: Formulário de Admin
+Refatorar o modal de edição de ativos do acervo para tratar os valores `undefined` e `null`.
+#### [MODIFY] [edit-asset-modal.tsx](file:///home/thiago/Projetos/v0-atravessamentos-web-app/components/admin/shared/edit-asset-modal.tsx)
+- Corrigir a lógica de `currentTags`: `const currentTags = form.getValues("tags") || []` e `form.watch("tags") || []`.
+- Corrigir o input de Location: Adicionar fallback para null: `value={field.value || ""}`.
 
-3. **`react-day-picker` (Erro no Calendar `table`)**
-   - **Causa:** A versão 10.x removeu as props legadas e mudou a estrutura do `classNames`.
-   - **Impacto:** Quebrou a folha de estilos do calendário (`components/ui/calendar.tsx`).
+### Component Name: Server Actions
+Refatorar o tratamento de erros do Zod nas actions.
+#### [MODIFY] [contact.ts](file:///home/thiago/Projetos/v0-atravessamentos-web-app/lib/actions/contact.ts)
+- Linha 92: Mudar de `error.errors[0].message` para `error.issues[0].message` ou asserção explícita.
+#### [MODIFY] [safe-action.ts](file:///home/thiago/Projetos/v0-atravessamentos-web-app/lib/utils/safe-action.ts)
+- Linha 44: Mudar de `error.errors.map` para `error.issues.map`.
 
-4. **`recharts` (Erro de Tipagem no Chart)**
-   - **Causa:** A versão 3.x mudou a tipagem interna do `payload` e do `LegendProps`. O componente nativo do Shadcn (`chart.tsx`) ainda não tem suporte oficial completo sem refatoração manual pesada para a v3.
-   - **Impacto:** Quebrou os gráficos do Radar do Coletivo.
+## Verification Plan
 
----
+### Automated Tests
+- `npx tsc --noEmit` para garantir 0 erros de tipo.
+- `pnpm lint`
+- `pnpm test` (Unitários) e `pnpm test:e2e` (Playwright) para garantir que formulários e validações ainda funcionam com a nova versão do Zod.
+- `pnpm run build` para garantir que o Turbopack consegue compilar tudo sem erros de tipagem.
 
-## 🛠️ Opções de Solução
-
-### 🔴 Opção A: Rollback Cirúrgico (RECOMENDADO)
-A aplicação estava **100% testada e estável**. O caminho mais prudente em projetos em produção é reverter *apenas* esses quatro pacotes para a versão major anterior onde o contrato do Shadcn UI funciona nativamente.
-- Reverter `lucide-react` para `0.479.0` (ou similar antes da v1)
-- Reverter `recharts` para `2.15.0`
-- Reverter `react-day-picker` para `8.10.1` ou `9.x` compatível
-- Reverter `react-resizable-panels` para `2.1.9`
-> **Esforço**: Baixíssimo | **Risco**: Zero
-
-### 🟡 Opção B: Refatoração Front-end (Atualização Forçada)
-Se você realmente quiser manter as bibliotecas na última versão, precisaremos:
-1. Instalar `@icons-pack/react-simple-icons` e substituir todas as menções do Lucide para Instagram/Youtube/Linkedin.
-2. Reescrever o componente `resizable.tsx` para os novos nomes da v4.
-3. Reescrever as chaves do `calendar.tsx` adaptando para o layout v10 do day-picker.
-4. Tentar suprimir ou consertar os tipos complexos de generic do `recharts` v3 no `chart.tsx`.
-> **Esforço**: Alto | **Risco**: Médio (Pode gerar quebras visuais secundárias).
-
-## 🚦 Perguntas Abertas / User Review Required
-
-> [!IMPORTANT]  
-> Qual caminho você prefere seguir? 
-> Responda com **A** (Fazer o downgrade das libs específicas e voltar ao verde imediato) ou **B** (Manter a versão latest e começar a reescrever o código do Shadcn e dos Ícones).
+## User Review Required
+> [!IMPORTANT]
+> Aprovação Necessária
+> Aguardando aprovação deste plano para invocar os especialistas de Frontend e Testes para aplicar as correções e rodar o pipeline.
