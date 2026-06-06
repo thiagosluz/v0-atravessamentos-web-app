@@ -21,7 +21,7 @@ O Atravessamentos é uma plataforma digital dedicada a preservar e difundir a me
 
 ## 🛠️ Tecnologias
 
-- **Frontend**: Next.js 15+ (App Router), Tailwind CSS 4, Framer Motion (Motion).
+- **Frontend**: Next.js 16 (App Router + Turbopack), Tailwind CSS 4, Motion (ex-Framer Motion).
 - **Backend**: Supabase (Auth, Database, Storage), Server Actions.
 - **Visualização**: Recharts para o dashboard administrativo.
 - **Testes**: Playwright (E2E) e Vitest (Unitários).

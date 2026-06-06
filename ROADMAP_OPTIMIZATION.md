@@ -199,5 +199,21 @@ Transformar a plataforma em uma central ativa de atividades e encontros para o c
 - **Resultado:** Maior interação pública, ferramentas úteis para produção (PDF/QR) e ampliação da capacidade exibicional da plataforma.
 
 ---
-*Documento atualizado em 21/05/2026.*
+*Documento atualizado em 06/06/2026.*
+
+## ✅ Funcionalidades Concluídas (Junho 2026)
+
+### 📦 Migração Massiva de Dependências (Breaking Changes)
+- **Contexto:** Atualização de todas as dependências para suas versões `--latest`, incluindo mudanças *major* com breaking changes.
+- **Dependências Atualizadas:**
+  - `zod` v3 → **v4**: API de erros alterada (`.errors` → `.issues`). Refatoração aplicada em `safeAction`, `contact.ts` e `settings.ts`.
+  - `@hookform/resolvers` v3 → **v5**: Nova inferência de tipos para arrays e campos opcionais. Fallbacks aplicados em `edit-asset-modal.tsx`.
+  - `sonner` v1 → **v2**: Atualização sem breaking changes significativos.
+  - `lucide-react` v0.x → **v1.17**: Remoção de ícones de marca. Migração para `@icons-pack/react-simple-icons` (Instagram, YouTube) e SVG local (LinkedIn).
+  - `react-resizable-panels` v3 → **v4**: API renomeada (`PanelGroup` → `Group`, `PanelResizeHandle` → `Separator`). Refatoração aplicada em `resizable.tsx`.
+  - `react-day-picker` v9 → **v10**: Propriedade `table` removida do `classNames`. Ajustada em `calendar.tsx`.
+  - `recharts` v2 → **v3**: Tipagem de `Tooltip` e `Legend` alterada. Bypass aplicado em `chart.tsx`.
+  - `typescript` v5 → **v6**: Compatibilidade total verificada.
+  - `next` v15 → **v16.2.7**: Migração para Turbopack e `proxy.ts`.
+- **Resultado:** Pipeline completo (`tsc --noEmit`, `lint`, `test`, `test:e2e`, `build`) passando com 0 erros. Documentação atualizada para refletir as novas bibliotecas e convenções.
 

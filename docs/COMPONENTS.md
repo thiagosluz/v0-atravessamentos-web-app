@@ -45,7 +45,7 @@ O componente está em `components/admin/seo-preview.tsx`. Ele foi projetado para
 Componente responsável por renderizar as páginas de Acessibilidade, Privacidade e Termos.
 
 ### Segurança (XSS Protection)
-Como os conteúdos legais são editados em um **Rich Text Editor**, o sistema utiliza a biblioteca `isomorphic-dompurify` para sanitizar o HTML no servidor antes da renderização. Isso impede que scripts maliciosos injetados no banco de dados sejam executados no navegador dos usuários.
+Como os conteúdos legais são editados em um **Rich Text Editor**, o sistema utiliza a biblioteca `sanitize-html` para sanitizar o HTML no servidor antes da renderização. Isso impede que scripts maliciosos injetados no banco de dados sejam executados no navegador dos usuários.
 
 ### Localização e Data
 O componente utiliza `date-fns/locale/pt-BR` para formatar a data de atualização no formato por extenso: *"Última atualização: 15 de Maio de 2026"*.

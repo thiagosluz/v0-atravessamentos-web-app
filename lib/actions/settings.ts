@@ -106,7 +106,7 @@ export async function updateSiteSettings(settings: Partial<SiteSettings>) {
     return { success: true }
   } catch (error: any) {
     if (error.name === "ZodError") {
-      return { error: "Dados inválidos: " + error.errors.map((e: any) => e.message).join(", ") }
+      return { error: "Dados inválidos: " + error.issues.map((e: any) => e.message).join(", ") }
     }
     return { error: error.message || "Erro inesperado." }
   }

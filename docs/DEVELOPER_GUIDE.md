@@ -44,7 +44,7 @@ if (!validatedFields.success) {
 ```
 
 ### Sanitização (XSS)
-Para exibir conteúdo HTML proveniente do editor Tiptap, utilize o utilitário de sanitização baseado em `isomorphic-dompurify` para neutralizar scripts maliciosos.
+Para exibir conteúdo HTML proveniente do editor Tiptap, utilize o utilitário de sanitização baseado em `sanitize-html` para neutralizar scripts maliciosos.
 
 ---
 
@@ -92,16 +92,19 @@ Para impedir o envio acidental de e-mails de teste para assinantes reais da news
 
 | Pacote | Uso |
 |--------|-----|
-| `next` | Framework, RSC, rotas |
+| `next` (v16) | Framework, RSC, rotas, Turbopack |
 | `@supabase/supabase-js`, `@supabase/ssr` | Banco, auth, storage |
 | `motion` | Animações na interface |
-| `lucide-react` | Ícones |
+| `lucide-react` | Ícones genéricos |
+| `@icons-pack/react-simple-icons` | Ícones de marcas (Instagram, YouTube) |
 | Componentes Radix via shadcn | UI acessível |
 | `date-fns` | Formatação de datas |
 | `@tiptap/*` | Editor rico no admin |
-| `react-hook-form`, `zod` | Formulários e validação |
+| `react-hook-form`, `zod` (v4) | Formulários e validação |
 | `@sentry/nextjs` | Monitoramento de erros e captura de falhas |
 | `@upstash/ratelimit` | Prevenção de abusos de API e formulários (Rate Limiting) |
+| `sanitize-html` | Sanitização XSS de conteúdos Rich Text |
+| `typescript` (v6) | Tipagem estática |
 
 ---
 
