@@ -2,7 +2,8 @@
 
 import { motion } from "motion/react"
 import { ContactForm } from "./contact-form"
-import { Instagram, Mail, MapPin, Youtube, MessageCircle } from "lucide-react"
+import { Mail, MapPin, MessageCircle } from "lucide-react"
+import { SiInstagram as Instagram, SiYoutube as Youtube } from "@icons-pack/react-simple-icons"
 import { SiteSettings } from "@/lib/actions/settings"
 import { cn } from "@/lib/utils"
 import { BackButton } from "@/components/ui/back-button"

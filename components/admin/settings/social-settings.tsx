@@ -1,7 +1,8 @@
 "use client"
 
 import * as React from "react"
-import { Instagram, Youtube, Mail } from "lucide-react"
+import { Mail } from "lucide-react"
+import { SiInstagram as Instagram, SiYoutube as Youtube } from "@icons-pack/react-simple-icons"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { type SiteSettings } from "@/lib/actions/settings"

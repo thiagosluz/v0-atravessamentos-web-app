@@ -13,7 +13,6 @@ import {
   List,
   ListOrdered,
   Link as LinkIcon,
-  Youtube as YoutubeIcon,
   Image as ImageIcon,
   Heading2,
   Quote,
@@ -24,6 +23,7 @@ import {
   Undo,
   Redo,
 } from "lucide-react"
+import { SiYoutube as YoutubeIcon } from "@icons-pack/react-simple-icons"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { UrlModal } from "./modals/url-modal"

@@ -1,31 +1,48 @@
-# 🎨 Auditoria de Design e Consistência (Painel Admin)
+# 🚨 Plano de Recuperação Pós-Atualização (Breaking Changes)
 
 ## 🎯 Objetivo
-Analisar todas as telas do painel administrativo (`/admin`) para verificar a consistência visual, hierarquia de informações e aderência à Identidade Visual do Coletivo Atravessamentos, propondo padronizações caso necessário.
+Analisar os erros gerados após a atualização forçada para a versão `--latest` das dependências principais e propor um plano seguro para restaurar a estabilidade do sistema.
 
-## 🕵️ Resultados da Auditoria Visual
+## 🕵️ Análise dos Erros (Pesquisa & Diagnóstico)
 
-Após navegação automatizada e inspeção visual de todas as 10 abas (Visão Geral, Projetos, Acervo Vivo, Exposições, Diário, Newsletter, Membros, Configurações, Identidade Visual e Radar), a conclusão é:
+1. **`lucide-react` (Erro de Ícones Faltantes)**
+   - **Causa:** A partir da versão 1.x, a equipe do Lucide removeu **todos os ícones de marcas (Brand Icons)** por questões de direitos autorais (Instagram, Youtube, Linkedin).
+   - **Impacto:** Quebrou o rodapé, contatos e configurações do painel.
 
-**O design já está em um nível de excelência e altíssima consistência.**
+2. **`react-resizable-panels` (Erro no PanelGroup)**
+   - **Causa:** A versão 4.x trouxe quebras de contrato graves para alinhar com padrões web. O componente `PanelGroup` foi renomeado e `PanelResizeHandle` também.
+   - **Impacto:** Quebrou o layout ajustável principal do Shadcn UI (`components/ui/resizable.tsx`).
 
-### Pontos Fortes Identificados:
-1. **Paleta de Cores Coesa**: O fundo em tom de areia (`#F9F6F1`) e os botões de ação/destaques em Terracota (`#A65A3C`) estão uniformes em todas as telas.
-2. **Layout Base**: A estrutura de Sidebar fixa à esquerda e conteúdo rolável à direita, com o Command Menu (⌘K) no topo, está sólida e não quebra a responsividade.
-3. **Componentização de Tabelas**: As abas de "Projetos", "Diário", "Membros" e "Newsletter" utilizam a mesma estrutura de `AdminDataTable`, garantindo a mesma experiência de ordenação, badges de status (`Publicado`, `Rascunho`) e botões de ação (Editar/Excluir).
-4. **Cards e Galerias**: A aba de Exposições e o Acervo Vivo utilizam cards com o mesmo border-radius, sombreamento sutil e botões secundários com borda terracota perfeitamente alinhados.
-5. **Tipografia**: A hierarquia de títulos principais vs metadados (como datas e categorias em letras menores e acinzentadas) está perfeitamente padronizada.
+3. **`react-day-picker` (Erro no Calendar `table`)**
+   - **Causa:** A versão 10.x removeu as props legadas e mudou a estrutura do `classNames`.
+   - **Impacto:** Quebrou a folha de estilos do calendário (`components/ui/calendar.tsx`).
+
+4. **`recharts` (Erro de Tipagem no Chart)**
+   - **Causa:** A versão 3.x mudou a tipagem interna do `payload` e do `LegendProps`. O componente nativo do Shadcn (`chart.tsx`) ainda não tem suporte oficial completo sem refatoração manual pesada para a v3.
+   - **Impacto:** Quebrou os gráficos do Radar do Coletivo.
 
 ---
 
-## 📋 Plano de Ação (Veredito)
+## 🛠️ Opções de Solução
 
-**Não há necessidade de uma refatoração de padronização.** Os componentes base (modais, tabelas, botões e formulários) já compartilham a mesma biblioteca visual (provavelmente Radix/shadcn adaptado para a paleta do coletivo).
+### 🔴 Opção A: Rollback Cirúrgico (RECOMENDADO)
+A aplicação estava **100% testada e estável**. O caminho mais prudente em projetos em produção é reverter *apenas* esses quatro pacotes para a versão major anterior onde o contrato do Shadcn UI funciona nativamente.
+- Reverter `lucide-react` para `0.479.0` (ou similar antes da v1)
+- Reverter `recharts` para `2.15.0`
+- Reverter `react-day-picker` para `8.10.1` ou `9.x` compatível
+- Reverter `react-resizable-panels` para `2.1.9`
+> **Esforço**: Baixíssimo | **Risco**: Zero
 
-### 💡 Recomendações de Micro-Polimentos (Opcionais)
-Apesar de não haver erros, se quisermos elevar ainda mais a UX, o plano de implementação poderia incluir apenas:
+### 🟡 Opção B: Refatoração Front-end (Atualização Forçada)
+Se você realmente quiser manter as bibliotecas na última versão, precisaremos:
+1. Instalar `@icons-pack/react-simple-icons` e substituir todas as menções do Lucide para Instagram/Youtube/Linkedin.
+2. Reescrever o componente `resizable.tsx` para os novos nomes da v4.
+3. Reescrever as chaves do `calendar.tsx` adaptando para o layout v10 do day-picker.
+4. Tentar suprimir ou consertar os tipos complexos de generic do `recharts` v3 no `chart.tsx`.
+> **Esforço**: Alto | **Risco**: Médio (Pode gerar quebras visuais secundárias).
 
-1. **Skeleton Loaders**: Adicionar animações de carregamento em formato de "esqueleto" nas tabelas enquanto os dados chegam do Supabase (para evitar pulos de layout).
-2. **Empty States Padronizados**: Garantir que se uma aba não tiver nenhum item (ex: 0 projetos criados), haja uma ilustração bonita em tom de terracota convidando o usuário a criar o primeiro.
+## 🚦 Perguntas Abertas / User Review Required
 
-> **Conclusão do Planejamento**: O sistema não precisa de correções de design. O plano atual é apenas manter o padrão estabelecido e focar em novas funcionalidades.
+> [!IMPORTANT]  
+> Qual caminho você prefere seguir? 
+> Responda com **A** (Fazer o downgrade das libs específicas e voltar ao verde imediato) ou **B** (Manter a versão latest e começar a reescrever o código do Shadcn e dos Ícones).

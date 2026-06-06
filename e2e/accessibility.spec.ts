@@ -43,6 +43,10 @@ test.describe('Acessibilidade Automatizada (WCAG)', () => {
     await page.fill('input[type="password"]', 'password123');
     await page.click('button[type="submit"]');
     await expect(page).toHaveURL(/\/admin/, { timeout: 15000 });
+    await expect(page).toHaveTitle(/Painel/);
+    
+    // Aguarda transições de layout do Admin
+    await page.waitForTimeout(2000);
 
     const accessibilityScanResults = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa'])

@@ -1,7 +1,8 @@
 "use client"
 
 import * as React from "react"
-import { Instagram, Mail, MapPin, Youtube } from "lucide-react"
+import { Mail, MapPin } from "lucide-react"
+import { SiInstagram as Instagram, SiYoutube as Youtube } from "@icons-pack/react-simple-icons"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { FloatingInput } from "@/components/ui/floating-input"
