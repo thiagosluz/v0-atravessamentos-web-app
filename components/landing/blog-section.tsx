@@ -14,7 +14,8 @@ interface BlogSectionProps {
 }
 
 export function BlogSection({ initialPosts, categories }: BlogSectionProps) {
-  const [featured, ...rest] = initialPosts
+  const isEmpty = !initialPosts || initialPosts.length === 0
+  const [featured, ...rest] = initialPosts || []
 
   return (
     <section
@@ -50,6 +51,19 @@ export function BlogSection({ initialPosts, categories }: BlogSectionProps) {
           </Link>
         </motion.div>
 
+        {isEmpty || !featured ? (
+          <div className="mt-12 flex min-h-[400px] flex-col items-center justify-center rounded-3xl border border-dashed border-border bg-background/50 p-8 text-center md:p-12">
+            <div className="mb-4 rounded-full bg-primary/10 p-4">
+              <Clock className="h-6 w-6 text-primary" />
+            </div>
+            <h3 className="font-display text-2xl font-bold tracking-tight text-foreground md:text-3xl">
+              Em breve novos textos
+            </h3>
+            <p className="mt-3 max-w-md text-base text-muted-foreground">
+              Estamos preparando ensaios, manifestos e crônicas inéditas para o nosso diário de travessia. Volte em breve.
+            </p>
+          </div>
+        ) : (
         <div className="mt-12 grid gap-6 md:grid-cols-12">
           {/* Featured */}
           <motion.article
@@ -140,6 +154,7 @@ export function BlogSection({ initialPosts, categories }: BlogSectionProps) {
             ))}
           </div>
         </div>
+        )}
       </div>
     </section>
   )
