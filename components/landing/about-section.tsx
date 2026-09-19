@@ -1,7 +1,6 @@
 "use client"
 
 import { motion } from "motion/react"
-import { Quote } from "lucide-react"
 import { OrganicImage } from "@/components/ui/organic-image"
 import { type SiteSettings } from "@/lib/actions/settings"
 
@@ -27,27 +26,94 @@ export function AboutSection({ settings }: { settings?: SiteSettings }) {
 
           <div className="mt-10 space-y-6 text-lg leading-relaxed text-foreground md:text-xl">
             <p>
-              Atravessamentos é um corpo coletivo. Somos professoras, artistas, pesquisadoras, mães,
-              cineastas, dissidentes — gente que se recusou a caber no que estava posto.
+              O <strong className="font-semibold text-foreground">Coletivo Atravessamentos</strong> nasceu de gente indignada.
+              <br />
+              De gente insubordinada.
+              <br />
+              De gente cansada de assistir às injustiças e seguir como se nada tivesse acontecido.
             </p>
+
             <p>
-              Nascemos em <strong className="text-foreground">Jataí, sudoeste de Goiás</strong>, no encontro
-              entre a sala de aula e a rua, entre o cerrado e a tela. Trabalhamos onde a educação
-              encontra a arte, a decolonialidade pisa o chão e a política se faz com afeto.
+              Antes de existir um coletivo, existia uma pergunta que nos atravessava:{" "}
+              <strong className="font-semibold text-foreground">
+                o que fazer com toda essa indignação?
+              </strong>
             </p>
-            <p className="relative pl-6 border-l-2 border-primary font-display italic text-foreground">
-              <Quote
-                className="absolute -left-3 -top-1 h-5 w-5 text-primary bg-background"
-                aria-hidden
-              />
-              Atravessar é escolher a fresta como lugar de escuta. É recusar o centro para criar
-              outro centro — coletivo, plural, vivo.
-            </p>
+
             <p>
-              Nossas ações se cruzam com a cultura afro-brasileira, com os movimentos feminista e
-              LGBTQIAPN+, e com as pedagogias que nascem nas margens. Trabalho lento. Trabalho de
-              urgência.
+              O que fazer com aquilo que incomoda, revolta, inquieta e não nos permite simplesmente aceitar o mundo como ele está? Como transformar a indignação em movimento sem precisar caber nos lugares que já estavam dados? Como construir alguma coisa sem reproduzir as mesmas hierarquias, silenciamentos e formas de poder que tanto nos incomodavam?
             </p>
+
+            <p>
+              Foi desse incômodo que, em junho de 2022, em Jataí, no interior de Goiás, começamos a nos encontrar.
+            </p>
+
+            <p>
+              E talvez o Atravessamentos tenha começado justamente aí: quando percebemos que não precisávamos responder sozinhos àquela pergunta.
+            </p>
+
+            <p>
+              Encontramos na{" "}
+              <strong className="font-semibold text-foreground">
+                educação popular, na arte e na produção cultural
+              </strong>{" "}
+              maneiras de transformar inquietação em criação. Fizemos rodas, oficinas, exposições, filmes, formações, intervenções. Ocupamos espaços, inventamos outros. Aprendemos que uma câmera, um tear, uma conversa, um desenho, uma sala de aula, uma parede ocupada por obras ou uma roda de pessoas podem ser lugares de produção de conhecimento, de memória, de resistência e de transformação.
+            </p>
+
+            <p>
+              Mas o Atravessamentos nunca foi somente aquilo que fazemos.
+            </p>
+
+            <p>
+              É, sobretudo,{" "}
+              <strong className="font-semibold text-foreground">
+                um lugar onde podemos ser
+              </strong>
+              .
+            </p>
+
+            <p>
+              Queríamos nos{" "}
+              <strong className="font-semibold text-foreground">
+                desinstitucionalizar
+              </strong>
+              .
+            </p>
+
+            <p>
+              Ou, talvez, inventar nossas próprias formas de institucionalidade.
+            </p>
+
+            <p>
+              Desde 2022, muita coisa nos atravessou. E nós também atravessamos muitos lugares, pessoas e histórias. O coletivo tornou-se movimento; e hoje somos também{" "}
+              <strong className="font-semibold text-foreground">
+                Ponto de Cultura da Rede Cultura Viva
+              </strong>
+              .
+            </p>
+
+            <p>
+              Ainda assim, aquela pergunta permanece conosco.
+            </p>
+
+            <p className="pt-2 font-display text-2xl font-bold md:text-3xl text-foreground">
+              <strong>O que fazemos com a nossa indignação?</strong>
+            </p>
+
+            <div className="space-y-1">
+              <p>Criamos.</p>
+              <p>E fazemos isso juntos.</p>
+              <p>Sem deixar de ser quem somos.</p>
+            </div>
+
+            <div className="space-y-2 pt-4 border-t border-foreground/15">
+              <p className="font-display text-xl font-bold leading-snug md:text-2xl text-foreground">
+                <strong>Somos gente atravessada pelo mundo e disposta a atravessá-lo de volta.</strong>
+              </p>
+              <p className="font-display text-2xl font-bold tracking-tight md:text-3xl text-primary">
+                <strong>Somos Atravessamentos.</strong>
+              </p>
+            </div>
           </div>
 
           <div className="mt-10 grid grid-cols-3 gap-4 max-w-md">
@@ -116,7 +182,7 @@ export function AboutSection({ settings }: { settings?: SiteSettings }) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.8, delay: 0.15 }}
-          className="md:col-span-5"
+          className="md:col-span-5 md:sticky md:top-28 md:self-start h-[520px] md:h-[640px] lg:h-[720px]"
         >
           <div className="grid h-full grid-cols-6 gap-3 md:gap-4">
             <div className="col-span-4 row-span-2">
