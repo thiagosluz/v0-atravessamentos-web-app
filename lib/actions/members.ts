@@ -50,20 +50,22 @@ export async function getAllMembers(): Promise<Member[]> {
     return []
   }
 
-  return data.map((m) => ({
-    id: m.id,
-    name: m.name,
-    role: m.role,
-    tags: m.tags ?? [],
-    avatar: m.avatar,
-    bio: m.bio,
-    instagram: m.instagram,
-    linkedin: m.linkedin,
-    lattes_url: m.lattes_url,
-    email: m.email,
-    phone: m.phone,
-    createdAt: m.created_at,
-  })) as Member[]
+  return data
+    .map((m) => ({
+      id: m.id,
+      name: m.name,
+      role: m.role,
+      tags: m.tags ?? [],
+      avatar: m.avatar,
+      bio: m.bio,
+      instagram: m.instagram,
+      linkedin: m.linkedin,
+      lattes_url: m.lattes_url,
+      email: m.email,
+      phone: m.phone,
+      createdAt: m.created_at,
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name, "pt-BR", { sensitivity: "base" })) as Member[]
 }
 
 export async function getMemberIds() {
