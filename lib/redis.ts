@@ -3,8 +3,8 @@ import { Ratelimit } from "@upstash/ratelimit"
 
 // Redis client for caching
 export const redis = new Redis({
-  url: process.env.KV_REST_API_URL!,
-  token: process.env.KV_REST_API_TOKEN!,
+  url: process.env.ATRAVESSAMENTO_UPSTASH_KV_REST_API_URL!,
+  token: process.env.ATRAVESSAMENTO_UPSTASH_KV_REST_API_TOKEN!,
 })
 
 // Rate limiter for API protection
