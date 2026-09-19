@@ -16,12 +16,28 @@ export function SafeHTML({ content, className, as: Component = "div" }: SafeHTML
 
   // Configuração para o sanitize-html
   const sanitizedContent = sanitizeHtml(content, {
-    allowedTags: sanitizeHtml.defaults.allowedTags.concat(["iframe"]),
+    allowedTags: [
+      ...sanitizeHtml.defaults.allowedTags,
+      "iframe",
+      "img",
+      "figure",
+      "figcaption",
+      "u",
+      "s",
+      "strike",
+      "span",
+    ],
     allowedAttributes: {
       ...sanitizeHtml.defaults.allowedAttributes,
-      iframe: ["src", "allow", "allowfullscreen", "frameborder", "scrolling", "class"],
+      iframe: ["src", "allow", "allowfullscreen", "frameborder", "scrolling", "class", "width", "height"],
+      img: ["src", "alt", "title", "width", "height", "loading", "class", "style"],
+      a: ["href", "name", "target", "rel", "class"],
+      figure: ["class", "style"],
+      figcaption: ["class", "style"],
+      span: ["class", "style"],
       "*": ["class", "style", "id"], // Permite classes e estilos básicos se necessário
     },
+    allowedSchemes: ["http", "https", "mailto", "tel", "data"],
     allowedIframeHostnames: ["www.youtube.com", "youtube.com", "player.vimeo.com"],
   })
 

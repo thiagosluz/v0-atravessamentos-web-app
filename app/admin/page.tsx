@@ -2,7 +2,7 @@ import { getSession } from "@/lib/actions/auth"
 import { redirect } from "next/navigation"
 import { AdminDashboard } from "@/components/admin/admin-dashboard"
 import { getProjects } from "@/lib/actions/projects"
-import { getMembers } from "@/lib/actions/members"
+import { getMembers, getAllMembers } from "@/lib/actions/members"
 import { getAdminBlogPosts } from "@/lib/actions/blog-posts"
 import { getCategories } from "@/lib/actions/categories"
 import { getSiteSettings } from "@/lib/actions/settings"
@@ -25,9 +25,10 @@ export default async function AdminPage({
   const mPage = Number(params.m_page) || 1
   const bPage = Number(params.b_page) || 1
 
-  const [projectsRes, membersRes, blogRes, categories, settings] = await Promise.all([
+  const [projectsRes, membersRes, allMembers, blogRes, categories, settings] = await Promise.all([
     getProjects(pPage),
     getMembers(mPage),
+    getAllMembers(),
     getAdminBlogPosts(bPage),
     getCategories(),
     getSiteSettings(),
@@ -38,6 +39,7 @@ export default async function AdminPage({
       user={user}
       projectsData={projectsRes}
       membersData={membersRes}
+      allMembers={allMembers}
       blogPostsData={blogRes}
       initialCategories={categories}
       siteSettings={settings}

@@ -77,6 +77,7 @@ export function AdminDashboard(props: AdminDashboardProps) {
     setActive,
     localProjects,
     localMembers,
+    localAllMembers,
     localBlogPosts,
     projectToEdit,
     memberToEdit,
@@ -427,7 +428,7 @@ export function AdminDashboard(props: AdminDashboardProps) {
         </header>
 
         <div className="flex-1 overflow-y-auto scrollbar-hide">
-          <div className="max-w-6xl mx-auto p-4 md:p-10 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+          <div className="w-full max-w-[1440px] 2xl:max-w-[1600px] mx-auto p-4 md:p-8 lg:p-10 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {isOffline && (
               <div 
                 data-testid="offline-banner"
@@ -473,7 +474,7 @@ export function AdminDashboard(props: AdminDashboardProps) {
                     totalCount={projectsData.count}
                     currentPage={currentPage.projects}
                     categories={initialCategories}
-                    members={membersData.data}
+                    members={localAllMembers}
                     onSuccess={handleProjectSuccess}
                     onEdit={(id) => handleEditItem("project", id)}
                     onDelete={(id) => handleDeleteTrigger("project", id)}
@@ -558,7 +559,7 @@ export function AdminDashboard(props: AdminDashboardProps) {
             onOpenChange={(open: boolean) => !open && setSearchEditItem(null)}
             initialData={projectToEdit}
             categories={initialCategories}
-            members={membersData.data}
+            members={localAllMembers}
             onSuccess={handleProjectSuccess}
           />
         )}

@@ -103,6 +103,7 @@ export interface AdminDashboardProps {
   user: User | null
   projectsData: { data: Project[], count: number }
   membersData: { data: Member[], count: number }
+  allMembers?: Member[]
   blogPostsData: { data: BlogPost[], count: number }
   initialCategories: Category[]
   siteSettings: SiteSettings

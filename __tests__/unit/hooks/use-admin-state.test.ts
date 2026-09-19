@@ -90,4 +90,29 @@ describe('useAdminState Hook', () => {
     expect(result.current.localProjects).toHaveLength(0)
     expect(mockToast).toHaveBeenCalledWith(expect.objectContaining({ title: 'Item excluído com sucesso' }))
   })
+
+  it('should initialize and maintain localAllMembers', () => {
+    const allMembersList = [
+      { id: 'm1', name: 'Zélia' },
+      { id: 'm2', name: 'Aline' }
+    ] as any
+    const propsWithAllMembers = {
+      ...mockProps,
+      allMembers: allMembersList
+    }
+
+    const { result } = renderHook(() => useAdminState(propsWithAllMembers))
+    expect(result.current.localAllMembers).toHaveLength(2)
+
+    const newMember = { id: 'm3', name: 'Bruna' } as any
+    act(() => {
+      result.current.handleMemberSuccess(newMember, false)
+    })
+
+    expect(result.current.localAllMembers).toHaveLength(3)
+    // Should be sorted alphabetically by name
+    expect(result.current.localAllMembers[0].name).toBe('Aline')
+    expect(result.current.localAllMembers[1].name).toBe('Bruna')
+    expect(result.current.localAllMembers[2].name).toBe('Zélia')
+  })
 })

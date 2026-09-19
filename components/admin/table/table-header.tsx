@@ -36,7 +36,13 @@ export function AdminTableHeader<T>({
         </TableHead>
         <TableHead className="w-[80px]">ID</TableHead>
         {columns.map((col) => (
-          <TableHead key={col.id} className={cn(col.sortable && "cursor-pointer select-none")}>
+          <TableHead
+            key={col.id}
+            className={cn(
+              col.sortable && "cursor-pointer select-none",
+              col.headerClassName || col.className
+            )}
+          >
             {col.sortable ? (
               <div
                 className="flex items-center gap-1 hover:text-foreground transition-colors"
@@ -58,7 +64,7 @@ export function AdminTableHeader<T>({
             )}
           </TableHead>
         ))}
-        <TableHead className="w-[60px] text-right no-print">Ações</TableHead>
+        <TableHead className="w-[80px] text-right no-print">Ações</TableHead>
       </TableRow>
     </TableHeader>
   )

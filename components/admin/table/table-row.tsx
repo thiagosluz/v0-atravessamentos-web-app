@@ -58,11 +58,11 @@ function AdminTableRowInner<T extends Record<string, any>>({
         </button>
       </TableCell>
       {columns.map((col) => (
-        <TableCell key={col.id}>
+        <TableCell key={col.id} className={col.cellClassName || col.className}>
           {col.render ? col.render(item) : String(item[col.id as keyof T] || "-")}
         </TableCell>
       ))}
-      <TableCell className="text-right no-print">
+      <TableCell className="w-[80px] text-right no-print">
         <div className="flex items-center justify-end gap-2">
           <Button
             variant="ghost"

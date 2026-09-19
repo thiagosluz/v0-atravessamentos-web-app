@@ -42,6 +42,7 @@ export function ProjectPanel({
       id: "status",
       label: "Status",
       sortable: true,
+      className: "w-[120px] shrink-0",
       render: (p) => (
         <span
           className={cn(
@@ -58,8 +59,9 @@ export function ProjectPanel({
       id: "title",
       label: "Título",
       sortable: true,
+      className: "min-w-[280px] max-w-xl 2xl:max-w-2xl",
       render: (p) => (
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 min-w-0">
           <div className="hidden h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-muted sm:block">
             <img
               src={p.coverImage || "/placeholder.svg"}
@@ -67,8 +69,10 @@ export function ProjectPanel({
               className="h-full w-full object-cover"
             />
           </div>
-          <div className="min-w-0">
-            <p className="truncate font-medium">{p.title}</p>
+          <div className="min-w-0 flex-1">
+            <p className="truncate font-medium text-foreground" title={p.title}>
+              {p.title}
+            </p>
             <p className="truncate text-xs text-foreground md:hidden">
               {p.category} · {p.year}
             </p>
@@ -76,11 +80,12 @@ export function ProjectPanel({
         </div>
       ),
     },
-    { id: "category", label: "Categoria", sortable: true },
+    { id: "category", label: "Categoria", sortable: true, className: "w-[130px] shrink-0" },
     {
       id: "updatedAt",
       label: "Atualizado",
       sortable: true,
+      className: "w-[120px] shrink-0",
       render: (p) => (
         <span className="text-sm text-foreground">
           {new Date(p.updatedAt).toLocaleDateString("pt-BR")}

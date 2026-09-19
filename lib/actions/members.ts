@@ -38,6 +38,34 @@ export async function getMembers(page: number = 1, limit: number = 10) {
   }
 }
 
+export async function getAllMembers(): Promise<Member[]> {
+  const supabase = createAdminClient()
+  const { data, error } = await supabase
+    .from("members")
+    .select("*")
+    .order("name", { ascending: true })
+
+  if (error) {
+    console.error("Erro ao buscar todos os membros:", error)
+    return []
+  }
+
+  return data.map((m) => ({
+    id: m.id,
+    name: m.name,
+    role: m.role,
+    tags: m.tags ?? [],
+    avatar: m.avatar,
+    bio: m.bio,
+    instagram: m.instagram,
+    linkedin: m.linkedin,
+    lattes_url: m.lattes_url,
+    email: m.email,
+    phone: m.phone,
+    createdAt: m.created_at,
+  })) as Member[]
+}
+
 export async function getMemberIds() {
   const supabase = createAdminClient()
   const { data, error } = await supabase.from("members").select("id")

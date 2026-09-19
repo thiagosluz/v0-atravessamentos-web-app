@@ -240,12 +240,22 @@ export function ProjectFormDialog({
 
                 {/* Members */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold uppercase tracking-widest text-foreground">
-                    Membros Vinculados
-                  </label>
-                  <div className="max-h-[120px] overflow-y-auto rounded-md border border-border bg-background/50 p-2 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-semibold uppercase tracking-widest text-foreground">
+                      Membros Vinculados
+                    </label>
+                    {selectedMembers.length > 0 && (
+                      <span className="text-[11px] font-medium text-primary bg-primary/10 px-2 py-0.5 rounded-full">
+                        {selectedMembers.length} selecionado{selectedMembers.length > 1 ? "s" : ""}
+                      </span>
+                    )}
+                  </div>
+                  <div className="max-h-[180px] overflow-y-auto rounded-lg border border-border bg-background/50 p-2 space-y-1">
                     {members.map((member) => (
-                      <label key={member.id} className="flex items-center gap-2 cursor-pointer p-1 hover:bg-muted rounded-sm">
+                      <label
+                        key={member.id}
+                        className="flex items-center gap-2.5 cursor-pointer p-1.5 hover:bg-muted/80 rounded-md transition-colors"
+                      >
                         <input
                           type="checkbox"
                           checked={selectedMembers.includes(member.id)}
@@ -257,14 +267,23 @@ export function ProjectFormDialog({
                             }
                           }}
                           disabled={pending}
-                          className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                          className="h-4 w-4 rounded border-border text-primary focus:ring-primary accent-primary"
                         />
-                        <span className="text-sm text-foreground">{member.name}</span>
-                        <span className="text-xs text-muted-foreground">({member.role})</span>
+                        {member.avatar && (
+                          <img
+                            src={member.avatar}
+                            alt=""
+                            className="h-6 w-6 rounded-full object-cover shrink-0"
+                          />
+                        )}
+                        <span className="text-sm font-medium text-foreground">{member.name}</span>
+                        {member.role && (
+                          <span className="text-xs text-muted-foreground">({member.role})</span>
+                        )}
                       </label>
                     ))}
                     {members.length === 0 && (
-                      <p className="text-xs text-muted-foreground p-2">Nenhum membro cadastrado.</p>
+                      <p className="text-xs text-muted-foreground p-3 text-center">Nenhum membro cadastrado.</p>
                     )}
                   </div>
                 </div>

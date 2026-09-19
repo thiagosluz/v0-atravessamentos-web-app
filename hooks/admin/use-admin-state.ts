@@ -14,14 +14,16 @@ export function useAdminState(props: AdminDashboardProps) {
   // Local state for optimistic updates
   const [localProjects, setLocalProjects] = React.useState<Project[]>(props.projectsData.data)
   const [localMembers, setLocalMembers] = React.useState<Member[]>(props.membersData.data)
+  const [localAllMembers, setLocalAllMembers] = React.useState<Member[]>(props.allMembers || props.membersData.data)
   const [localBlogPosts, setLocalBlogPosts] = React.useState<BlogPost[]>(props.blogPostsData.data)
 
   // Sync local state when props change
   React.useEffect(() => {
     setLocalProjects(props.projectsData.data)
     setLocalMembers(props.membersData.data)
+    setLocalAllMembers(props.allMembers || props.membersData.data)
     setLocalBlogPosts(props.blogPostsData.data)
-  }, [props.projectsData.data, props.membersData.data, props.blogPostsData.data])
+  }, [props.projectsData.data, props.membersData.data, props.allMembers, props.blogPostsData.data])
 
   const handleProjectSuccess = React.useCallback((project: Project, isEdit: boolean) => {
     if (isEdit) {
@@ -34,8 +36,10 @@ export function useAdminState(props: AdminDashboardProps) {
   const handleMemberSuccess = React.useCallback((member: Member, isEdit: boolean) => {
     if (isEdit) {
       setLocalMembers(prev => prev.map(m => m.id === member.id ? member : m))
+      setLocalAllMembers(prev => prev.map(m => m.id === member.id ? member : m))
     } else {
       setLocalMembers(prev => [member, ...prev])
+      setLocalAllMembers(prev => [...prev, member].sort((a, b) => a.name.localeCompare(b.name)))
     }
   }, [])
 
@@ -72,6 +76,7 @@ export function useAdminState(props: AdminDashboardProps) {
         const res = await deleteMember(id)
         if (res.success) {
           setLocalMembers(prev => prev.filter(m => m.id !== id))
+          setLocalAllMembers(prev => prev.filter(m => m.id !== id))
           success = true
         }
       } else if (type === "blog") {
@@ -143,6 +148,7 @@ export function useAdminState(props: AdminDashboardProps) {
       const res = await deleteMembersBulk(ids)
       if (res.success) {
         setLocalMembers(prev => prev.filter(m => !ids.includes(m.id)))
+        setLocalAllMembers(prev => prev.filter(m => !ids.includes(m.id)))
         toast({ title: `${ids.length} membro(s) excluído(s) com sucesso` })
       } else {
         toast({ title: res.error || "Erro ao excluir membros", variant: "destructive" })
@@ -157,6 +163,7 @@ export function useAdminState(props: AdminDashboardProps) {
     setActive,
     localProjects,
     localMembers,
+    localAllMembers,
     localBlogPosts,
     projectToEdit,
     memberToEdit,
